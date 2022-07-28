@@ -1,4 +1,4 @@
-# Bid Office
+# GTE Manager
 
 Parte backend del aplicativo GTE Manager
 
