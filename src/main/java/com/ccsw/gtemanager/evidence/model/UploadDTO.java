@@ -36,4 +36,22 @@ public class UploadDTO {
 		return deleteComments;
 	}
 
+	/**
+	 * Almacenar archivo recibido.
+	 * 
+	 * @param file
+	 */
+	public void setFile(MultipartFile file) {
+		this.file = file;
+	}
+
+	/**
+	 * Almacenar estado de deleteComments.
+	 * 
+	 * @param deleteComments
+	 */
+	public void setDeleteComments(boolean deleteComments) {
+		this.deleteComments = deleteComments;
+	}
+
 }
