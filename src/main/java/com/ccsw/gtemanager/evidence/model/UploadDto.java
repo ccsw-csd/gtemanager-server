@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author cavire
  *
  */
-public class UploadDTO {
+public class UploadDto {
 
 	/** Archivo enviado por el usuario */
 	private MultipartFile file;

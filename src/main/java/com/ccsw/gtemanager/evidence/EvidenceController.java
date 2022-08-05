@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ccsw.gtemanager.evidence.model.UploadDTO;
+import com.ccsw.gtemanager.evidence.model.UploadDto;
 
 /**
  * EvidenceController: Controlador REST para interacción con datos. Contiene
@@ -25,7 +25,7 @@ public class EvidenceController {
 	 * @param upload Elemento UploadDTO recibido desde el frontend
 	 */
 	@RequestMapping(path = "", method = RequestMethod.PUT)
-	public void upload(@ModelAttribute UploadDTO upload) {
+	public void upload(@ModelAttribute UploadDto upload) {
 
 		System.out
 				.println("file: " + upload.getFile().getOriginalFilename() + " : " + upload.getFile().getContentType());
