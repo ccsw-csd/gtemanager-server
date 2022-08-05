@@ -39,7 +39,7 @@ public class UploadDTO {
 	/**
 	 * Almacenar archivo recibido.
 	 * 
-	 * @param file
+	 * @param file Archivo recibido a almacenar
 	 */
 	public void setFile(MultipartFile file) {
 		this.file = file;
@@ -48,7 +48,8 @@ public class UploadDTO {
 	/**
 	 * Almacenar estado de deleteComments.
 	 * 
-	 * @param deleteComments
+	 * @param deleteComments Variable de control de borrado de comentarios en
+	 *                       evidencias
 	 */
 	public void setDeleteComments(boolean deleteComments) {
 		this.deleteComments = deleteComments;

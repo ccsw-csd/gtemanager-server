@@ -27,8 +27,9 @@ public class EvidenceController {
 	@RequestMapping(path = "", method = RequestMethod.PUT)
 	public void upload(@ModelAttribute UploadDTO upload) {
 
-		System.out.println(upload.getFile().getOriginalFilename() + "..." + upload.getFile().getContentType());
-		System.out.println(upload.isDeleteComments());
+		System.out
+				.println("file: " + upload.getFile().getOriginalFilename() + " : " + upload.getFile().getContentType());
+		System.out.println("deleteComments: " + upload.isDeleteComments());
 
 		// TODO Implementar en GM-06
 
