@@ -1,4 +1,4 @@
-package com.ccsw.bidoffice.config;
+package com.ccsw.gtemanager.config;
 
 import java.security.Key;
 import java.util.Date;
