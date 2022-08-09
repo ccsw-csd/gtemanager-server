@@ -23,19 +23,3 @@ Para arrancar la aplicación navegar hasta la calase anotada como @SpringBootApp
 * Hacer click con el botón derecho sobre la clase:
     * Run as >
         * Java application
-
-## Seguridad
-
-La seguridad esta basada el Token JWT, para generar un token válido se debe realizar una llamada POST a la URL del SSO:
-
-* URL: http://ccsw.capgemini.com/sso/authenticate/
-
-Como Body se adjunta las credenciales del SSO:
-
-```json
-{
-    "username":"XXX",
-    "password":"***"
-}
-```  
-La respuesta provee del token necesario para realizar las llamadas pertinentes a los endpoint publicados.
