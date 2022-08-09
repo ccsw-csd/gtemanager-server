@@ -40,7 +40,7 @@ public class EvidenceTestIT extends BaseITAbstract {
 	@Autowired
 	private TestRestTemplate restTemplate;
 
-	// Acceso sin token debería devolver error
+	/** Acceso sin token debería devolver error. */
 	@Test
 	public void sendingElementWithoutTokenShouldReturnError() {
 		String test = "test";
@@ -53,7 +53,7 @@ public class EvidenceTestIT extends BaseITAbstract {
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
-	// Recibir elemento no válido debería devolver error
+	/** Recibir elemento no válido debería devolver error. */
 	@Test
 	public void sendingInvalidElementShouldReturnError() {
 		String test = "test";
@@ -66,7 +66,7 @@ public class EvidenceTestIT extends BaseITAbstract {
 		assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, response.getStatusCode());
 	}
 
-	// Recibir archivo no excel debería devolver error
+	/** Recibir archivo no excel debería devolver error. */
 	@Test
 	public void sendingNonSpreadsheetFileShouldReturnError() {
 		MockMultipartFile file = new MockMultipartFile("test.pdf", "test.pdf", MediaType.APPLICATION_PDF_VALUE,
@@ -87,11 +87,11 @@ public class EvidenceTestIT extends BaseITAbstract {
 		assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
 	}
 
-	// Recibir archivo excel debería procesar OK
+	/** Recibir archivo excel debería procesar OK */
 	@Test
 	public void sendingSpreadsheetFileShouldReturnOK() {
 		MockMultipartFile file = new MockMultipartFile("test.xls", "test.xls",
-				MediaType.parseMediaType("application/vnd.ms-excel").toString(), "test".getBytes());
+				"application/vnd.ms-excel", "test".getBytes());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 		body.add("file", file.getResource());
