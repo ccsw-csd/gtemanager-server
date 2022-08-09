@@ -1,5 +1,6 @@
 package com.ccsw.gtemanager.evidence;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -21,6 +22,9 @@ import com.ccsw.gtemanager.evidence.model.UploadDto;
 @RestController
 public class EvidenceController {
 
+	@Autowired
+	private EvidenceService evidenceService;
+
 	/**
 	 * PUT: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
 	 * booleano de borrado de comentarios.
@@ -41,6 +45,12 @@ public class EvidenceController {
 		System.out
 				.println("file: " + upload.getFile().getOriginalFilename() + " : " + upload.getFile().getContentType());
 		System.out.println("deleteComments: " + upload.isDeleteComments());
+
+		try {
+			evidenceService.uploadEvidence(upload);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
+		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 
