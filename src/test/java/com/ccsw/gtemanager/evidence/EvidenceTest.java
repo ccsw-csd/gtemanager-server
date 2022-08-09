@@ -1,10 +1,8 @@
 package com.ccsw.gtemanager.evidence;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.util.StringUtils;
 
 import com.ccsw.gtemanager.evidence.model.UploadDto;
 import com.ccsw.gtemanager.person.PersonRepository;
@@ -39,10 +36,11 @@ public class EvidenceTest {
 	private static final String EXISTING_RUNDATE = "July 27, 2022 08:30 AM";
 	private static final String NONEXISTING_RUNDATE = "asdf";
 
-	private static final String EXISTING_SAGA = "1111_0000Z999";
-	private static final String NONEXISTING_SAGA = "9999_0000A111";
+	private static final String EXISTING_SAGA = "A1";
+	private static final String NONEXISTING_SAGA = "A0";
 
 	private static final String EXISTING_PERIOD = "29-AUG-2022 - 31-AUG-2022";
+	private static final String EXISTING_PERIOD_WEEK = "29-AUG-2022 - 04-SEP-2022";
 	private static final String NONEXISTING_PERIOD = "29-AUG-2022 - 21-AUG-2022";
 
 	private static final String EXISTING_TYPE = "WORKING";
@@ -142,20 +140,19 @@ public class EvidenceTest {
 	/** Codsaga existente debería devolver persona */
 	@Test
 	public void existingSAGAShouldReturnPerson() {
-		assertTrue(!personRepository.findPersonBySAGA(EXISTING_SAGA).isEmpty());
+		assertTrue(!personRepository.findBySaga(EXISTING_SAGA).isEmpty());
 	}
 
 	/** Codsaga inexistente debería error */
 	@Test
 	public void nonexistingSAGAShouldReturnError() {
-		assertTrue(personRepository.findPersonBySAGA(NONEXISTING_SAGA).isEmpty());
-		assertTrue(!evidenceService.getEvidenceErrors().isEmpty());
+		assertTrue(personRepository.findBySaga(NONEXISTING_SAGA).isEmpty());
 	}
 
 	/** Periodo correcto debería devolver semana */
 	@Test
 	public void existingPeriodShouldReturnWeek() {
-		assertTrue(StringUtils.hasText(evidenceService.findWeekForPeriod(EXISTING_PERIOD)));
+		assertEquals(evidenceService.findWeekForPeriod(EXISTING_PERIOD), EXISTING_PERIOD_WEEK);
 	}
 
 	/** Periodo incorrecto debería error */
