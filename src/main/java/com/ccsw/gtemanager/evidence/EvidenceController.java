@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ccsw.gtemanager.evidence.model.UploadDto;
+import com.ccsw.gtemanager.evidence.model.FormDataDto;
 
 /**
  * EvidenceController: Controlador REST para interacción con datos. Contiene
@@ -19,13 +19,13 @@ import com.ccsw.gtemanager.evidence.model.UploadDto;
 public class EvidenceController {
 
 	/**
-	 * PUT: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
+	 * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
 	 * booleano de borrado de comentarios.
 	 * 
-	 * @param upload Elemento UploadDTO recibido desde el frontend
+	 * @param upload Elemento FormDataDto recibido desde el frontend
 	 */
-	@RequestMapping(path = "", method = RequestMethod.PUT)
-	public void upload(@ModelAttribute UploadDto upload) {
+	@RequestMapping(path = "", method = RequestMethod.POST)
+	public void upload(@ModelAttribute FormDataDto upload) {
 
 		System.out
 				.println("file: " + upload.getFile().getOriginalFilename() + " : " + upload.getFile().getContentType());
