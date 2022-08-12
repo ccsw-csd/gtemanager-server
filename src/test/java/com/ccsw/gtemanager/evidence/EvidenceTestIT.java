@@ -2,7 +2,18 @@ package com.ccsw.gtemanager.evidence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -19,6 +30,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.ccsw.gtemanager.config.BaseITAbstract;
+import com.ccsw.gtemanager.person.PersonRepository;
 
 /**
  * EvidenceTestIT: colección de tests integrados que prueban funcionalidad del
@@ -39,6 +51,36 @@ public class EvidenceTestIT extends BaseITAbstract {
 
 	@Autowired
 	private TestRestTemplate restTemplate;
+
+	private static Workbook gteEvidences;
+	private static Sheet sheet;
+	private static Row row0, row10, row15;
+	private static Cell cellParametersTitle, cellRunDate, cellSAGA;
+
+	/** */
+	@BeforeAll
+	public static void initializeSpreadsheet() {
+		gteEvidences = new XSSFWorkbook();
+
+		sheet = gteEvidences.createSheet("Sheet1");
+
+		row0 = sheet.createRow(0);
+		cellParametersTitle = row0.createCell(0);
+		cellParametersTitle.setCellValue("Parameters");
+
+		row10 = sheet.createRow(9);
+		cellRunDate = row10.createCell(1);
+
+		row15 = sheet.createRow(14);
+		cellSAGA = row15.createCell(1);
+	}
+
+	/** */
+	private byte[] exportSpreadsheet() throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		gteEvidences.write(baos);
+		return baos.toByteArray();
+	}
 
 	/** Acceso sin token debería devolver error. */
 	@Test
@@ -87,11 +129,15 @@ public class EvidenceTestIT extends BaseITAbstract {
 		assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
 	}
 
-	/** Recibir archivo excel debería procesar OK */
+	/**
+	 * Recibir archivo excel debería procesar OK
+	 * 
+	 * @throws IOException
+	 */
 	@Test
-	public void sendingSpreadsheetFileShouldReturnOK() {
-		MockMultipartFile file = new MockMultipartFile("test.xls", "test.xls",
-				"application/vnd.ms-excel", "test".getBytes());
+	public void sendingSpreadsheetFileShouldReturnOK() throws IOException {
+		MockMultipartFile file = new MockMultipartFile("test.xslx", "test.xlsx",
+				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 		body.add("file", file.getResource());
