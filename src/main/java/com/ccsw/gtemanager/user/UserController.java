@@ -1,5 +1,7 @@
 package com.ccsw.gtemanager.user;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,5 +26,11 @@ public class UserController {
     @RequestMapping(path = "/findPage", method = RequestMethod.POST)
     public Page<UserDto> findPage(@RequestBody UserSearchDto dto) {
         return this.beanMapper.mapPage(this.userService.findPage(dto), UserDto.class);
+    }
+
+    @RequestMapping(path = "/filter", method = RequestMethod.POST)
+    public List<UserDto> findByFilter(@RequestBody String filter) {
+
+        return this.beanMapper.mapList(this.userService.findByFilter(filter), UserDto.class);
     }
 }

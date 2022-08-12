@@ -1,11 +1,15 @@
 package com.ccsw.gtemanager.user;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ccsw.gtemanager.common.criteria.TernarySearchCriteria;
 import com.ccsw.gtemanager.user.model.UserEntity;
 import com.ccsw.gtemanager.user.model.UserSearchDto;
 
@@ -48,4 +52,14 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findAll(specification, userSearchDto.getPageable());
     }
 
+    @Override
+    public List<UserEntity> findByFilter(String filter) {
+
+        UserSpecification firstnameLastnameUsername = new UserSpecification(
+                new TernarySearchCriteria("firstName", "lastName", "username", "concat concat :", filter));
+
+        Specification<UserEntity> specification = Specification.where(firstnameLastnameUsername);
+
+        return this.userRepository.findAll(specification, PageRequest.of(0, 15)).getContent();
+    }
 }

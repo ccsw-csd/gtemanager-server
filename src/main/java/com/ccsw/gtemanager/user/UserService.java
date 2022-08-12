@@ -1,5 +1,7 @@
 package com.ccsw.gtemanager.user;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 
 import com.ccsw.gtemanager.user.model.UserEntity;
@@ -20,6 +22,8 @@ public interface UserService {
      */
     UserEntity getByUsername(String username);
 
-    Page findPage(UserSearchDto dto);
+    Page<UserEntity> findPage(UserSearchDto dto);
+
+    List<UserEntity> findByFilter(String filter);
 
 }
