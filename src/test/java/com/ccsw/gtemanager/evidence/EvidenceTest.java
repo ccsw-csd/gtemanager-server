@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
-import com.ccsw.gtemanager.evidence.model.UploadDto;
+import com.ccsw.gtemanager.evidence.model.FormDataDto;
 import com.ccsw.gtemanager.person.PersonRepository;
 
 /**
@@ -48,8 +48,8 @@ public class EvidenceTest {
 
 	private static Workbook gteEvidences;
 	private static Sheet sheet;
-	private static Row row10, row15;
-	private static Cell cellRunDate, cellSAGA;
+	private static Row row0, row10, row15;
+	private static Cell cellParametersTitle, cellRunDate, cellSAGA;
 
 	@Mock
 	private EvidenceRepository evidenceRepository;
@@ -67,6 +67,10 @@ public class EvidenceTest {
 
 		sheet = gteEvidences.createSheet("Sheet1");
 
+		row0 = sheet.createRow(0);
+		cellParametersTitle = row0.createCell(0);
+		cellParametersTitle.setCellValue("Parameters");
+		
 		row10 = sheet.createRow(9);
 		cellRunDate = row10.createCell(1);
 
@@ -90,7 +94,7 @@ public class EvidenceTest {
 	public void validRunDateShouldReturnOK() throws IOException {
 		cellRunDate.setCellValue(NONEXISTING_RUNDATE);
 
-		UploadDto upload = new UploadDto();
+		FormDataDto upload = new FormDataDto();
 		upload.setFile(new MockMultipartFile("test.xslx", "test.xlsx",
 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet()));
 		upload.setDeleteComments(false);
@@ -108,7 +112,7 @@ public class EvidenceTest {
 	public void invalidRunDateShouldReturnError() throws IOException {
 		cellRunDate.setCellValue(NONEXISTING_RUNDATE);
 
-		UploadDto upload = new UploadDto();
+		FormDataDto upload = new FormDataDto();
 		upload.setFile(new MockMultipartFile("test.xslx", "test.xlsx",
 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet()));
 		upload.setDeleteComments(false);
@@ -128,7 +132,7 @@ public class EvidenceTest {
 	public void failedProcessShouldRegisterEvidenceError() throws IOException {
 		cellRunDate.setCellValue(NONEXISTING_RUNDATE);
 
-		UploadDto upload = new UploadDto();
+		FormDataDto upload = new FormDataDto();
 		upload.setFile(new MockMultipartFile("test.xslx", "test.xlsx",
 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet()));
 		upload.setDeleteComments(false);
