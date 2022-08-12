@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ccsw.gtemanager.evidence.model.UploadDto;
+import com.ccsw.gtemanager.evidence.model.FormDataDto;
 
 /**
  * EvidenceController: Controlador REST para interacción con datos. Contiene
@@ -26,13 +26,13 @@ public class EvidenceController {
 	private EvidenceService evidenceService;
 
 	/**
-	 * PUT: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
+	 * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
 	 * booleano de borrado de comentarios.
 	 * 
-	 * @param upload Elemento UploadDTO recibido desde el frontend
+	 * @param upload Elemento FormDataDto recibido desde el frontend
 	 */
-	@RequestMapping(path = "", method = RequestMethod.PUT)
-	public ResponseEntity<String> uploadEvidence(@ModelAttribute UploadDto upload) {
+	@RequestMapping(path = "", method = RequestMethod.POST)
+	public ResponseEntity<String> uploadEvidence(@ModelAttribute FormDataDto upload) {
 		if (upload.getFile() == null || !StringUtils.hasText(upload.getFile().getContentType()))
 			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
 					.body("No se ha recibido un fichero válido.");
