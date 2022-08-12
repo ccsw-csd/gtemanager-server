@@ -1,14 +1,22 @@
 package com.ccsw.gtemanager.evidence;
 
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +24,7 @@ import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.EvidenceComment;
 import com.ccsw.gtemanager.evidence.model.EvidenceError;
 import com.ccsw.gtemanager.evidence.model.EvidenceType;
-import com.ccsw.gtemanager.evidence.model.UploadDto;
+import com.ccsw.gtemanager.evidence.model.FormDataDto;
 
 @Service
 @Transactional
@@ -34,9 +42,48 @@ public class DefaultEvidenceService implements EvidenceService {
 	@Autowired
 	private EvidenceTypeRepository evidenceTypeRepository;
 
-	@Override
-	public void uploadEvidence(UploadDto upload) throws IllegalArgumentException {
+	private static DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive()
+			.appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
 
+	@Override
+	public void uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException {
+
+		Workbook gteEvidences = WorkbookFactory.create(upload.getFile().getInputStream());
+
+		Sheet sheet = gteEvidences.getSheetAt(0);
+
+		Cell cellFromDate = sheet.getRow(1).getCell(1);
+		Cell cellToDate = sheet.getRow(2).getCell(1);
+		Cell cellOperatingUnit = sheet.getRow(3).getCell(1);
+		Cell cellProductionUnit = sheet.getRow(4).getCell(1);
+		Cell cellSupervisorName = sheet.getRow(5).getCell(1);
+		Cell cellEmployeeName = sheet.getRow(6).getCell(1);
+		Cell cellBusinessUnit = sheet.getRow(7).getCell(1);
+		Cell cellRunDate = sheet.getRow(9).getCell(1);
+
+		Map<String, String> reportParams = new LinkedHashMap<String, String>();
+		reportParams.put("fromDate", cellFromDate.getStringCellValue());
+		reportParams.put("toDate", cellToDate.getStringCellValue());
+		reportParams.put("operatingUnit", cellOperatingUnit.getStringCellValue());
+		reportParams.put("productionUnit", cellProductionUnit.getStringCellValue());
+		reportParams.put("supervisorName", cellSupervisorName.getStringCellValue());
+		reportParams.put("employeeName", cellEmployeeName.getStringCellValue());
+		reportParams.put("businessUnit", cellBusinessUnit.getStringCellValue());
+		reportParams.put("runDate", cellRunDate.getStringCellValue());
+
+		System.out.println(reportParams.toString());
+
+		try {
+			LocalDate fromDate = LocalDate.parse(cellFromDate.getStringCellValue(), format);
+			LocalDate toDate = LocalDate.parse(cellToDate.getStringCellValue(), format);
+			
+			if (fromDate.compareTo(toDate) > 0)
+				throw new IllegalArgumentException("El informe no se corresponde con un mes o periodo válido. [period]");
+		} catch (DateTimeParseException e) {
+			throw new IllegalArgumentException("El informe no contiene fechas de periodo válidas (B2, C2). [period]");
+		}
+
+		gteEvidences.close();
 	}
 
 	@Override
@@ -56,9 +103,6 @@ public class DefaultEvidenceService implements EvidenceService {
 
 	@Override
 	public String findWeekForPeriod(String period) throws IllegalArgumentException {
-		DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy")
-				.toFormatter(Locale.getDefault());
-
 		String[] days = period.split(" - ");
 		LocalDate d1 = LocalDate.parse(days[0], format);
 		LocalDate d2 = LocalDate.parse(days[1], format);
