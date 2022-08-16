@@ -1,11 +1,16 @@
 package com.ccsw.gtemanager.evidence;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ccsw.gtemanager.evidence.model.UploadDto;
+import com.ccsw.gtemanager.config.mapper.BeanMapper;
+import com.ccsw.gtemanager.evidence.model.EvidenceEntity;
+import com.ccsw.gtemanager.evidence.model.FormDataDto;
 
 /**
  * EvidenceController: Controlador REST para interacción con datos. Contiene
@@ -18,19 +23,28 @@ import com.ccsw.gtemanager.evidence.model.UploadDto;
 @RestController
 public class EvidenceController {
 
+	@Autowired
+	private EvidenceService evidenceService;
+	
+	@Autowired
+	private BeanMapper beanMapper;
+	
 	/**
 	 * GET: Devuelve un listado de evidencias
 	 */
-	@RequestMapping(path = "",)
+	@RequestMapping(path = "/findAll", method = RequestMethod.GET)
+	public List<EvidenceEntity> findAll() {
+		return this.beanMapper.mapList(this.evidenceService.findAll(), EvidenceEntity.class);
+	}
 	
 	/**
-	 * PUT: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
+	 * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
 	 * booleano de borrado de comentarios.
 	 * 
-	 * @param upload Elemento UploadDTO recibido desde el frontend
+	 * @param upload Elemento FormDataDto recibido desde el frontend
 	 */
-	@RequestMapping(path = "", method = RequestMethod.PUT)
-	public void upload(@ModelAttribute UploadDto upload) {
+	@RequestMapping(path = "", method = RequestMethod.POST)
+	public void upload(@ModelAttribute FormDataDto upload) {
 
 		System.out
 				.println("file: " + upload.getFile().getOriginalFilename() + " : " + upload.getFile().getContentType());

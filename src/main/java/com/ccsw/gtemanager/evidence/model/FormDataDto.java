@@ -3,19 +3,19 @@ package com.ccsw.gtemanager.evidence.model;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * UploadDTO: DTO para datos de archivos subidos a través de backend. Contiene
+ * FormDataDto: DTO para datos de archivos subidos a través de backend. Contiene
  * atributo para almacenar fichero subido y booleano de borrar comentarios.
  * además de getters y setters.
  * 
  * @author cavire
  *
  */
-public class UploadDto {
+public class FormDataDto {
 
 	/** Archivo enviado por el usuario */
 	private MultipartFile file;
 	/** Casilla de eliminación de comentarios en las evidencias */
-	private boolean deleteComments;
+	private Boolean deleteComments;
 
 	/**
 	 * Obtener archivo recibido.
@@ -32,7 +32,7 @@ public class UploadDto {
 	 * @return true si se ha elegido borrar comentarios, false si no se ha elegido
 	 *         borrar comentarios
 	 */
-	public boolean isDeleteComments() {
+	public Boolean isDeleteComments() {
 		return deleteComments;
 	}
 
@@ -51,7 +51,7 @@ public class UploadDto {
 	 * @param deleteComments Variable de control de borrado de comentarios en
 	 *                       evidencias
 	 */
-	public void setDeleteComments(boolean deleteComments) {
+	public void setDeleteComments(Boolean deleteComments) {
 		this.deleteComments = deleteComments;
 	}
 
