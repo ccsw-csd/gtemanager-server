@@ -19,6 +19,11 @@ import com.ccsw.gtemanager.evidence.model.UploadDto;
 public class EvidenceController {
 
 	/**
+	 * GET: Devuelve un listado de evidencias
+	 */
+	@RequestMapping(path = "",)
+	
+	/**
 	 * PUT: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
 	 * booleano de borrado de comentarios.
 	 * 
