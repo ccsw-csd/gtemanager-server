@@ -89,7 +89,7 @@ public class EvidenceTestIT extends BaseITAbstract {
 
 		HttpEntity<?> httpEntity = new HttpEntity<>(test);
 
-		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, httpEntity,
+		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST, httpEntity,
 				String.class);
 
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -102,7 +102,7 @@ public class EvidenceTestIT extends BaseITAbstract {
 
 		HttpEntity<?> httpEntity = new HttpEntity<>(test, getHeaders());
 
-		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, httpEntity,
+		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST, httpEntity,
 				String.class);
 
 		assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, response.getStatusCode());
@@ -123,7 +123,7 @@ public class EvidenceTestIT extends BaseITAbstract {
 
 		HttpEntity<?> httpEntity = new HttpEntity<>(body, headers);
 
-		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, httpEntity,
+		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST, httpEntity,
 				String.class);
 
 		assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
@@ -148,7 +148,7 @@ public class EvidenceTestIT extends BaseITAbstract {
 
 		HttpEntity<?> httpEntity = new HttpEntity<>(body, headers);
 
-		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, httpEntity,
+		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST, httpEntity,
 				String.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
