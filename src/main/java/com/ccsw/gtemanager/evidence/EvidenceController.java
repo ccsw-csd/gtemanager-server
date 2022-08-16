@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ccsw.gtemanager.config.mapper.BeanMapper;
-import com.ccsw.gtemanager.evidence.model.EvidenceEntity;
+import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 
 /**
@@ -33,8 +33,8 @@ public class EvidenceController {
 	 * GET: Devuelve un listado de evidencias
 	 */
 	@RequestMapping(path = "/findAll", method = RequestMethod.GET)
-	public List<EvidenceEntity> findAll() {
-		return this.beanMapper.mapList(this.evidenceService.findAll(), EvidenceEntity.class);
+	public List<Evidence> findAll() {
+		return this.beanMapper.mapList(this.evidenceService.findAll(), Evidence.class);
 	}
 	
 	/**
