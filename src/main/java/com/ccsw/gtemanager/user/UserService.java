@@ -1,6 +1,10 @@
 package com.ccsw.gtemanager.user;
 
+import org.springframework.data.domain.Page;
+
+import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.user.model.UserEntity;
+import com.ccsw.gtemanager.user.model.UserSearchDto;
 
 /**
  * @author ccsw
@@ -8,13 +12,12 @@ import com.ccsw.gtemanager.user.model.UserEntity;
  */
 public interface UserService {
 
-    /**
-     * Recupera un usuario con su username
-     *
-     * @param username
-     * @return
-     * @throws Exception
-     */
     UserEntity getByUsername(String username);
+
+    Page<UserEntity> findPage(UserSearchDto dto);
+
+    void delete(Long id) throws EntityNotFoundException;
+
+    UserEntity getById(Long id) throws EntityNotFoundException;
 
 }
