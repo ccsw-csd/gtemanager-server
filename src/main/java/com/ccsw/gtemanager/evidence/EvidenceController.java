@@ -3,20 +3,21 @@ package com.ccsw.gtemanager.evidence;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ccsw.gtemanager.config.mapper.BeanMapper;
 import com.ccsw.gtemanager.evidence.model.Evidence;
+import com.ccsw.gtemanager.evidence.model.EvidenceDto;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 
 /**
  * EvidenceController: Controlador REST para interacción con datos. Contiene
  * métodos de acceso a servicio de datos, asociados a Requests HTTP.
- * 
- * @author cavire
  *
  */
 @RequestMapping(value = "/evidence")
@@ -30,11 +31,13 @@ public class EvidenceController {
 	private BeanMapper beanMapper;
 	
 	/**
-	 * GET: Devuelve un listado de evidencias
+	 * GET: Devuelve un listado de evidencias filtrado
 	 */
-	@RequestMapping(path = "/findAll", method = RequestMethod.GET)
-	public List<Evidence> findAll() {
-		return this.beanMapper.mapList(this.evidenceService.findAll(), Evidence.class);
+	@RequestMapping(path = "", method = RequestMethod.GET)
+	public List<EvidenceDto> find(@RequestParam(value = "geography", required = false) Long idGeography) {
+		List<Evidence> evidences = evidenceService.find(idGeography);
+		
+		return beanMapper.mapList(evidences, EvidenceDto.class);
 	}
 	
 	/**

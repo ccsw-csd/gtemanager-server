@@ -6,5 +6,5 @@ import com.ccsw.gtemanager.evidence.model.Evidence;
 
 public interface EvidenceService {
 	
-	List<Evidence> findAll();
+	List<Evidence> find(Long idGeography);
 }

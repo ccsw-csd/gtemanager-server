@@ -14,7 +14,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 	EvidenceRepository evidenceRepository;
 	
 	@Override
-	public List<Evidence> findAll() {
-		return this.evidenceRepository.findAll();
+	public List<Evidence> find(Long idGeography) {
+		return this.evidenceRepository.find(idGeography);
 	}
 }

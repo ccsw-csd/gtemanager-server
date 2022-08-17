@@ -5,7 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.ccsw.gtemanager.evidence.model.Center;
 
 @Entity
 @Table(name = "person")
@@ -30,8 +34,9 @@ public class Person {
 	@Column(name = "lastname")
 	private String lastName;
 
-	@Column(name = "center")
-	private String center;
+	@JoinColumn(name = "center")
+	@ManyToOne
+	private Center center;
 
 	@Column(name = "businesscode")
 	private String businessCode;
@@ -66,7 +71,7 @@ public class Person {
 		return lastName;
 	}
 
-	public String getCenter() {
+	public Center getCenter() {
 		return center;
 	}
 
@@ -106,7 +111,7 @@ public class Person {
 		this.lastName = lastName;
 	}
 
-	public void setCenter(String center) {
+	public void setCenter(Center center) {
 		this.center = center;
 	}
 
