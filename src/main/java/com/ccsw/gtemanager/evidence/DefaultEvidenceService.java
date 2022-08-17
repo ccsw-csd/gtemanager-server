@@ -42,8 +42,14 @@ public class DefaultEvidenceService implements EvidenceService {
 	@Autowired
 	private EvidenceTypeRepository evidenceTypeRepository;
 
-	private static DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive()
+	private static DateTimeFormatter formatMonth = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
+
+	private static DateTimeFormatter formatWeek = new DateTimeFormatterBuilder().parseCaseInsensitive()
+			.appendPattern("dd-MMM").toFormatter(Locale.getDefault());
+	
+	private static DateTimeFormatter formatDateTime = new DateTimeFormatterBuilder().parseCaseInsensitive()
+			.appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
 
 	@Override
 	public void uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException {
@@ -73,12 +79,15 @@ public class DefaultEvidenceService implements EvidenceService {
 
 		System.out.println(reportParams.toString());
 
+		LocalDate fromDate = null;
+		LocalDate toDate = null;
 		try {
-			LocalDate fromDate = LocalDate.parse(cellFromDate.getStringCellValue(), format);
-			LocalDate toDate = LocalDate.parse(cellToDate.getStringCellValue(), format);
-			
+			fromDate = LocalDate.parse(cellFromDate.getStringCellValue(), formatMonth);
+			toDate = LocalDate.parse(cellToDate.getStringCellValue(), formatMonth);
+
 			if (fromDate.compareTo(toDate) > 0)
-				throw new IllegalArgumentException("El informe no se corresponde con un mes o periodo válido. [period]");
+				throw new IllegalArgumentException(
+						"El informe no se corresponde con un mes o periodo válido. [period]");
 		} catch (DateTimeParseException e) {
 			throw new IllegalArgumentException("El informe no contiene fechas de periodo válidas (B2, C2). [period]");
 		}
@@ -104,8 +113,8 @@ public class DefaultEvidenceService implements EvidenceService {
 	@Override
 	public String findWeekForPeriod(String period) throws IllegalArgumentException {
 		String[] days = period.split(" - ");
-		LocalDate d1 = LocalDate.parse(days[0], format);
-		LocalDate d2 = LocalDate.parse(days[1], format);
+		LocalDate d1 = LocalDate.parse(days[0], formatMonth);
+		LocalDate d2 = LocalDate.parse(days[1], formatMonth);
 
 		LocalDate d1Monday = d1.with(DayOfWeek.MONDAY);
 		LocalDate d1Sunday = d1.with(DayOfWeek.SUNDAY);
@@ -115,8 +124,15 @@ public class DefaultEvidenceService implements EvidenceService {
 		if (d1.compareTo(d2) > 0 || !d1Monday.equals(d2Monday) || !d1Sunday.equals(d2Sunday))
 			throw new IllegalArgumentException("El periodo introducido no es correcto. [period]");
 
-		String monday = d1Monday.format(format).toUpperCase();
-		String sunday = d1Sunday.format(format).toUpperCase();
+		String monday = d1Monday.format(formatMonth).toUpperCase();
+		String sunday = d1Sunday.format(formatMonth).toUpperCase();
+
+		return monday + " - " + sunday;
+	}
+
+	public String findWeekForDay(LocalDate day) throws IllegalArgumentException {
+		String monday = day.with(DayOfWeek.MONDAY).format(formatWeek).toUpperCase();
+		String sunday = day.with(DayOfWeek.SUNDAY).format(formatWeek).toUpperCase();
 
 		return monday + " - " + sunday;
 	}
