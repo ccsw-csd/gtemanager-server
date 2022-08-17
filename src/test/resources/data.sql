@@ -1,3 +1,14 @@
+
+CREATE TABLE role (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  name varchar(20)  NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY ro_name (name)
+);
+
+INSERT INTO role (id,name) VALUES (1,'ADMIN');
+INSERT INTO role (id,name) VALUES (2,'USER');
+
 CREATE TABLE user (
   id int(11) NOT NULL AUTO_INCREMENT,
   username varchar(100) NOT NULL,
