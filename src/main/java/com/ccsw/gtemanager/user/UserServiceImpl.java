@@ -1,33 +1,23 @@
 package com.ccsw.gtemanager.user;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ccsw.gtemanager.common.criteria.TernarySearchCriteria;
+import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.user.model.UserEntity;
 import com.ccsw.gtemanager.user.model.UserSearchDto;
 
-/**
- * @author ccsw
- *
- */
-
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UserEntity getByUsername(String username) {
 
@@ -53,13 +43,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserEntity> findByFilter(String filter) {
+    public void delete(Long id) throws EntityNotFoundException {
 
-        UserSpecification firstnameLastnameUsername = new UserSpecification(
-                new TernarySearchCriteria("firstName", "lastName", "username", "concat concat :", filter));
-
-        Specification<UserEntity> specification = Specification.where(firstnameLastnameUsername);
-
-        return this.userRepository.findAll(specification, PageRequest.of(0, 15)).getContent();
+        UserEntity userToDelete = getById(id);
+        this.userRepository.deleteById(userToDelete.getId());
     }
+
+    @Override
+    public UserEntity getById(Long id) throws EntityNotFoundException {
+
+        return userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+    }
+
 }

@@ -1,14 +1,14 @@
 package com.ccsw.gtemanager.user;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.config.mapper.BeanMapper;
 import com.ccsw.gtemanager.user.model.UserDto;
 import com.ccsw.gtemanager.user.model.UserSearchDto;
@@ -28,9 +28,8 @@ public class UserController {
         return this.beanMapper.mapPage(this.userService.findPage(dto), UserDto.class);
     }
 
-    @RequestMapping(path = "/filter", method = RequestMethod.POST)
-    public List<UserDto> findByFilter(@RequestBody String filter) {
-
-        return this.beanMapper.mapList(this.userService.findByFilter(filter), UserDto.class);
+    @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable(name = "id") Long id) throws EntityNotFoundException {
+        this.userService.delete(id);
     }
 }
