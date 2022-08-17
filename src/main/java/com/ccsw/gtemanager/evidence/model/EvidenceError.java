@@ -23,11 +23,19 @@ public class EvidenceError {
 	@Column(name = "email", nullable = false)
 	private String email;
 
+	@Column(name = "period", nullable = false)
+	private String period;
+
 	@Column(name = "status", nullable = false)
 	private String status;
 
-	@Column(name = "period", nullable = false)
-	private String period;
+	public EvidenceError(String name, String saga, String email, String period, String status) {
+		this.name = name;
+		this.saga = saga;
+		this.email = email;
+		this.period = period;
+		this.status = status;
+	}
 
 	public Long getId() {
 		return id;
@@ -45,12 +53,12 @@ public class EvidenceError {
 		return email;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-
 	public String getPeriod() {
 		return period;
+	}
+
+	public String getStatus() {
+		return status;
 	}
 
 	public void setId(Long id) {
@@ -69,12 +77,12 @@ public class EvidenceError {
 		this.email = email;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
 	public void setPeriod(String period) {
 		this.period = period;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

@@ -21,6 +21,11 @@ public class Properties {
 	@Column(name = "value")
 	private String value;
 
+	public Properties(String key, String value) {
+		this.key = key;
+		this.value = value;
+	}
+
 	public Long getId() {
 		return id;
 	}
