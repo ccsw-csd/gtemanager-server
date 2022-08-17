@@ -46,6 +46,14 @@ public class Evidence {
 	@JoinColumn(name = "evidente_type_w6", nullable = false)
 	private EvidenceType evidenceTypeW6;
 
+	public Evidence() {
+		
+	}
+	
+	public Evidence(Person personId) {
+		this.personId = personId;
+	}
+	
 	public Long getId() {
 		return id;
 	}

@@ -29,6 +29,10 @@ public class EvidenceError {
 	@Column(name = "status", nullable = false)
 	private String status;
 
+	public EvidenceError() {
+		
+	}
+	
 	public EvidenceError(String name, String saga, String email, String period, String status) {
 		this.name = name;
 		this.saga = saga;

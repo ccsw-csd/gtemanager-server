@@ -21,11 +21,6 @@ public interface EvidenceService {
 	
 	List<EvidenceType> findEvidenceType(String type);
 	
-	String findWeekForPeriod(String period) throws IllegalArgumentException; 
+	String findWeekForPeriod(String period) throws IllegalArgumentException;
 	
-	void emptyEvidences();
-	
-	void emptyErrors();
-	
-	void emptyComments();
 }

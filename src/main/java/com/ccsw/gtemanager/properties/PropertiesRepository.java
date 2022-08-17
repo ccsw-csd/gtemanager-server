@@ -6,4 +6,6 @@ import com.ccsw.gtemanager.properties.model.Properties;
 
 public interface PropertiesRepository extends CrudRepository<Properties, Long> {
 
+	Properties findByKey(String key);
+	
 }

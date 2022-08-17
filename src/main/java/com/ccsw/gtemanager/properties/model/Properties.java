@@ -21,6 +21,10 @@ public class Properties {
 	@Column(name = "value")
 	private String value;
 
+	public Properties() {
+		
+	}
+	
 	public Properties(String key, String value) {
 		this.key = key;
 		this.value = value;
