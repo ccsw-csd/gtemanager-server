@@ -17,6 +17,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
+import com.ccsw.gtemanager.common.exception.AlreadyExistException;
 import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.user.model.UserDto;
 import com.ccsw.gtemanager.user.model.UserEntity;
@@ -99,6 +101,38 @@ public class UserTest {
 
         assertThrows(EntityNotFoundException.class, () -> this.userServiceImpl.delete(NOT_EXISTS_USER_ID));
         verify(this.userRepository, never()).deleteById(NOT_EXISTS_USER_ID);
+    }
+
+    @Test
+    public void saveNewUserShouldSave() throws AlreadyExistException {
+        UserDto dto = new UserDto();
+
+        dto.setEmail("nuevo@gmail.com");
+        dto.setFirstName("Nuevo");
+        dto.setLastName("User");
+        dto.setUsername("nuevo");
+
+        ArgumentCaptor<UserEntity> userEntity = ArgumentCaptor.forClass(UserEntity.class);
+
+        this.userServiceImpl.createUser(dto);
+        verify(this.userRepository).save(userEntity.capture());
+
+    }
+
+    @Test
+    public void saveNewUserWithExistIdShouldThrowException() throws AlreadyExistException {
+        UserDto dto = new UserDto();
+        dto.setId(EXISTS_USER_ID);
+        dto.setEmail("nuevo@gmail.com");
+        dto.setFirstName("Nuevo");
+        dto.setLastName("User");
+        dto.setUsername("nuevo");
+
+        ArgumentCaptor<UserEntity> userEntity = ArgumentCaptor.forClass(UserEntity.class);
+
+        assertThrows(AlreadyExistException.class, () -> this.userServiceImpl.createUser(dto));
+        verify(this.userRepository, never()).save(userEntity.capture());
+
     }
 
 }

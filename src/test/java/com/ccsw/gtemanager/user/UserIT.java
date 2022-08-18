@@ -182,4 +182,28 @@ public class UserIT extends BaseITAbstract {
         assertEquals(5, response.getBody().getContent().size());
     }
 
+    @Test
+    public void saveNewUserShouldCreate() {
+
+        UserSearchDto searchDto = new UserSearchDto();
+        UserDto dto = new UserDto();
+
+        searchDto.setPageable(PageRequest.of(0, 10));
+        dto.setUsername("prueba");
+        dto.setFirstName("PR");
+        dto.setLastName("PRL");
+        dto.setEmail("Prueba@gmail.com");
+
+        HttpEntity<?> httpEntity = new HttpEntity<>(searchDto, getHeaders());
+        HttpEntity<?> httpEntitydto = new HttpEntity<>(dto, getHeaders());
+
+        restTemplate.exchange(LOCALHOST + port + "/user", HttpMethod.PUT, httpEntitydto, Void.class);
+
+        ResponseEntity<Page<UserDto>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH + "findPage",
+                HttpMethod.POST, httpEntity, responseTypePage);
+
+        assertNotNull(response);
+        assertEquals(7, response.getBody().getContent().size());
+    }
+
 }
