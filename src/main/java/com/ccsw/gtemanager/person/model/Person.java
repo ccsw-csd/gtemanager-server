@@ -34,9 +34,8 @@ public class Person {
 	@Column(name = "lastname")
 	private String lastName;
 
-	@ManyToOne
-	@JoinColumn(name = "center")
-	private Center center;
+	@Column(name = "center")
+	private String center;
 
 	@Column(name = "businesscode")
 	private String businessCode;
@@ -71,7 +70,7 @@ public class Person {
 		return lastName;
 	}
 
-	public Center getCenter() {
+	public String getCenter() {
 		return center;
 	}
 
@@ -111,7 +110,7 @@ public class Person {
 		this.lastName = lastName;
 	}
 
-	public void setCenter(Center center) {
+	public void setCenter(String center) {
 		this.center = center;
 	}
 
