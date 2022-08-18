@@ -10,6 +10,6 @@ import com.ccsw.gtemanager.evidence.model.EvidenceType;
 @Repository
 public interface EvidenceTypeRepository extends CrudRepository<EvidenceType, Long> {
 
-	List<EvidenceType> findByCode(String code);
+	List<EvidenceType> findByCodeIgnoreCase(String code);
 	
 }
