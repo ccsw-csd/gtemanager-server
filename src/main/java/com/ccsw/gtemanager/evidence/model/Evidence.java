@@ -20,7 +20,7 @@ public class Evidence {
 
 	@ManyToOne
 	@JoinColumn(name = "person_id", nullable = false)
-	private Person personId;
+	private Person person;
 
 	@ManyToOne
 	@JoinColumn(name = "evidente_type_w1", nullable = false)
@@ -51,7 +51,7 @@ public class Evidence {
 	}
 
 	public Person getPersonId() {
-		return personId;
+		return person;
 	}
 
 	public EvidenceType getEvidenceTypeW1() {
@@ -83,7 +83,7 @@ public class Evidence {
 	}
 
 	public void setPersonId(Person personId) {
-		this.personId = personId;
+		this.person = personId;
 	}
 
 	public void setEvidenceTypeW1(EvidenceType evidenceTypeW1) {

@@ -34,8 +34,8 @@ public class EvidenceController {
 	 * GET: Devuelve un listado de evidencias filtrado
 	 */
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public List<EvidenceDto> find(@RequestParam(value = "geography", required = false) Long idGeography) {
-		List<Evidence> evidences = evidenceService.find(idGeography);
+	public List<EvidenceDto> findOrderedByGeography(@RequestParam(value = "geography", required = false) Long idGeography) {
+		List<Evidence> evidences = evidenceService.findOrderedByGeography(idGeography);
 		
 		return beanMapper.mapList(evidences, EvidenceDto.class);
 	}
