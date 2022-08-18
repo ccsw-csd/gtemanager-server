@@ -23,27 +23,27 @@ public class Evidence {
 	private Person personId;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w1", nullable = false)
+	@JoinColumn(name = "evidente_type_w1")
 	private EvidenceType evidenceTypeW1;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w2", nullable = false)
+	@JoinColumn(name = "evidente_type_w2")
 	private EvidenceType evidenceTypeW2;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w3", nullable = false)
+	@JoinColumn(name = "evidente_type_w3")
 	private EvidenceType evidenceTypeW3;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w4", nullable = false)
+	@JoinColumn(name = "evidente_type_w4")
 	private EvidenceType evidenceTypeW4;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w5", nullable = false)
+	@JoinColumn(name = "evidente_type_w5")
 	private EvidenceType evidenceTypeW5;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w6", nullable = false)
+	@JoinColumn(name = "evidente_type_w6")
 	private EvidenceType evidenceTypeW6;
 
 	public Evidence() {
