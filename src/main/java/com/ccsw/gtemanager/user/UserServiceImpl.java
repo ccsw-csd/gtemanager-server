@@ -1,5 +1,6 @@
 package com.ccsw.gtemanager.user;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -7,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ccsw.gtemanager.common.criteria.TernarySearchCriteria;
+import com.ccsw.gtemanager.common.exception.AlreadyExistException;
 import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
+import com.ccsw.gtemanager.user.model.UserDto;
 import com.ccsw.gtemanager.user.model.UserEntity;
 import com.ccsw.gtemanager.user.model.UserSearchDto;
 
@@ -53,6 +56,21 @@ public class UserServiceImpl implements UserService {
     public UserEntity getById(Long id) throws EntityNotFoundException {
 
         return userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+    }
+
+    @Override
+    public void createUser(UserDto userDto) throws AlreadyExistException {
+        UserEntity newUser = null;
+
+        if (userDto.getId() == null) {
+            newUser = new UserEntity();
+        } else {
+            throw new AlreadyExistException();
+        }
+
+        BeanUtils.copyProperties(userDto, newUser, "id");
+        this.userRepository.save(newUser);
 
     }
 
