@@ -1,4 +1,4 @@
-package com.ccsw.bidoffice.evidence;
+package com.ccsw.gtemanager.evidence;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
-import com.ccsw.bidoffice.config.BaseITAbstract;
+import com.ccsw.gtemanager.config.BaseITAbstract;
 import com.ccsw.gtemanager.evidence.model.EvidenceDto;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
