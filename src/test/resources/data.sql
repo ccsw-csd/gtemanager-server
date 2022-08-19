@@ -33,7 +33,9 @@ CREATE TABLE center (
   PRIMARY KEY (id)
 );
 
-INSERT INTO center (name) VALUES ('VLC');
+INSERT INTO center (name) VALUES ('Madrid');
+INSERT INTO center (name) VALUES ('Barcelona');
+INSERT INTO center (name) VALUES ('Valencia');
 
 CREATE TABLE person (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -49,11 +51,11 @@ CREATE TABLE person (
   PRIMARY KEY (id)
 );
 
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('1','anacardo','anacardo@example.com','Ana','Cardo','VLC', 'XXX', 'E', true);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A1','aelmouss','aelmouss@bidoffice.com','Ayoub','El Moussaoui','VLC', 'XXX', 'A', true);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A2','jopepe','jopepe@bidoffice.com','Jopepe','Jopepe','VLC', 'XXX', 'B', false);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A3','amirzoya','amirzoya@bidoffice.com','Armen','Mirzoyan Denisov','VLC', 'XXX', 'C', true);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A4','pajimene','amirzoya@bidoffice.com','Pablo','Jimenez Martinez','VLC', 'XXX', 'D', true);
+INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('1','anacardo','anacardo@example.com','Ana','Cardo','3', 'XXX', 'E', true);
+INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A1','aelmouss','aelmouss@bidoffice.com','Ayoub','El Moussaoui','3', 'XXX', 'A', true);
+INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A2','jopepe','jopepe@bidoffice.com','Jopepe','Jopepe','3', 'XXX', 'B', false);
+INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A3','amirzoya','amirzoya@bidoffice.com','Armen','Mirzoyan Denisov','3', 'XXX', 'C', true);
+INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A4','pajimene','amirzoya@bidoffice.com','Pablo','Jimenez Martinez','3', 'XXX', 'D', true);
 
 CREATE TABLE person_saga_transcode (
   id bigint(20) NOT NULL AUTO_INCREMENT,

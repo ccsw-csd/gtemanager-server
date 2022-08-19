@@ -9,7 +9,7 @@ import com.ccsw.gtemanager.person.model.Person;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
-	@Query("SELECT p FROM Person p LEFT JOIN PersonSagaTranscode s ON p.id = s.personId LEFT JOIN Center c ON p.center = c.name WHERE p.saga = :saga OR s.saga = :saga")
+	@Query("SELECT p FROM Person p LEFT JOIN PersonSagaTranscode s ON p.id = s.personId WHERE p.saga = :saga OR s.saga = :saga")
 	List<Person> findBySaga(String saga);
 
 }
