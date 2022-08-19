@@ -1,7 +1,6 @@
 package com.ccsw.gtemanager.evidence;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
 import com.ccsw.gtemanager.evidence.model.Evidence;
@@ -26,6 +25,10 @@ public interface EvidenceService {
 
 	Evidence findEvidencePerPerson(Person person);
 
+	Person findPersonBySaga(String saga);
+
 	boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException;
 
+	void clearEvidenceData(boolean deleteComments);
+	
 }

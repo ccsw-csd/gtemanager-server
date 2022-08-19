@@ -80,6 +80,54 @@ public class DefaultEvidenceService implements EvidenceService {
 	}
 
 	@Override
+	public EvidenceType findEvidenceType(String type) {
+		List<EvidenceType> types = evidenceTypeRepository.findByCodeIgnoreCase(type);
+		return types.isEmpty() ? null : types.get(0);
+	}
+
+	@Override
+	public Evidence findEvidencePerPerson(Person person) {
+		List<Evidence> evidences = evidenceRepository.findByPersonId(person);
+		return evidences.isEmpty() ? new Evidence(person) : evidences.get(0);
+	}
+
+	@Override
+	public Person findPersonBySaga(String saga) {
+		List<Person> people = personService.getBySaga(saga);
+		return people.size() == 1 ? people.get(0) : null;
+	}
+
+	protected String findWeekForPeriod(String period) throws IllegalArgumentException {
+		String[] days = period.split(" - ");
+		LocalDate d1 = LocalDate.parse(days[0], formatMonth);
+		LocalDate d2 = LocalDate.parse(days[1], formatMonth);
+
+		LocalDate d1Monday = d1.with(DayOfWeek.MONDAY);
+		LocalDate d1Sunday = d1.with(DayOfWeek.SUNDAY);
+		LocalDate d2Monday = d2.with(DayOfWeek.MONDAY);
+		LocalDate d2Sunday = d2.with(DayOfWeek.SUNDAY);
+
+		if (d1.compareTo(d2) > 0 || !d1Monday.equals(d2Monday) || !d1Sunday.equals(d2Sunday))
+			throw new IllegalArgumentException("El periodo introducido no es correcto. [period]");
+
+		String monday = d1Monday.format(formatMonth).toUpperCase();
+		String sunday = d1Sunday.format(formatMonth).toUpperCase();
+
+		return monday + " - " + sunday;
+	}
+
+	protected String findWeekForDay(LocalDate date) throws IllegalArgumentException {
+		try {
+			String monday = date.with(DayOfWeek.MONDAY).format(formatMonth).toUpperCase();
+			String sunday = date.with(DayOfWeek.SUNDAY).format(formatMonth).toUpperCase();
+
+			return monday + " - " + sunday;
+		} catch (DateTimeParseException e) {
+			throw new IllegalArgumentException("La fecha introducida no es correcta. [date]");
+		}
+	}
+
+	@Override
 	public boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException {
 		boolean ok = true;
 		clearEvidenceData(upload.isDeleteComments());
@@ -176,39 +224,6 @@ public class DefaultEvidenceService implements EvidenceService {
 		return ok;
 	}
 
-	protected void clearEvidenceData(boolean deleteComments) {
-		emptyEvidences();
-		emptyProperties();
-		emptyErrors();
-		if (deleteComments)
-			emptyComments();
-	}
-
-	protected String parseSaga(String saga) throws IllegalArgumentException {
-		try {
-			saga = saga.split("_")[1];
-		} catch (IndexOutOfBoundsException e) {
-			throw new IllegalArgumentException("Código Saga introducido no es válido. [saga]");
-		}
-		try {
-			return String.valueOf(Long.parseLong(saga));
-		} catch (NumberFormatException ex) {
-			return saga.substring(saga.length() - 4);
-		}
-	}
-
-	protected List<String> obtainWeeks(LocalDate initialDate) throws IllegalArgumentException {
-		LocalDate date = initialDate.withDayOfMonth(1);
-		int currentMonth = initialDate.getMonthValue();
-		List<String> weeks = new ArrayList<>();
-		while (date.getMonthValue() == currentMonth) {
-			weeks.add(findWeekForDay(date));
-			date = date.plusDays(7).with(DayOfWeek.MONDAY);
-		}
-
-		return weeks;
-	}
-
 	protected void parseProperties(Sheet sheet, List<String> weeks) throws IllegalArgumentException {
 		String sFromDate = sheet.getRow(1).getCell(1).getStringCellValue();
 		String sToDate = sheet.getRow(2).getCell(1).getStringCellValue();
@@ -250,67 +265,38 @@ public class DefaultEvidenceService implements EvidenceService {
 		propertiesRepository.saveAll(weekProperties);
 	}
 
-	protected String findWeekForPeriod(String period) throws IllegalArgumentException {
-		String[] days = period.split(" - ");
-		LocalDate d1 = LocalDate.parse(days[0], formatMonth);
-		LocalDate d2 = LocalDate.parse(days[1], formatMonth);
+	protected List<String> obtainWeeks(LocalDate initialDate) throws IllegalArgumentException {
+		LocalDate date = initialDate.withDayOfMonth(1);
+		int currentMonth = initialDate.getMonthValue();
+		List<String> weeks = new ArrayList<>();
+		while (date.getMonthValue() == currentMonth) {
+			weeks.add(findWeekForDay(date));
+			date = date.plusDays(7).with(DayOfWeek.MONDAY);
+		}
 
-		LocalDate d1Monday = d1.with(DayOfWeek.MONDAY);
-		LocalDate d1Sunday = d1.with(DayOfWeek.SUNDAY);
-		LocalDate d2Monday = d2.with(DayOfWeek.MONDAY);
-		LocalDate d2Sunday = d2.with(DayOfWeek.SUNDAY);
-
-		if (d1.compareTo(d2) > 0 || !d1Monday.equals(d2Monday) || !d1Sunday.equals(d2Sunday))
-			throw new IllegalArgumentException("El periodo introducido no es correcto. [period]");
-
-		String monday = d1Monday.format(formatMonth).toUpperCase();
-		String sunday = d1Sunday.format(formatMonth).toUpperCase();
-
-		return monday + " - " + sunday;
+		return weeks;
 	}
 
-	protected String findWeekForDay(LocalDate date) throws IllegalArgumentException {
+	protected String parseSaga(String saga) throws IllegalArgumentException {
 		try {
-			String monday = date.with(DayOfWeek.MONDAY).format(formatMonth).toUpperCase();
-			String sunday = date.with(DayOfWeek.SUNDAY).format(formatMonth).toUpperCase();
-
-			return monday + " - " + sunday;
-		} catch (DateTimeParseException e) {
-			throw new IllegalArgumentException("La fecha introducida no es correcta. [date]");
+			saga = saga.split("_")[1];
+		} catch (IndexOutOfBoundsException e) {
+			throw new IllegalArgumentException("Código Saga introducido no es válido. [saga]");
+		}
+		try {
+			return String.valueOf(Long.parseLong(saga));
+		} catch (NumberFormatException ex) {
+			return saga.substring(saga.length() - 4);
 		}
 	}
 
-	private Person findPersonBySaga(String saga) {
-		List<Person> people = personService.getBySaga(saga);
-		return people.size() == 1 ? people.get(0) : null;
-	}
-
 	@Override
-	public Evidence findEvidencePerPerson(Person person) {
-		List<Evidence> evidences = evidenceRepository.findByPersonId(person);
-		return evidences.isEmpty() ? new Evidence(person) : evidences.get(0);
-	}
-
-	@Override
-	public EvidenceType findEvidenceType(String type) {
-		List<EvidenceType> types = evidenceTypeRepository.findByCodeIgnoreCase(type);
-		return types.isEmpty() ? null : types.get(0);
-	}
-
-	private void emptyEvidences() {
+	public void clearEvidenceData(boolean deleteComments) {
 		evidenceRepository.deleteAll();
-	}
-
-	private void emptyErrors() {
 		evidenceErrorRepository.deleteAll();
-	}
-
-	private void emptyComments() {
-		evidenceCommentRepository.deleteAll();
-	}
-
-	private void emptyProperties() {
 		propertiesRepository.deleteAll();
+		if (deleteComments)
+			evidenceCommentRepository.deleteAll();
 	}
 
 }
