@@ -4,6 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Locale;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +31,14 @@ public class EvidenceTest {
 	private static final String EXISTING_PERIOD_WEEK = "29-AUG-2022 - 04-SEP-2022";
 	private static final String NONEXISTING_PERIOD = "29-AUG-2022 - 21-AUG-2022";
 
+	private static final String EXISTING_DAY_FEB = "15-FEB-2021";
+	private static final String EXISTING_DAY_AUG = "29-AUG-2022";
+	private static final String EXISTING_DAY_OCT = "02-OCT-2022";
+
+	private static final String EXISTING_UNPARSED_SAGA = "S_000A2";
+	private static final String NONEXISTING_UNPARSED_SAGA = "FD242";
+	private static final String EXISTING_SAGA = "00A2";
+
 	@Mock
 	private EvidenceRepository evidenceRepository;
 
@@ -40,6 +53,31 @@ public class EvidenceTest {
 
 	@InjectMocks
 	private DefaultEvidenceService evidenceService;
+
+	private static DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive()
+			.appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
+
+	@Test
+	public void parseValidSagaShouldReturnSaga() {
+		assertEquals(EXISTING_SAGA, evidenceService.parseSaga(EXISTING_UNPARSED_SAGA));
+	}
+
+	@Test
+	public void parseInvalidSagaShouldReturnError() {
+		assertThrows(IllegalArgumentException.class, () -> evidenceService.parseSaga(NONEXISTING_UNPARSED_SAGA));
+	}
+
+	@Test
+	public void obtainWeeksShouldReturnWeeksOfMonth() {
+		assertEquals(4, evidenceService.obtainWeeks(LocalDate.parse(EXISTING_DAY_FEB, format)).size());
+		assertEquals(5, evidenceService.obtainWeeks(LocalDate.parse(EXISTING_DAY_AUG, format)).size());
+		assertEquals(6, evidenceService.obtainWeeks(LocalDate.parse(EXISTING_DAY_OCT, format)).size());
+	}
+
+	@Test
+	public void findWeekForValidDayShouldReturnWeek() {
+		assertEquals(EXISTING_PERIOD_WEEK, evidenceService.findWeekForDay(LocalDate.parse(EXISTING_DAY_AUG, format)));
+	}
 
 	/** Periodo correcto debería devolver semana */
 	@Test
