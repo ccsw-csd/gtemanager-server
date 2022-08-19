@@ -350,6 +350,46 @@ public class EvidenceIT extends BaseITAbstract {
 		assertEquals(1, evidenceService.getEvidenceErrors().size());
 	}
 
-	// Semanas sin datos deberían estar en null
+	/**
+	 * Semanas sin datos deberían estar en null
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void weeksWithoutEvidencesShouldBeNull() throws IOException {
+		cellFromDate.setCellValue(EXISTING_FROMDATE);
+		cellToDate.setCellValue(EXISTING_TODATE);
+		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
+		cellFullName.setCellValue(EXISTING_FULLNAME);
+		cellSAGA.setCellValue(EXISTING_SAGA);
+		cellEmail.setCellValue(EXISTING_EMAIL);
+		cellPeriod.setCellValue(EXISTING_PERIOD);
+		cellStatus.setCellValue(EXISTING_TYPE);
+
+		MockMultipartFile file = new MockMultipartFile("test.xslx", "test.xlsx",
+				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
+
+		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+		body.add("file", file.getResource());
+		body.add("deleteComments", false);
+
+		HttpHeaders headers = getHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST,
+				new HttpEntity<>(body, headers), String.class);
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(null, response.getBody());
+		assertEquals(1, evidenceService.getEvidences().size());
+
+		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW1());
+		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW2());
+		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW3());
+		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW4());
+		assertEquals(evidenceService.findEvidenceType(EXISTING_TYPE).getCode(),
+				evidenceService.getEvidences().get(0).getEvidenceTypeW5().getCode());
+		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW6());
+	}
 }
