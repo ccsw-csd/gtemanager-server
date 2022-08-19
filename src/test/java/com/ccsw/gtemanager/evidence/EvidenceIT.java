@@ -33,13 +33,10 @@ import com.ccsw.gtemanager.config.BaseITAbstract;
 /**
  * EvidenceTestIT: colección de tests integrados que prueban funcionalidad del
  * programa y API.
- * 
- * @author cavire
- *
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class EvidenceTestIT extends BaseITAbstract {
+public class EvidenceIT extends BaseITAbstract {
 
 	private static final String LOCALHOST = "http://localhost:";
 	private static final String SERVICE_PATH = "/evidence";
