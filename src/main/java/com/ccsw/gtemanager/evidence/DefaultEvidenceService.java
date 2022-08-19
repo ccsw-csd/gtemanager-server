@@ -103,6 +103,15 @@ public class DefaultEvidenceService implements EvidenceService {
 			emptyComments();
 	}
 
+	private String parseSaga(String saga) {
+		saga = saga.split("_")[1];
+		try {
+			return String.valueOf(Long.parseLong(saga));
+		} catch (NumberFormatException ex) {
+			return saga.substring(saga.length() - 4);
+		}
+	}
+
 	private List<String> obtainWeeks(LocalDate initialDate) throws IllegalArgumentException {
 		LocalDate date = initialDate;
 		List<String> weeks = new ArrayList<>();
@@ -177,6 +186,7 @@ public class DefaultEvidenceService implements EvidenceService {
 		return monday + " - " + sunday;
 	}
 
+	@Override
 	public String findWeekForDay(LocalDate date) throws IllegalArgumentException {
 		String monday = date.with(DayOfWeek.MONDAY).format(formatMonth).toUpperCase();
 		String sunday = date.with(DayOfWeek.SUNDAY).format(formatMonth).toUpperCase();
@@ -185,8 +195,21 @@ public class DefaultEvidenceService implements EvidenceService {
 	}
 
 	@Override
-	public List<EvidenceType> findEvidenceType(String type) {
-		return evidenceTypeRepository.findByCodeIgnoreCase(type);
+	public Person findPersonBySaga(String saga) {
+		List<Person> people = personService.getBySaga(saga);
+		return people.size() == 1 ? people.get(0) : null;
+	}
+
+	@Override
+	public Evidence findEvidencePerPerson(Person person) {
+		List<Evidence> evidences = evidenceRepository.findByPersonId(person);
+		return evidences.isEmpty() ? new Evidence(person) : evidences.get(0);
+	}
+
+	@Override
+	public EvidenceType findEvidenceType(String type) {
+		List<EvidenceType> types = evidenceTypeRepository.findByCodeIgnoreCase(type);
+		return types.isEmpty() ? null : types.get(0);
 	}
 
 	private void emptyEvidences() {
