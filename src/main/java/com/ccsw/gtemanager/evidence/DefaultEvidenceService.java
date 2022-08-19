@@ -91,6 +91,79 @@ public class DefaultEvidenceService implements EvidenceService {
 		List<String> weeks = obtainWeeks(LocalDate.parse(sheet.getRow(1).getCell(1).getStringCellValue(), formatMonth));
 		parseProperties(sheet, weeks);
 
+		Row currentRow = sheet.getRow(14);
+		String sagaPrev = "";
+		for (int i = 15; currentRow != null; i++) {
+
+			String fullName = currentRow.getCell(0).getStringCellValue();
+			String saga = currentRow.getCell(1).getStringCellValue();
+			String email = currentRow.getCell(2).getStringCellValue();
+			String period = currentRow.getCell(9).getStringCellValue();
+			String type = currentRow.getCell(10).getStringCellValue();
+
+			String week;
+			try {
+				week = findWeekForPeriod(period);
+			} catch (IllegalArgumentException ex) {
+				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+				ok = false;
+				sagaPrev = saga;
+				currentRow = sheet.getRow(i);
+				continue;
+			}
+
+			saga = parseSaga(saga);
+
+			Person person = null;
+			if (!saga.equals(sagaPrev)) {
+				person = findPersonBySaga(saga);
+				if (person == null) {
+					evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+					ok = false;
+					sagaPrev = saga;
+					currentRow = sheet.getRow(i);
+					continue;
+				}
+			}
+
+			Evidence evidence = findEvidencePerPerson(person);
+
+			EvidenceType evidenceType = findEvidenceType(type);
+			if (evidenceType == null) {
+				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+				ok = false;
+				sagaPrev = saga;
+				currentRow = sheet.getRow(i);
+				continue;
+			}
+
+			if (weeks.contains(week)) {
+				if (week.equals(weeks.get(0)))
+					evidence.setEvidenceTypeW1(evidenceType);
+				else if (week.equals(weeks.get(1)))
+					evidence.setEvidenceTypeW2(evidenceType);
+				else if (week.equals(weeks.get(2)))
+					evidence.setEvidenceTypeW3(evidenceType);
+				else if (week.equals(weeks.get(3)))
+					evidence.setEvidenceTypeW4(evidenceType);
+				else if (week.equals(weeks.get(4)))
+					evidence.setEvidenceTypeW5(evidenceType);
+				else if (week.equals(weeks.get(5)))
+					evidence.setEvidenceTypeW6(evidenceType);
+			} else {
+				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+				ok = false;
+				sagaPrev = saga;
+				currentRow = sheet.getRow(i);
+				continue;
+			}
+
+			if (ok)
+				evidenceRepository.save(evidence);
+
+			sagaPrev = saga;
+			currentRow = sheet.getRow(i);
+		}
 		gteEvidences.close();
 		return ok;
 	}
