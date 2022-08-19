@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.ccsw.gtemanager.person.model.Person;
 
+/**
+ * DefaultPersonService: clase de implementación de PersonService.
+ */
 @Service
 @Transactional
 public class DefaultPersonService implements PersonService {

@@ -11,6 +11,12 @@ import javax.persistence.Table;
 
 import com.ccsw.gtemanager.center.model.Center;
 
+/**
+ * Person: clase para la gestión de datos de persona. Contiene atributos para
+ * código de saga, nombre de usuario, correo electrónico, nombre y apellidos,
+ * centro de trabajo, código de negocio, grado, y actividad, además de getters y
+ * setters.
+ */
 @Entity
 @Table(name = "person")
 public class Person {
@@ -45,85 +51,185 @@ public class Person {
 	private String grade;
 
 	@Column(name = "active", nullable = false)
-	private boolean active;
+	private Boolean active;
 
+	/**
+	 * Obtener ID de Person
+	 * 
+	 * @return ID en formato Long
+	 */
 	public Long getId() {
 		return id;
 	}
 
+	/**
+	 * Obtener código saga de Person
+	 * 
+	 * @return código saga en formato String
+	 */
 	public String getSaga() {
 		return saga;
 	}
 
+	/**
+	 * Obtener nombre de usuario de Person
+	 * 
+	 * @return nombre de usuario en formato String
+	 */
 	public String getUsername() {
 		return username;
 	}
 
+	/**
+	 * Obtener correo electrónico de Person
+	 * 
+	 * @return correo electrónico en formato String
+	 */
 	public String getEmail() {
 		return email;
 	}
 
+	/**
+	 * Obtener nombre de Person
+	 * 
+	 * @return nombre en formato String
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Obtener appelidos de Person
+	 * 
+	 * @return apellidos en formato String
+	 */
 	public String getLastName() {
 		return lastName;
 	}
 
+	/**
+	 * Obtener Center asociado a Person
+	 * 
+	 * @return centro de trabajo (Center)
+	 */
 	public Center getCenter() {
 		return center;
 	}
 
+	/**
+	 * Obtener código de negocio de Person
+	 * 
+	 * @return código en formato String
+	 */
 	public String getBusinessCode() {
 		return businessCode;
 	}
 
+	/**
+	 * Obtener grado de Person
+	 * 
+	 * @return grado en formato String
+	 */
 	public String getGrade() {
 		return grade;
 	}
 
-	public boolean isActive() {
+	/**
+	 * Obtener actividad actual de Person
+	 * 
+	 * @return true si activo, false si inactivo
+	 */
+	public Boolean isActive() {
 		return active;
 	}
 
+	/**
+	 * Almacenar ID de Person
+	 * 
+	 * @param id ID de Person (Long)
+	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Almacenar código saga de Person
+	 * 
+	 * @param saga código saga (String)
+	 */
 	public void setSaga(String saga) {
 		this.saga = saga;
 	}
 
+	/**
+	 * Almacenar nombre de usuario de Person
+	 * 
+	 * @param username nombre de usuario (String)
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
+	/**
+	 * Almacenar correo electrónico de Person
+	 * 
+	 * @param email correo electrónico (String)
+	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
+	/**
+	 * Almacenar nombre de Person
+	 * 
+	 * @param name nombre (String)
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Almacenar apellidos de Person
+	 * 
+	 * @param lastName apellidos (String)
+	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
+	/**
+	 * Almacenar Center asociado a Person
+	 * 
+	 * @param center centro de trabajo (Center)
+	 */
 	public void setCenter(Center center) {
 		this.center = center;
 	}
 
+	/**
+	 * Almacenar código de negocio de Person
+	 * 
+	 * @param businessCode código (String)
+	 */
 	public void setBusinessCode(String businessCode) {
 		this.businessCode = businessCode;
 	}
 
+	/**
+	 * Almacenar grado de Person
+	 * 
+	 * @param grade grado (String)
+	 */
 	public void setGrade(String grade) {
 		this.grade = grade;
 	}
 
-	public void setActive(boolean active) {
+	/**
+	 * Almacenar actividad de Person
+	 * 
+	 * @param active estado de actividad (Boolean)
+	 */
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
 

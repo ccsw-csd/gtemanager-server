@@ -31,6 +31,12 @@ import com.ccsw.gtemanager.person.model.Person;
 import com.ccsw.gtemanager.properties.PropertiesRepository;
 import com.ccsw.gtemanager.properties.model.Properties;
 
+/**
+ * DefaultEvidenceService: clase de implementación de EvidenceService. Contiene
+ * métodos adicionales para el apoyo del procesamiento de datos de evidencias.
+ * Se encarga de la gestión adicional de repositorios de comentarios, tipos, y
+ * errores de evidencias, además de propiedades.
+ */
 @Service
 @Transactional
 public class DefaultEvidenceService implements EvidenceService {
@@ -85,6 +91,10 @@ public class DefaultEvidenceService implements EvidenceService {
 		return types.isEmpty() ? null : types.get(0);
 	}
 
+	/**
+	 * Obtener evidencia concreta dada una persona. Se devuelve nuevo Evidence si no
+	 * se ha encontrado.
+	 */
 	@Override
 	public Evidence findEvidencePerPerson(Person person) {
 		List<Evidence> evidences = evidenceRepository.findByPersonId(person);
@@ -97,25 +107,33 @@ public class DefaultEvidenceService implements EvidenceService {
 		return people.size() == 1 ? people.get(0) : null;
 	}
 
+	/**
+	 * Obtener semana dado un periodo de tiempo.
+	 * 
+	 * @param period Periodo de tiempo en formato String, compatible
+	 * @return String con día de inicio y fin de la semana
+	 * @throws IllegalArgumentException No se ha introducido un periodo admisible
+	 */
 	protected String findWeekForPeriod(String period) throws IllegalArgumentException {
 		String[] days = period.split(" - ");
 		LocalDate d1 = LocalDate.parse(days[0], formatMonth);
 		LocalDate d2 = LocalDate.parse(days[1], formatMonth);
 
-		LocalDate d1Monday = d1.with(DayOfWeek.MONDAY);
-		LocalDate d1Sunday = d1.with(DayOfWeek.SUNDAY);
-		LocalDate d2Monday = d2.with(DayOfWeek.MONDAY);
-		LocalDate d2Sunday = d2.with(DayOfWeek.SUNDAY);
-
-		if (d1.compareTo(d2) > 0 || !d1Monday.equals(d2Monday) || !d1Sunday.equals(d2Sunday))
+		String week1 = findWeekForDay(d1);
+		String week2 = findWeekForDay(d2);
+		if (!week1.equals(week2))
 			throw new IllegalArgumentException("El periodo introducido no es correcto. [period]");
 
-		String monday = d1Monday.format(formatMonth).toUpperCase();
-		String sunday = d1Sunday.format(formatMonth).toUpperCase();
-
-		return monday + " - " + sunday;
+		return week1;
 	}
 
+	/**
+	 * Obtener semana dado un día concreto.
+	 * 
+	 * @param date Fecha compatible a averiguar
+	 * @return String con día de inicio y fin de la semana
+	 * @throws IllegalArgumentException No se ha introducido una fecha admisible
+	 */
 	protected String findWeekForDay(LocalDate date) throws IllegalArgumentException {
 		try {
 			String monday = date.with(DayOfWeek.MONDAY).format(formatMonth).toUpperCase();
@@ -127,6 +145,17 @@ public class DefaultEvidenceService implements EvidenceService {
 		}
 	}
 
+	/**
+	 * Leer y procesar un archivo de hoja de cálculo para obtener y almacenar
+	 * evidencias.
+	 * 
+	 * Para ello, se obtiene la hoja de cálculo principal. Se obtienen las semanas
+	 * correspondientes al periodo del informe, se procesan las propiedades, y se
+	 * leen las líneas a partir de la 15 para los registros de evidencias. Se
+	 * almacena un Evidence por cada Person. Si algún dato no es correcto, se
+	 * registra en EvidenceError. Se detiene el proceso en caso de existir
+	 * propiedades incorrectas.
+	 */
 	@Override
 	public boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException {
 		boolean ok = true;
@@ -182,8 +211,6 @@ public class DefaultEvidenceService implements EvidenceService {
 				}
 			}
 
-			Evidence evidence = findEvidencePerPerson(person);
-
 			EvidenceType evidenceType = findEvidenceType(type);
 			if (evidenceType == null) {
 				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
@@ -192,6 +219,8 @@ public class DefaultEvidenceService implements EvidenceService {
 				currentRow = sheet.getRow(i);
 				continue;
 			}
+
+			Evidence evidence = findEvidencePerPerson(person);
 
 			if (weeks.contains(week)) {
 				if (week.equals(weeks.get(0)))
@@ -224,6 +253,15 @@ public class DefaultEvidenceService implements EvidenceService {
 		return ok;
 	}
 
+	/**
+	 * Leer y almacenar propiedades de la hoja de cálculo recibida. Deducir fechas
+	 * de carga y periodo, nombre de usuario, semanas dentro del periodo, y número
+	 * de semanas. Almacenar como objetos Properties.
+	 * 
+	 * @param sheet Hoja de cálculo a procesar
+	 * @param weeks Listado de semanas dentro del periodo de evidencias
+	 * @throws IllegalArgumentException Existen fechas no admisibles
+	 */
 	protected void parseProperties(Sheet sheet, List<String> weeks) throws IllegalArgumentException {
 		String sFromDate = sheet.getRow(1).getCell(1).getStringCellValue();
 		String sToDate = sheet.getRow(2).getCell(1).getStringCellValue();
@@ -265,6 +303,15 @@ public class DefaultEvidenceService implements EvidenceService {
 		propertiesRepository.saveAll(weekProperties);
 	}
 
+	/**
+	 * Obtener listado de semanas dentro de un periodo de evidencias. Un periodo
+	 * siempre estará comprendido dentro de un mes, por lo que no se darán más de 6
+	 * semanas.
+	 * 
+	 * @param initialDate Fecha a deducir
+	 * @return Listado de String con valores de las semanas
+	 * @throws IllegalArgumentException No se ha introducido una fecha admisible
+	 */
 	protected List<String> obtainWeeks(LocalDate initialDate) throws IllegalArgumentException {
 		LocalDate date = initialDate.withDayOfMonth(1);
 		int currentMonth = initialDate.getMonthValue();
@@ -277,6 +324,14 @@ public class DefaultEvidenceService implements EvidenceService {
 		return weeks;
 	}
 
+	/**
+	 * Leer y deducir código saga de la persona implicada.
+	 * 
+	 * @param saga Código a procesar
+	 * @return Código truncado y validado en formato numérico, o en longitud de 4
+	 *         caracteres alfanuméricos
+	 * @throws IllegalArgumentException No se ha introducido un código admisible
+	 */
 	protected String parseSaga(String saga) throws IllegalArgumentException {
 		try {
 			saga = saga.split("_")[1];

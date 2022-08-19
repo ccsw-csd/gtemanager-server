@@ -6,15 +6,11 @@ import org.springframework.web.multipart.MultipartFile;
  * FormDataDto: DTO para datos de archivos subidos a través de backend. Contiene
  * atributo para almacenar fichero subido y booleano de borrar comentarios.
  * además de getters y setters.
- * 
- * @author cavire
  *
  */
 public class FormDataDto {
 
-	/** Archivo enviado por el usuario */
 	private MultipartFile file;
-	/** Casilla de eliminación de comentarios en las evidencias */
 	private Boolean deleteComments;
 
 	/**

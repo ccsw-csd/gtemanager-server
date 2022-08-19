@@ -11,7 +11,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -77,9 +77,12 @@ public class EvidenceIT extends BaseITAbstract {
 	private static Cell cellParametersTitle, cellFromDate, cellToDate, cellRunDate, cellFullName, cellSAGA, cellEmail,
 			cellPeriod, cellStatus;
 
-	/** */
-	@BeforeAll
-	public static void initializeSpreadsheet() {
+	/**
+	 * Inicializar hoja de cálculo y celdas de valores previo a la ejecución de los
+	 * tests.
+	 */
+	@BeforeEach
+	public void initializeSpreadsheet() {
 		gteEvidences = new XSSFWorkbook();
 
 		sheet = gteEvidences.createSheet("Sheet1");
@@ -104,14 +107,24 @@ public class EvidenceIT extends BaseITAbstract {
 		cellStatus = row14.createCell(10);
 	}
 
-	/** */
-	private byte[] exportSpreadsheet() throws IOException {
+	/**
+	 * Obtener elemento exportado a partir de la hoja de cálculo.
+	 * 
+	 * @return Hoja de cálculo en array de bytes (byte[])
+	 */
+	private byte[] exportSpreadsheet() {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		gteEvidences.write(baos);
-		return baos.toByteArray();
+		try {
+			gteEvidences.write(baos);
+			return baos.toByteArray();
+		} catch (IOException e) {
+			return null;
+		}
 	}
 
-	/** Acceso sin token debería devolver error. */
+	/**
+	 * Acceso sin token válido de usuario debería devolver error.
+	 */
 	@Test
 	public void sendingElementWithoutTokenShouldReturnError() {
 		String test = "test";
@@ -122,7 +135,9 @@ public class EvidenceIT extends BaseITAbstract {
 		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
 	}
 
-	/** Recibir elemento no válido debería devolver error. */
+	/**
+	 * Recibir elemento no válido debería devolver error.
+	 */
 	@Test
 	public void sendingInvalidElementShouldReturnError() {
 		String test = "test";
@@ -133,7 +148,9 @@ public class EvidenceIT extends BaseITAbstract {
 		assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, response.getStatusCode());
 	}
 
-	/** Recibir archivo no excel debería devolver error. */
+	/**
+	 * Recibir archivo no excel debería devolver error.
+	 */
 	@Test
 	public void sendingNonSpreadsheetFileShouldReturnError() {
 		MockMultipartFile file = new MockMultipartFile("test.pdf", "test.pdf", MediaType.APPLICATION_PDF_VALUE,
@@ -153,13 +170,10 @@ public class EvidenceIT extends BaseITAbstract {
 	}
 
 	/**
-	 * Recibir archivo excel con fechas válidas debería procesar OK. existing saga,
-	 * type
-	 * 
-	 * @throws IOException
+	 * Recibir archivo excel con todos los datos válidos debería procesarse.
 	 */
 	@Test
-	public void sendingValidSpreadsheetFileShouldReturnOK() throws IOException {
+	public void sendingValidSpreadsheetFileShouldReturnOK() {
 		cellFromDate.setCellValue(EXISTING_FROMDATE);
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
@@ -189,12 +203,10 @@ public class EvidenceIT extends BaseITAbstract {
 	}
 
 	/**
-	 * Fechas inválidas resultan error
-	 * 
-	 * @throws IOException
+	 * Datos inválidos deberían abortar proceso de lectura de datos.
 	 */
 	@Test
-	public void sendingInvalidSpreadsheetFileShouldReturnError() throws IOException {
+	public void sendingInvalidSpreadsheetFileShouldReturnError() {
 		cellFromDate.setCellValue(EXISTING_FROMDATE);
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(NONEXISTING_RUNDATE);
@@ -263,17 +275,14 @@ public class EvidenceIT extends BaseITAbstract {
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 		assertTrue(((String) response.getBody()).contains("[date]"));
 		assertEquals(0, evidenceService.getEvidences().size());
-
 	}
 
 	/**
-	 * Error de proceso debería registrar en evidence_error. nonexisting saga,
-	 * period, type
-	 * 
-	 * @throws IOException
+	 * Error de proceso por valores incorrectos en evidencias debe procesar con
+	 * errores (debe registrar en EvidenceError).
 	 */
 	@Test
-	public void failedProcessShouldRegisterEvidenceError() throws IOException {
+	public void failedProcessShouldRegisterEvidenceError() {
 		cellFromDate.setCellValue(EXISTING_FROMDATE);
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
@@ -351,12 +360,10 @@ public class EvidenceIT extends BaseITAbstract {
 	}
 
 	/**
-	 * Semanas sin datos deberían estar en null
-	 * 
-	 * @throws IOException
+	 * Semanas sin datos deberían estar en null.
 	 */
 	@Test
-	public void weeksWithoutEvidencesShouldBeNull() throws IOException {
+	public void weeksWithoutEvidencesShouldBeNull() {
 		cellFromDate.setCellValue(EXISTING_FROMDATE);
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);

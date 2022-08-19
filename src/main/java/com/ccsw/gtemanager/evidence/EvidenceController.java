@@ -1,5 +1,7 @@
 package com.ccsw.gtemanager.evidence;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,6 @@ import com.ccsw.gtemanager.evidence.model.FormDataDto;
 /**
  * EvidenceController: Controlador REST para interacción con datos. Contiene
  * métodos de acceso a servicio de datos, asociados a Requests HTTP.
- * 
- * @author cavire
- *
  */
 @RequestMapping(value = "/evidence")
 @RestController
@@ -28,6 +27,12 @@ public class EvidenceController {
 	/**
 	 * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
 	 * booleano de borrado de comentarios.
+	 * 
+	 * Se devuelve 200 OK si se ha procesado sin errores, 200 y un mensaje si
+	 * existen errores, 400 BAD REQUEST si hay datos incorrectos, 415 UNSUPPORTED
+	 * MEDIA TYPE o 422 UNPROCESSABLE ENTITY si el elemento recibido no es
+	 * procesable, y 500 INTERNAL SERVER ERROR si se ha producido una excepción
+	 * inesperada.
 	 * 
 	 * @param upload Elemento FormDataDto recibido desde el frontend
 	 */
@@ -45,16 +50,17 @@ public class EvidenceController {
 		boolean ok;
 		try {
 			ok = evidenceService.uploadEvidence(upload);
-		} catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException | IOException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Se ha producido un error interno. Disculpe las molestias.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+					"Se ha producido un error interno. Por favor, póngase en contacto con un administrador. Disculpe las molestias.");
 		}
 
 		if (ok)
 			return ResponseEntity.status(HttpStatus.OK).body(null);
 		else
-			return ResponseEntity.status(HttpStatus.OK).body("[errors]");
+			return ResponseEntity.status(HttpStatus.OK)
+					.body("Se ha guardado el informe correctamente con algunos errores de evidencias. [errors]");
 	}
 }
