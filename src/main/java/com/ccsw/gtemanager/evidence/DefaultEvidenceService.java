@@ -104,7 +104,7 @@ public class DefaultEvidenceService implements EvidenceService {
 			String week;
 			try {
 				week = findWeekForPeriod(period);
-			} catch (IllegalArgumentException ex) {
+			} catch (IllegalArgumentException e) {
 				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
 				ok = false;
 				sagaPrev = saga;
@@ -112,7 +112,15 @@ public class DefaultEvidenceService implements EvidenceService {
 				continue;
 			}
 
-			saga = parseSaga(saga);
+			try {
+				saga = parseSaga(saga);
+			} catch (IndexOutOfBoundsException e) {
+				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+				ok = false;
+				sagaPrev = saga;
+				currentRow = sheet.getRow(i);
+				continue;
+			}
 
 			Person person = null;
 			if (!saga.equals(sagaPrev)) {
@@ -176,8 +184,12 @@ public class DefaultEvidenceService implements EvidenceService {
 			emptyComments();
 	}
 
-	private String parseSaga(String saga) {
-		saga = saga.split("_")[1];
+	protected String parseSaga(String saga) throws IllegalArgumentException {
+		try {
+			saga = saga.split("_")[1];
+		} catch (IndexOutOfBoundsException e) {
+			throw new IllegalArgumentException("Código Saga introducido no es válido. [saga]");
+		}
 		try {
 			return String.valueOf(Long.parseLong(saga));
 		} catch (NumberFormatException ex) {
@@ -185,20 +197,19 @@ public class DefaultEvidenceService implements EvidenceService {
 		}
 	}
 
-	private List<String> obtainWeeks(LocalDate initialDate) throws IllegalArgumentException {
-		LocalDate date = initialDate;
+	protected List<String> obtainWeeks(LocalDate initialDate) throws IllegalArgumentException {
+		LocalDate date = initialDate.withDayOfMonth(1);
+		int currentMonth = initialDate.getMonthValue();
 		List<String> weeks = new ArrayList<>();
-		for (int i = 1; i <= 6; i++) {
-			if (date.getMonthValue() == initialDate.getMonthValue()) {
-				weeks.add(findWeekForDay(date));
-				date = date.plusDays(7);
-			}
+		while (date.getMonthValue() == currentMonth) {
+			weeks.add(findWeekForDay(date));
+			date = date.plusDays(7).with(DayOfWeek.MONDAY);
 		}
 
 		return weeks;
 	}
 
-	private void parseProperties(Sheet sheet, List<String> weeks) {
+	protected void parseProperties(Sheet sheet, List<String> weeks) throws IllegalArgumentException {
 		String sFromDate = sheet.getRow(1).getCell(1).getStringCellValue();
 		String sToDate = sheet.getRow(2).getCell(1).getStringCellValue();
 		String sRunDate = sheet.getRow(9).getCell(1).getStringCellValue();
@@ -239,8 +250,7 @@ public class DefaultEvidenceService implements EvidenceService {
 		propertiesRepository.saveAll(weekProperties);
 	}
 
-	@Override
-	public String findWeekForPeriod(String period) throws IllegalArgumentException {
+	protected String findWeekForPeriod(String period) throws IllegalArgumentException {
 		String[] days = period.split(" - ");
 		LocalDate d1 = LocalDate.parse(days[0], formatMonth);
 		LocalDate d2 = LocalDate.parse(days[1], formatMonth);
@@ -259,16 +269,18 @@ public class DefaultEvidenceService implements EvidenceService {
 		return monday + " - " + sunday;
 	}
 
-	@Override
-	public String findWeekForDay(LocalDate date) throws IllegalArgumentException {
-		String monday = date.with(DayOfWeek.MONDAY).format(formatMonth).toUpperCase();
-		String sunday = date.with(DayOfWeek.SUNDAY).format(formatMonth).toUpperCase();
+	protected String findWeekForDay(LocalDate date) throws IllegalArgumentException {
+		try {
+			String monday = date.with(DayOfWeek.MONDAY).format(formatMonth).toUpperCase();
+			String sunday = date.with(DayOfWeek.SUNDAY).format(formatMonth).toUpperCase();
 
-		return monday + " - " + sunday;
+			return monday + " - " + sunday;
+		} catch (DateTimeParseException e) {
+			throw new IllegalArgumentException("La fecha introducida no es correcta. [date]");
+		}
 	}
 
-	@Override
-	public Person findPersonBySaga(String saga) {
+	private Person findPersonBySaga(String saga) {
 		List<Person> people = personService.getBySaga(saga);
 		return people.size() == 1 ? people.get(0) : null;
 	}

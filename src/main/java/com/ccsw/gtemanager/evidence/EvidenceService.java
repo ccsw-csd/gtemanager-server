@@ -14,8 +14,6 @@ import com.ccsw.gtemanager.properties.model.Properties;
 
 public interface EvidenceService {
 
-	boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException;
-
 	List<Evidence> getEvidences();
 
 	List<EvidenceError> getEvidenceErrors();
@@ -26,12 +24,8 @@ public interface EvidenceService {
 
 	EvidenceType findEvidenceType(String type);
 
-	String findWeekForPeriod(String period) throws IllegalArgumentException;
-
 	Evidence findEvidencePerPerson(Person person);
 
-	String findWeekForDay(LocalDate date) throws IllegalArgumentException;
-
-	Person findPersonBySaga(String saga);
+	boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException;
 
 }
