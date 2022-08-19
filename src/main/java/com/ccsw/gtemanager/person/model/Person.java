@@ -19,19 +19,19 @@ public class Person {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "saga")
+	@Column(name = "saga", nullable = false)
 	private String saga;
 
-	@Column(name = "username")
+	@Column(name = "username", nullable = false)
 	private String username;
 
-	@Column(name = "email")
+	@Column(name = "email", nullable = false)
 	private String email;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "lastname")
+	@Column(name = "lastname", nullable = false)
 	private String lastName;
 
 	@ManyToOne
@@ -44,7 +44,7 @@ public class Person {
 	@Column(name = "grade")
 	private String grade;
 
-	@Column(name = "active")
+	@Column(name = "active", nullable = false)
 	private boolean active;
 
 	public Long getId() {

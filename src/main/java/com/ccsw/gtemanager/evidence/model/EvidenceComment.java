@@ -23,7 +23,7 @@ public class EvidenceComment {
 	@JoinColumn(name = "person_id", nullable = false)
 	private Person personId;
 
-	@Column(name = "comment", nullable = false)
+	@Column(name = "comment")
 	private String comment;
 
 	public Long getId() {
