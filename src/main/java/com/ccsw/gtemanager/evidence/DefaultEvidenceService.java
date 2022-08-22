@@ -179,8 +179,10 @@ public class DefaultEvidenceService implements EvidenceService {
 
 		Row currentRow = sheet.getRow(14);
 		Person person = null;
+		Evidence evidence = null;
 		String sagaPrev = "";
 		for (int i = 15; currentRow != null; i++) {
+			ok = true;
 
 			String fullName = currentRow.getCell(0).getStringCellValue();
 			String saga = currentRow.getCell(1).getStringCellValue();
@@ -211,17 +213,19 @@ public class DefaultEvidenceService implements EvidenceService {
 
 			if (!saga.equals(sagaPrev)) {
 				person = new Person(saga);
-				if (!people.contains(person)) {
-					person = findPersonBySaga(saga);
-					if (person == null) {
-						evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
-						ok = false;
-						sagaPrev = saga;
-						currentRow = sheet.getRow(i);
-						continue;
-					}
-				} else
-					person = people.get(people.indexOf(person));
+			}
+			if (!people.contains(person)) {
+				person = findPersonBySaga(saga);
+				if (person == null) {
+					evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+					ok = false;
+					sagaPrev = saga;
+					currentRow = sheet.getRow(i);
+					continue;
+				}
+			} else {
+				person = people.get(people.indexOf(person));
+				evidence = findEvidencePerPerson(person);
 			}
 
 			EvidenceType evidenceType = new EvidenceType(type);
@@ -233,8 +237,6 @@ public class DefaultEvidenceService implements EvidenceService {
 				continue;
 			} else
 				evidenceType = types.get(types.indexOf(evidenceType));
-
-			Evidence evidence = findEvidencePerPerson(person);
 
 			if (weeks.contains(week)) {
 				if (week.equals(weeks.get(0)))
@@ -305,7 +307,7 @@ public class DefaultEvidenceService implements EvidenceService {
 		for (int i = 1; i <= 6; i++) {
 			Properties pWeek = new Properties("WEEK_" + i, null);
 			try {
-				pWeek.setValue(weeks.get(i));
+				pWeek.setValue(weeks.get(i - 1));
 			} catch (IndexOutOfBoundsException e) {
 				pWeek.setValue(null);
 			}

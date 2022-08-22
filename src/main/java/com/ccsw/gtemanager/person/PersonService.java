@@ -28,7 +28,7 @@ public interface PersonService {
 	/**
 	 * Obtener listado de todas las personas en la base de datos.
 	 * 
-	 * @return Listad de Person
+	 * @return Listado de Person
 	 */
 	List<Person> getPeople();
 }
