@@ -61,17 +61,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(UserDto userDto) throws AlreadyExistException {
-        UserEntity newUser = null;
 
-        if (userDto.getId() == null) {
-            newUser = new UserEntity();
-        } else {
-            throw new AlreadyExistException();
-        }
+        this.checkIfValuesAreDuped(userDto);
+
+        UserEntity newUser = null;
+        newUser = new UserEntity();
 
         BeanUtils.copyProperties(userDto, newUser, "id");
         this.userRepository.save(newUser);
 
+    }
+
+    private void checkIfValuesAreDuped(UserDto dto) throws AlreadyExistException {
+        Boolean dupeName, dupePriority;
+
+        dupeName = this.userRepository.existsByUsername(dto.getUsername());
+        dupePriority = this.userRepository.existsByEmail(dto.getEmail());
+
+        if (dupeName || dupePriority)
+            throw new AlreadyExistException();
     }
 
 }

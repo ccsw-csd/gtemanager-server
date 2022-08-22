@@ -37,6 +37,8 @@ public class UserTest {
     public static final Long EXISTS_USER_ID = 6L;
     public static final Long NOT_EXISTS_USER_ID = 7L;
     public static final Long EXISTS_ROLE_ID = 2L;
+    private static final String EXISTS_USER_EMAIL = "USER6@USER.COM";
+    private static final String EXISTS_USER_USERNAME = "USERNAME6";
 
     @InjectMocks
     private UserServiceImpl userServiceImpl;
@@ -120,17 +122,39 @@ public class UserTest {
     }
 
     @Test
-    public void saveNewUserWithExistIdShouldThrowException() throws AlreadyExistException {
+    public void saveNewUserWithExistEmailShouldThrowException() throws AlreadyExistException {
         UserDto dto = new UserDto();
-        dto.setId(EXISTS_USER_ID);
-        dto.setEmail("nuevo@gmail.com");
+
+        dto.setEmail(EXISTS_USER_EMAIL);
         dto.setFirstName("Nuevo");
         dto.setLastName("User");
         dto.setUsername("nuevo");
 
         ArgumentCaptor<UserEntity> userEntity = ArgumentCaptor.forClass(UserEntity.class);
 
+        when(userRepository.existsByEmail(EXISTS_USER_EMAIL)).thenReturn(true);
+
         assertThrows(AlreadyExistException.class, () -> this.userServiceImpl.createUser(dto));
+
+        verify(this.userRepository, never()).save(userEntity.capture());
+
+    }
+
+    @Test
+    public void saveNewUserWithExistUsernameShouldThrowException() throws AlreadyExistException {
+        UserDto dto = new UserDto();
+
+        dto.setEmail("nuevo@gmail.com");
+        dto.setFirstName("Nuevo");
+        dto.setLastName("User");
+        dto.setUsername(EXISTS_USER_USERNAME);
+
+        ArgumentCaptor<UserEntity> userEntity = ArgumentCaptor.forClass(UserEntity.class);
+
+        when(userRepository.existsByUsername(EXISTS_USER_USERNAME)).thenReturn(true);
+
+        assertThrows(AlreadyExistException.class, () -> this.userServiceImpl.createUser(dto));
+
         verify(this.userRepository, never()).save(userEntity.capture());
 
     }
