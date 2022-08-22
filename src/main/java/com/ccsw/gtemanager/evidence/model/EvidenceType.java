@@ -1,5 +1,7 @@
 package com.ccsw.gtemanager.evidence.model;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,6 +26,22 @@ public class EvidenceType {
 
 	@Column(name = "name")
 	private String name;
+
+	/**
+	 * Constructor vacío para la creación de EvidenceType
+	 */
+	public EvidenceType() {
+
+	}
+
+	/**
+	 * Constructor con parámetro para asociar código a EvidenceType
+	 * 
+	 * @param code Código de tipo de evidencia
+	 */
+	public EvidenceType(String code) {
+		this.code = code;
+	}
 
 	/**
 	 * Obtener ID de EvidenceType
@@ -77,6 +95,23 @@ public class EvidenceType {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(code);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EvidenceType other = (EvidenceType) obj;
+		return Objects.equals(code, other.code);
 	}
 
 }

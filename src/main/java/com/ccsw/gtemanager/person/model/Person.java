@@ -1,5 +1,7 @@
 package com.ccsw.gtemanager.person.model;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -52,6 +54,22 @@ public class Person {
 
 	@Column(name = "active", nullable = false)
 	private Boolean active;
+
+	/**
+	 * Constructor vacío para la creación de Person
+	 */
+	public Person() {
+
+	}
+
+	/**
+	 * Constructor con parámetro para asociar saga a Person
+	 * 
+	 * @param saga Código saga de persona
+	 */
+	public Person(String saga) {
+		this.saga = saga;
+	}
 
 	/**
 	 * Obtener ID de Person
@@ -231,6 +249,23 @@ public class Person {
 	 */
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(saga);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Person other = (Person) obj;
+		return Objects.equals(saga, other.saga);
 	}
 
 }

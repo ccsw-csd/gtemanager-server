@@ -81,6 +81,11 @@ public class DefaultEvidenceService implements EvidenceService {
 	}
 
 	@Override
+	public List<EvidenceType> getEvidenceTypes() {
+		return (List<EvidenceType>) evidenceTypeRepository.findAll();
+	}
+
+	@Override
 	public List<Properties> getProperties() {
 		return (List<Properties>) propertiesRepository.findAll();
 	}
@@ -168,7 +173,12 @@ public class DefaultEvidenceService implements EvidenceService {
 		List<String> weeks = obtainWeeks(LocalDate.parse(sheet.getRow(1).getCell(1).getStringCellValue(), formatMonth));
 		parseProperties(sheet, weeks);
 
+		List<Person> people = personService.getPeople();
+
+		List<EvidenceType> types = getEvidenceTypes();
+
 		Row currentRow = sheet.getRow(14);
+		Person person = null;
 		String sagaPrev = "";
 		for (int i = 15; currentRow != null; i++) {
 
@@ -199,26 +209,30 @@ public class DefaultEvidenceService implements EvidenceService {
 				continue;
 			}
 
-			Person person = null;
 			if (!saga.equals(sagaPrev)) {
-				person = findPersonBySaga(saga);
-				if (person == null) {
-					evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
-					ok = false;
-					sagaPrev = saga;
-					currentRow = sheet.getRow(i);
-					continue;
-				}
+				person = new Person(saga);
+				if (!people.contains(person)) {
+					person = findPersonBySaga(saga);
+					if (person == null) {
+						evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+						ok = false;
+						sagaPrev = saga;
+						currentRow = sheet.getRow(i);
+						continue;
+					}
+				} else
+					person = people.get(people.indexOf(person));
 			}
 
-			EvidenceType evidenceType = findEvidenceType(type);
-			if (evidenceType == null) {
+			EvidenceType evidenceType = new EvidenceType(type);
+			if (!types.contains(evidenceType)) {
 				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
 				ok = false;
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
-			}
+			} else
+				evidenceType = types.get(types.indexOf(evidenceType));
 
 			Evidence evidence = findEvidencePerPerson(person);
 

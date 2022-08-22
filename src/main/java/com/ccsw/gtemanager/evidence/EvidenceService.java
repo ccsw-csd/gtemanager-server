@@ -45,6 +45,13 @@ public interface EvidenceService {
 	List<Properties> getProperties();
 
 	/**
+	 * Obtener un listado de tipos de evidencia.
+	 * 
+	 * @return Listado de EvidenceType
+	 */
+	List<EvidenceType> getEvidenceTypes();
+
+	/**
 	 * Obtener tipo de evidencia dado código del tipo, ignorando mayúsculas y
 	 * minúsculas.
 	 * 
