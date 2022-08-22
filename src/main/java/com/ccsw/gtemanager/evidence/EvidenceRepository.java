@@ -9,6 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.ccsw.gtemanager.evidence.model.Evidence;
+import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 public interface EvidenceRepository extends CrudRepository<Evidence, Long> {
 

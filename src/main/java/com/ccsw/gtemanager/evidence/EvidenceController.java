@@ -14,6 +14,9 @@ import com.ccsw.gtemanager.config.mapper.BeanMapper;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.EvidenceDto;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
+import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
+import com.ccsw.gtemanager.evidencecomment.model.EvidenceCommentDto;
+import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 /**
  * EvidenceController: Controlador REST para interacción con datos. Contiene

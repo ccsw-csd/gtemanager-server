@@ -1,4 +1,5 @@
-package com.ccsw.gtemanager.evidence.model;
+package com.ccsw.gtemanager.evidencecomment.model;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 import com.ccsw.gtemanager.evidence.model.Evidence;
+import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 @Service
 public class EvidenceServiceImpl implements EvidenceService {

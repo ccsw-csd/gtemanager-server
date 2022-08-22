@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 import com.ccsw.gtemanager.evidence.model.Evidence;
+import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 public class EvidenceSpecification implements Specification<Evidence> {
 
