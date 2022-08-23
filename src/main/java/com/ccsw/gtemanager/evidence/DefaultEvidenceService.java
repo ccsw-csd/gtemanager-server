@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
@@ -122,13 +123,19 @@ public class DefaultEvidenceService implements EvidenceService {
 	 */
 	protected String findWeekForPeriod(String period) throws IllegalArgumentException {
 		String[] days = period.split(" - ");
-		LocalDate d1 = LocalDate.parse(days[0], formatMonth);
-		LocalDate d2 = LocalDate.parse(days[1], formatMonth);
+		LocalDate d1 = null;
+		LocalDate d2 = null;
+		try {
+			d1 = LocalDate.parse(days[0], formatMonth);
+			d2 = LocalDate.parse(days[1], formatMonth);
+		} catch (DateTimeParseException e) {
+			throw new IllegalArgumentException("El periodo introducido no es correcto.");
+		}
 
 		String week1 = findWeekForDay(d1);
 		String week2 = findWeekForDay(d2);
 		if (!week1.equals(week2))
-			throw new IllegalArgumentException("El periodo introducido no es correcto. [period]");
+			throw new IllegalArgumentException("El periodo introducido no es correcto.");
 
 		return week1;
 	}
@@ -147,7 +154,7 @@ public class DefaultEvidenceService implements EvidenceService {
 
 			return monday + " - " + sunday;
 		} catch (DateTimeParseException e) {
-			throw new IllegalArgumentException("La fecha introducida no es correcta. [date]");
+			throw new IllegalArgumentException("La fecha introducida no es correcta.");
 		}
 	}
 
@@ -164,7 +171,6 @@ public class DefaultEvidenceService implements EvidenceService {
 	 */
 	@Override
 	public boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException {
-		boolean ok = true;
 		clearEvidenceData(upload.isDeleteComments());
 
 		Workbook gteEvidences;
@@ -191,20 +197,23 @@ public class DefaultEvidenceService implements EvidenceService {
 		Evidence evidence = null;
 		String sagaPrev = "";
 		for (int i = 15; currentRow != null; i++) {
-			ok = true;
-
 			String fullName = currentRow.getCell(0).getStringCellValue();
 			String saga = currentRow.getCell(1).getStringCellValue();
 			String email = currentRow.getCell(2).getStringCellValue();
 			String period = currentRow.getCell(9).getStringCellValue();
 			String type = currentRow.getCell(10).getStringCellValue();
+			
+			if (!StringUtils.hasText(fullName) && !StringUtils.hasText(saga) && !StringUtils.hasText(email)
+					&& !StringUtils.hasText(period) && !StringUtils.hasText(type)) {
+				currentRow = sheet.getRow(i);
+				continue;
+			}
 
 			String week;
 			try {
 				week = findWeekForPeriod(period);
 			} catch (IllegalArgumentException e) {
 				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
-				ok = false;
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
@@ -214,7 +223,6 @@ public class DefaultEvidenceService implements EvidenceService {
 				saga = parseSaga(saga);
 			} catch (IndexOutOfBoundsException e) {
 				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
-				ok = false;
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
@@ -227,7 +235,6 @@ public class DefaultEvidenceService implements EvidenceService {
 				person = findPersonBySaga(saga);
 				if (person == null) {
 					evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
-					ok = false;
 					sagaPrev = saga;
 					currentRow = sheet.getRow(i);
 					continue;
@@ -240,7 +247,6 @@ public class DefaultEvidenceService implements EvidenceService {
 			EvidenceType evidenceType = new EvidenceType(type);
 			if (!types.contains(evidenceType)) {
 				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
-				ok = false;
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
@@ -262,20 +268,18 @@ public class DefaultEvidenceService implements EvidenceService {
 					evidence.setEvidenceTypeW6(evidenceType);
 			} else {
 				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
-				ok = false;
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
 			}
 
-			if (ok)
-				evidenceRepository.save(evidence);
+			evidenceRepository.save(evidence);
 
 			sagaPrev = saga;
 			currentRow = sheet.getRow(i);
 		}
 		gteEvidences.close();
-		return ok;
+		return getEvidenceErrors().isEmpty();
 	}
 
 	/**
@@ -301,10 +305,10 @@ public class DefaultEvidenceService implements EvidenceService {
 			runDate = LocalDateTime.parse(sRunDate, formatDateTime);
 
 			if (fromDate.compareTo(toDate) > 0)
-				throw new IllegalArgumentException("El informe no se corresponde con un mes o periodo válido. [date]");
+				throw new IllegalArgumentException("El informe no se corresponde con un mes o periodo válido.");
 		} catch (DateTimeParseException e) {
 			throw new IllegalArgumentException(
-					"El informe no contiene fechas de periodo y/o ejecución válidas (B2, C2, B10). [date]");
+					"El informe no contiene fechas de periodo y/o ejecución válidas (B2, C2, B10).");
 		}
 
 		List<Properties> propertiesList = new ArrayList<>();
@@ -361,7 +365,7 @@ public class DefaultEvidenceService implements EvidenceService {
 		try {
 			saga = saga.split("_")[1];
 		} catch (IndexOutOfBoundsException e) {
-			throw new IllegalArgumentException("Código Saga introducido no es válido. [saga]");
+			throw new IllegalArgumentException("Código Saga introducido no es válido.");
 		}
 		try {
 			return String.valueOf(Long.parseLong(saga));
