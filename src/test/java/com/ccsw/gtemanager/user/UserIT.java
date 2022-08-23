@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -29,6 +30,8 @@ public class UserIT extends BaseITAbstract {
     public static final Integer TOTAL_USER = 1;
     public static final Long NOT_EXISTS_ID_USER = 0L;
     public static final Long EXISTS_ID_USER = 2L;
+
+    private static final String EXIST_EMAIL = "USER2@USER.COM";
 
     private static final String EXIST_USERNAME = "USERNAME2";
     private static final String EXIST_FIRSTNAME = "NAME";
@@ -180,6 +183,70 @@ public class UserIT extends BaseITAbstract {
 
         assertNotNull(response);
         assertEquals(5, response.getBody().getContent().size());
+    }
+
+    @Test
+    public void saveNewUserShouldCreate() {
+
+        UserSearchDto searchDto = new UserSearchDto();
+        UserDto dto = new UserDto();
+
+        searchDto.setPageable(PageRequest.of(0, 10));
+        dto.setUsername("prueba");
+        dto.setFirstName("PR");
+        dto.setLastName("PRL");
+        dto.setEmail("Prueba@gmail.com");
+
+        HttpEntity<?> httpEntity = new HttpEntity<>(searchDto, getHeaders());
+        HttpEntity<?> httpEntitydto = new HttpEntity<>(dto, getHeaders());
+
+        restTemplate.exchange(LOCALHOST + port + "/user", HttpMethod.PUT, httpEntitydto, Void.class);
+
+        ResponseEntity<Page<UserDto>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH + "findPage",
+                HttpMethod.POST, httpEntity, responseTypePage);
+
+        assertNotNull(response);
+        assertEquals(7, response.getBody().getContent().size());
+    }
+
+    @Test
+    public void saveNewUserWithExistUserNameShouldThrowException() {
+
+        UserSearchDto searchDto = new UserSearchDto();
+        UserDto dto = new UserDto();
+
+        searchDto.setPageable(PageRequest.of(0, 10));
+        dto.setUsername(EXIST_USERNAME);
+        dto.setFirstName("PR");
+        dto.setLastName("PRL");
+        dto.setEmail("Prueba@gmail.com");
+
+        HttpEntity<?> httpEntitydto = new HttpEntity<>(dto, getHeaders());
+
+        ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + "/user", HttpMethod.PUT, httpEntitydto,
+                Void.class);
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    }
+
+    @Test
+    public void saveNewUserWithExistEmailShouldThrowException() {
+
+        UserSearchDto searchDto = new UserSearchDto();
+        UserDto dto = new UserDto();
+
+        searchDto.setPageable(PageRequest.of(0, 10));
+        dto.setUsername("Prueba");
+        dto.setFirstName("PR");
+        dto.setLastName("PRL");
+        dto.setEmail(EXIST_EMAIL);
+
+        HttpEntity<?> httpEntitydto = new HttpEntity<>(dto, getHeaders());
+
+        ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + "/user", HttpMethod.PUT, httpEntitydto,
+                Void.class);
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 
 }
