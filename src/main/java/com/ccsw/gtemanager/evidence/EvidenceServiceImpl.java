@@ -178,7 +178,13 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 		Sheet sheet = gteEvidences.getSheetAt(0);
 
-		List<String> weeks = obtainWeeks(LocalDate.parse(sheet.getRow(1).getCell(1).getStringCellValue(), formatMonth));
+		List<String> weeks;
+		try {
+			weeks = obtainWeeks(LocalDate.parse(sheet.getRow(1).getCell(1).getStringCellValue(), formatMonth));
+		} catch (Exception e) {
+			throw new IllegalArgumentException(
+					"El informe no contiene fechas de periodo y/o ejecución válidas (B2, C2, B10).");
+		}
 		parseProperties(sheet, weeks);
 
 		List<Person> people = personService.getPeople();
