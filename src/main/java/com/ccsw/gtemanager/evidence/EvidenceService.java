@@ -61,14 +61,6 @@ public interface EvidenceService {
 	EvidenceType findEvidenceType(String type);
 
 	/**
-	 * Obtener evidencia concreta dada una persona.
-	 * 
-	 * @param person Person implicada en la evidencia
-	 * @return Evidence encontrado
-	 */
-	Evidence findEvidencePerPerson(Person person);
-
-	/**
 	 * Obtener persona dado un código de saga.
 	 * 
 	 * @param saga Código saga por el que buscar
@@ -89,17 +81,6 @@ public interface EvidenceService {
 	 *                                  cálculo proporcionado
 	 */
 	boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException;
-
-	/**
-	 * Almacenar un error de evidencia registrado en EvidenceError.
-	 * 
-	 * @param fullName Nombre de la persona implicada
-	 * @param saga     Código saga de la persona implicada
-	 * @param email    Correo electrónico de la persona implicada
-	 * @param period   Periodo de evidencia registrado
-	 * @param type     Tipo de evidencia registrado
-	 */
-	void saveError(String fullName, String saga, String email, String period, String type);
 
 	/**
 	 * Limpiar datos de evidencias, comentarios, errores, y parámetros.

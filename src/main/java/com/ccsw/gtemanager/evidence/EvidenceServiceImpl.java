@@ -8,8 +8,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -99,16 +101,6 @@ public class EvidenceServiceImpl implements EvidenceService {
 		return types.isEmpty() ? null : types.get(0);
 	}
 
-	/**
-	 * Obtener evidencia concreta dada una persona. Se devuelve nuevo Evidence si no
-	 * se ha encontrado.
-	 */
-	@Override
-	public Evidence findEvidencePerPerson(Person person) {
-		List<Evidence> evidences = evidenceRepository.findByPersonId(person);
-		return evidences.isEmpty() ? new Evidence(person) : evidences.get(0);
-	}
-
 	@Override
 	public Person findPersonBySaga(String saga) {
 		List<Person> people = personService.getBySaga(saga);
@@ -193,6 +185,10 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 		List<EvidenceType> types = getEvidenceTypes();
 
+		Map<Person, Evidence> evidences = new LinkedHashMap<>();
+
+		List<EvidenceError> evidenceErrors = new ArrayList<>();
+
 		Row currentRow = sheet.getRow(14);
 		Person person = null;
 		Evidence evidence = null;
@@ -214,7 +210,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 			try {
 				week = findWeekForPeriod(period);
 			} catch (IllegalArgumentException e) {
-				saveError(fullName, saga, email, period, type);
+				evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
@@ -223,7 +219,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 			try {
 				saga = parseSaga(saga);
 			} catch (IndexOutOfBoundsException e) {
-				saveError(fullName, saga, email, period, type);
+				evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
@@ -232,22 +228,26 @@ public class EvidenceServiceImpl implements EvidenceService {
 			if (!saga.equals(sagaPrev)) {
 				person = new Person(saga);
 			}
+
 			if (!people.contains(person)) {
 				person = findPersonBySaga(saga);
 				if (person == null) {
-					saveError(fullName, saga, email, period, type);
+					evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
 					sagaPrev = saga;
 					currentRow = sheet.getRow(i);
 					continue;
 				}
 			} else {
 				person = people.get(people.indexOf(person));
-				evidence = findEvidencePerPerson(person);
 			}
+
+			evidence = evidences.get(person);
+			if (evidence == null)
+				evidence = new Evidence(person);
 
 			EvidenceType evidenceType = new EvidenceType(type);
 			if (!types.contains(evidenceType)) {
-				saveError(fullName, saga, email, period, type);
+				evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
@@ -268,24 +268,25 @@ public class EvidenceServiceImpl implements EvidenceService {
 				else if (week.equals(weeks.get(5)))
 					evidence.setEvidenceTypeW6(evidenceType);
 			} else {
-				saveError(fullName, saga, email, period, type);
+				evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
 			}
 
-			evidenceRepository.save(evidence);
+			evidences.put(person, evidence);
 
 			sagaPrev = saga;
 			currentRow = sheet.getRow(i);
 		}
-		gteEvidences.close();
-		return getEvidenceErrors().isEmpty();
-	}
 
-	@Override
-	public void saveError(String fullName, String saga, String email, String period, String type) {
-		evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+		gteEvidences.close();
+		evidenceRepository.saveAll(evidences.values());
+		if (!evidenceErrors.isEmpty()) {
+			evidenceErrorRepository.saveAll(evidenceErrors);
+			return false;
+		} else
+			return true;
 	}
 
 	/**
