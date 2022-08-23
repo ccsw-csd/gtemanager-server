@@ -1,9 +1,9 @@
-package com.ccsw.gtemanager.evidence;
+package com.ccsw.gtemanager.evidencecomment;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ccsw.gtemanager.evidence.model.EvidenceComment;
+import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
 
 /**
  * EvidenceCommentRepository: repositorio de datos de comentarios de evidencias.

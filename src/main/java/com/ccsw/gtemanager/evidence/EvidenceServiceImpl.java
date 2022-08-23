@@ -24,10 +24,11 @@ import org.springframework.util.StringUtils;
 
 import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
-import com.ccsw.gtemanager.evidence.model.EvidenceComment;
 import com.ccsw.gtemanager.evidence.model.EvidenceError;
 import com.ccsw.gtemanager.evidence.model.EvidenceType;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
+import com.ccsw.gtemanager.evidencecomment.EvidenceCommentRepository;
+import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
 import com.ccsw.gtemanager.person.PersonService;
 import com.ccsw.gtemanager.person.model.Person;
 import com.ccsw.gtemanager.properties.PropertiesRepository;
@@ -41,7 +42,7 @@ import com.ccsw.gtemanager.properties.model.Properties;
  */
 @Service
 @Transactional
-public class DefaultEvidenceService implements EvidenceService {
+public class EvidenceServiceImpl implements EvidenceService {
 
 	@Autowired
 	private PersonService personService;
@@ -202,7 +203,7 @@ public class DefaultEvidenceService implements EvidenceService {
 			String email = currentRow.getCell(2).getStringCellValue();
 			String period = currentRow.getCell(9).getStringCellValue();
 			String type = currentRow.getCell(10).getStringCellValue();
-			
+
 			if (!StringUtils.hasText(fullName) && !StringUtils.hasText(saga) && !StringUtils.hasText(email)
 					&& !StringUtils.hasText(period) && !StringUtils.hasText(type)) {
 				currentRow = sheet.getRow(i);
@@ -213,7 +214,7 @@ public class DefaultEvidenceService implements EvidenceService {
 			try {
 				week = findWeekForPeriod(period);
 			} catch (IllegalArgumentException e) {
-				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+				saveError(fullName, saga, email, period, type);
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
@@ -222,7 +223,7 @@ public class DefaultEvidenceService implements EvidenceService {
 			try {
 				saga = parseSaga(saga);
 			} catch (IndexOutOfBoundsException e) {
-				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+				saveError(fullName, saga, email, period, type);
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
@@ -234,7 +235,7 @@ public class DefaultEvidenceService implements EvidenceService {
 			if (!people.contains(person)) {
 				person = findPersonBySaga(saga);
 				if (person == null) {
-					evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+					saveError(fullName, saga, email, period, type);
 					sagaPrev = saga;
 					currentRow = sheet.getRow(i);
 					continue;
@@ -246,7 +247,7 @@ public class DefaultEvidenceService implements EvidenceService {
 
 			EvidenceType evidenceType = new EvidenceType(type);
 			if (!types.contains(evidenceType)) {
-				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+				saveError(fullName, saga, email, period, type);
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
@@ -267,7 +268,7 @@ public class DefaultEvidenceService implements EvidenceService {
 				else if (week.equals(weeks.get(5)))
 					evidence.setEvidenceTypeW6(evidenceType);
 			} else {
-				evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
+				saveError(fullName, saga, email, period, type);
 				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
@@ -280,6 +281,11 @@ public class DefaultEvidenceService implements EvidenceService {
 		}
 		gteEvidences.close();
 		return getEvidenceErrors().isEmpty();
+	}
+
+	@Override
+	public void saveError(String fullName, String saga, String email, String period, String type) {
+		evidenceErrorRepository.save(new EvidenceError(fullName, saga, email, period, type));
 	}
 
 	/**

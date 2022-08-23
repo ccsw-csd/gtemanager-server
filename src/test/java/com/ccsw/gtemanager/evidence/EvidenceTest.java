@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.ccsw.gtemanager.evidencecomment.EvidenceCommentRepository;
 import com.ccsw.gtemanager.properties.PropertiesRepository;
 
 /**
@@ -57,7 +58,7 @@ public class EvidenceTest {
 	private PropertiesRepository propertiesRepository;
 
 	@InjectMocks
-	private DefaultEvidenceService evidenceService;
+	private EvidenceServiceImpl evidenceService;
 
 	private static DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());

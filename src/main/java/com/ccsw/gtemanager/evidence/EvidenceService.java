@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ccsw.gtemanager.evidence.model.Evidence;
-import com.ccsw.gtemanager.evidence.model.EvidenceComment;
 import com.ccsw.gtemanager.evidence.model.EvidenceError;
 import com.ccsw.gtemanager.evidence.model.EvidenceType;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
+import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
 import com.ccsw.gtemanager.person.model.Person;
 import com.ccsw.gtemanager.properties.model.Properties;
 
@@ -89,6 +89,17 @@ public interface EvidenceService {
 	 *                                  cálculo proporcionado
 	 */
 	boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException;
+
+	/**
+	 * Almacenar un error de evidencia registrado en EvidenceError.
+	 * 
+	 * @param fullName Nombre de la persona implicada
+	 * @param saga     Código saga de la persona implicada
+	 * @param email    Correo electrónico de la persona implicada
+	 * @param period   Periodo de evidencia registrado
+	 * @param type     Tipo de evidencia registrado
+	 */
+	void saveError(String fullName, String saga, String email, String period, String type);
 
 	/**
 	 * Limpiar datos de evidencias, comentarios, errores, y parámetros.
