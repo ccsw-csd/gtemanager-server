@@ -1,9 +1,13 @@
 package com.ccsw.gtemanager.person.model;
 
+import com.ccsw.gtemanager.evidence.model.CenterDto;
+
 public class PersonDto {
 	private Long id;
 
-	private String saga, username, email, name, lastName, center, businessCode, grade;
+	private String saga, username, email, name, lastName, businessCode, grade;
+	
+	private CenterDto center;
 
 	private boolean active;
 
@@ -31,7 +35,7 @@ public class PersonDto {
 		return lastName;
 	}
 
-	public String getCenter() {
+	public CenterDto getCenter() {
 		return center;
 	}
 
@@ -71,7 +75,7 @@ public class PersonDto {
 		this.lastName = lastName;
 	}
 
-	public void setCenter(String center) {
+	public void setCenter(CenterDto center) {
 		this.center = center;
 	}
 

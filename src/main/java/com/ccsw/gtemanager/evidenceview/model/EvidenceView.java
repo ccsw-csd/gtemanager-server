@@ -24,76 +24,64 @@ public class EvidenceView {
 
 	@EmbeddedId
 	private EvidenceViewPK evidence;
-	/*
-	@ManyToOne
-	@JoinColumn(name = "id")
-	private Evidence evidence;*/
 
 	@ManyToOne
 	@JoinColumn(name = "person_id", nullable = false)
 	private Person person;
-	/*
-	@ManyToOne
-	@JoinColumn(name = "comment_id", nullable = true)
-	private EvidenceComment comment;*/
 	
 	@ManyToOne
 	@JoinColumn(name = "evidente_type_w1", nullable = false)
-	private EvidenceType evidenceTypeW1;
+	private EvidenceType evidenceW1;
 
 	@ManyToOne
 	@JoinColumn(name = "evidente_type_w2", nullable = false)
-	private EvidenceType evidenceTypeW2;
+	private EvidenceType evidenceW2;
 
 	@ManyToOne
 	@JoinColumn(name = "evidente_type_w3", nullable = false)
-	private EvidenceType evidenceTypeW3;
+	private EvidenceType evidenceW3;
 
 	@ManyToOne
 	@JoinColumn(name = "evidente_type_w4", nullable = false)
-	private EvidenceType evidenceTypeW4;
+	private EvidenceType evidenceW4;
 
 	@ManyToOne
 	@JoinColumn(name = "evidente_type_w5", nullable = false)
-	private EvidenceType evidenceTypeW5;
+	private EvidenceType evidenceW5;
 
 	@ManyToOne
 	@JoinColumn(name = "evidente_type_w6", nullable = false)
-	private EvidenceType evidenceTypeW6;
+	private EvidenceType evidenceW6;
 
-	/*public Evidence getEvidence() {
+	public EvidenceViewPK getEvidencePK() {
 		return evidence;
-	}*/
-
+	}
+	
 	public Person getPerson() {
 		return person;
 	}
 
-	/*public EvidenceComment getComment() {
-		return comment;
-	}*/
-
-	public EvidenceType getEvidenceTypeW1() {
-		return evidenceTypeW1;
+	public EvidenceType getEvidenceW1() {
+		return evidenceW1;
 	}
 
-	public EvidenceType getEvidenceTypeW2() {
-		return evidenceTypeW2;
+	public EvidenceType getEvidenceW2() {
+		return evidenceW2;
 	}
 
-	public EvidenceType getEvidenceTypeW3() {
-		return evidenceTypeW3;
+	public EvidenceType getEvidenceW3() {
+		return evidenceW3;
 	}
 
-	public EvidenceType getEvidenceTypeW4() {
-		return evidenceTypeW4;
+	public EvidenceType getEvidenceW4() {
+		return evidenceW4;
 	}
 
-	public EvidenceType getEvidenceTypeW5() {
-		return evidenceTypeW5;
+	public EvidenceType getEvidenceW5() {
+		return evidenceW5;
 	}
 
-	public EvidenceType getEvidenceTypeW6() {
-		return evidenceTypeW6;
+	public EvidenceType getEvidenceW6() {
+		return evidenceW6;
 	}
 }

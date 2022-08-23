@@ -34,8 +34,8 @@ public class Person {
 	@Column(name = "lastname")
 	private String lastName;
 
-	@JoinColumn(name = "center")
 	@ManyToOne
+	@JoinColumn(name = "center")
 	private Center center;
 
 	@Column(name = "businesscode")

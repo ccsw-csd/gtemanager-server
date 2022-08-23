@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 import com.ccsw.gtemanager.evidence.model.Evidence;
-import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 @Service
 public class EvidenceServiceImpl implements EvidenceService {
@@ -22,7 +21,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 		
 		EvidenceSpecification geography = new EvidenceSpecification(new SearchCriteria("center", ":", idGeography));
 		Specification<Evidence> specification = Specification.where(geography);
-		
-		return this.evidenceRepository.findAll(specification, Sort.by(Sort.Direction.ASC, "person"));
+		List<Evidence> list = this.evidenceRepository.findAll(specification, Sort.by(Sort.Direction.ASC, "person"));
+		return list;
 	}	
 }

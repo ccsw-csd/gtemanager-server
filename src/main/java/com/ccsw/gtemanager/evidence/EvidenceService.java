@@ -3,7 +3,6 @@ package com.ccsw.gtemanager.evidence;
 import java.util.List;
 
 import com.ccsw.gtemanager.evidence.model.Evidence;
-import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 public interface EvidenceService {
 	

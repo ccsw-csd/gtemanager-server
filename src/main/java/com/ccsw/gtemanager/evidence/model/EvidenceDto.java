@@ -6,17 +6,26 @@ public class EvidenceDto {
 
 	private Long id;
 
-	private PersonDto personId;
+	private PersonDto person;
 
-	private EvidenceTypeDto evidenceTypeW1, evidenceTypeW2, evidenceTypeW3, evidenceTypeW4, evidenceTypeW5,
-			evidenceTypeW6;
+	private EvidenceTypeDto evidenceTypeW1;
+	
+	private EvidenceTypeDto evidenceTypeW2;
+	
+	private EvidenceTypeDto evidenceTypeW3;
+	
+	private EvidenceTypeDto evidenceTypeW4;
+	
+	private EvidenceTypeDto evidenceTypeW5;
+
+	private EvidenceTypeDto evidenceTypeW6;
 
 	public Long getId() {
 		return id;
 	}
 
-	public PersonDto getPersonId() {
-		return personId;
+	public PersonDto getPerson() {
+		return person;
 	}
 
 	public EvidenceTypeDto getEvidenceTypeW1() {
@@ -47,32 +56,32 @@ public class EvidenceDto {
 		this.id = id;
 	}
 
-	public void setPersonId(PersonDto personId) {
-		this.personId = personId;
+	public void setPerson(PersonDto person) {
+		this.person = person;
 	}
 
-	public void setEvidenceTypeW1(EvidenceTypeDto evidenceTypeW1) {
-		this.evidenceTypeW1 = evidenceTypeW1;
+	public void setEvidenceTypeW1(EvidenceTypeDto evidenceW1) {
+		this.evidenceTypeW1 = evidenceW1;
 	}
 
-	public void setEvidenceTypeW2(EvidenceTypeDto evidenceTypeW2) {
-		this.evidenceTypeW2 = evidenceTypeW2;
+	public void setEvidenceTypeW2(EvidenceTypeDto evidenceW2) {
+		this.evidenceTypeW2 = evidenceW2;
 	}
 
-	public void setEvidenceTypeW3(EvidenceTypeDto evidenceTypeW3) {
-		this.evidenceTypeW3 = evidenceTypeW3;
+	public void setEvidenceTypeW3(EvidenceTypeDto evidenceW3) {
+		this.evidenceTypeW3 = evidenceW3;
 	}
 
-	public void setEvidenceTypeW4(EvidenceTypeDto evidenceTypeW4) {
-		this.evidenceTypeW4 = evidenceTypeW4;
+	public void setEvidenceTypeW4(EvidenceTypeDto evidenceW4) {
+		this.evidenceTypeW4 = evidenceW4;
 	}
 
-	public void setEvidenceTypeW5(EvidenceTypeDto evidenceTypeW5) {
-		this.evidenceTypeW5 = evidenceTypeW5;
+	public void setEvidenceTypeW5(EvidenceTypeDto evidenceW5) {
+		this.evidenceTypeW5 = evidenceW5;
 	}
 
-	public void setEvidenceTypeW6(EvidenceTypeDto evidenceTypeW6) {
-		this.evidenceTypeW6 = evidenceTypeW6;
+	public void setEvidenceTypeW6(EvidenceTypeDto evidenceW6) {
+		this.evidenceTypeW6 = evidenceW6;
 	}
 
 }

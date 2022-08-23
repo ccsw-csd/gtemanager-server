@@ -50,7 +50,7 @@ public class Evidence {
 		return id;
 	}
 
-	public Person getPersonId() {
+	public Person getPerson() {
 		return person;
 	}
 
@@ -82,8 +82,8 @@ public class Evidence {
 		this.id = id;
 	}
 
-	public void setPersonId(Person personId) {
-		this.person = personId;
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 
 	public void setEvidenceTypeW1(EvidenceType evidenceTypeW1) {

@@ -4,12 +4,9 @@ import java.util.List;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 
 import com.ccsw.gtemanager.evidence.model.Evidence;
-import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 public interface EvidenceRepository extends CrudRepository<Evidence, Long> {
 

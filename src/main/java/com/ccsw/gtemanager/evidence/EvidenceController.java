@@ -3,7 +3,6 @@ package com.ccsw.gtemanager.evidence;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,9 +13,6 @@ import com.ccsw.gtemanager.config.mapper.BeanMapper;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.EvidenceDto;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
-import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
-import com.ccsw.gtemanager.evidencecomment.model.EvidenceCommentDto;
-import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 /**
  * EvidenceController: Controlador REST para interacción con datos. Contiene
