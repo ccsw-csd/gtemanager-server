@@ -44,22 +44,27 @@ public class EvidenceIT extends BaseITAbstract {
 	private static final String EXISTING_RUNDATE = "July 27, 2022 08:30 AM";
 	private static final String NONEXISTING_RUNDATE = "asdf";
 
-	private static final String EXISTING_FULLNAME = "Ana Cardo";
+	private static final String EXISTING_FULLNAME_P1 = "Ana Cardo";
+	private static final String EXISTING_FULLNAME_P2 = "Aitor Tilla";
 
-	private static final String EXISTING_SAGA = "S_00001";
+	private static final String EXISTING_SAGA_P1 = "S_00001";
+	private static final String EXISTING_SAGA_P2 = "S_000B1";
 	private static final String NONEXISTING_SAGA = "S_00A0";
 
-	private static final String EXISTING_EMAIL = "anacardo@example.com";
+	private static final String EXISTING_EMAIL_P1 = "anacardo@example.com";
+	private static final String EXISTING_EMAIL_P2 = "aitortilla@example.com";
 
 	private static final String EXISTING_FROMDATE = "01-AUG-2022";
 	private static final String EXISTING_TODATE = "31-AUG-2022";
 	private static final String NONEXISTING_FROMDATE = "01-SEP-2022";
 	private static final String NONEXISTING_TODATE = "31-JUL-2022";
 
-	private static final String EXISTING_PERIOD = "29-AUG-2022 - 31-AUG-2022";
+	private static final String EXISTING_PERIOD_W4 = "22-AUG-2022 - 28-AUG-2022";
+	private static final String EXISTING_PERIOD_W5 = "29-AUG-2022 - 31-AUG-2022";
 	private static final String NONEXISTING_PERIOD = "31-AUG-2022 - 01-AUG-2022";
 
-	private static final String EXISTING_TYPE = "WORKING";
+	private static final String EXISTING_TYPE_1 = "WORKING";
+	private static final String EXISTING_TYPE_2 = "Missing";
 	private static final String NONEXISTING_TYPE = "Completed";
 
 	@LocalServerPort
@@ -73,9 +78,21 @@ public class EvidenceIT extends BaseITAbstract {
 
 	private static Workbook gteEvidences;
 	private static Sheet sheet;
-	private static Row row0, row1, row2, row9, row14;
-	private static Cell cellParametersTitle, cellFromDate, cellToDate, cellRunDate, cellFullName, cellSAGA, cellEmail,
-			cellPeriod, cellStatus;
+
+	private static Row row1;
+	private static Row row2;
+	private static Row row9;
+	private static Row row14;
+	private static Row row15;
+	private static Row row16;
+
+	private static Cell cellFromDate;
+	private static Cell cellToDate;
+	private static Cell cellRunDate;
+
+	private static Cell[] cellsRow14;
+	private static Cell[] cellsRow15;
+	private static Cell[] cellsRow16;
 
 	/**
 	 * Inicializar hoja de cálculo y celdas de valores previo a la ejecución de los
@@ -87,10 +104,6 @@ public class EvidenceIT extends BaseITAbstract {
 
 		sheet = gteEvidences.createSheet("Sheet1");
 
-		row0 = sheet.createRow(0);
-		cellParametersTitle = row0.createCell(0);
-		cellParametersTitle.setCellValue("Parameters");
-
 		row1 = sheet.createRow(1);
 		cellFromDate = row1.createCell(1);
 		row2 = sheet.createRow(2);
@@ -100,11 +113,28 @@ public class EvidenceIT extends BaseITAbstract {
 		cellRunDate = row9.createCell(1);
 
 		row14 = sheet.createRow(14);
-		cellFullName = row14.createCell(0);
-		cellSAGA = row14.createCell(1);
-		cellEmail = row14.createCell(2);
-		cellPeriod = row14.createCell(9);
-		cellStatus = row14.createCell(10);
+		cellsRow14 = new Cell[5];
+		cellsRow14[0] = row14.createCell(0);
+		cellsRow14[1] = row14.createCell(1);
+		cellsRow14[2] = row14.createCell(2);
+		cellsRow14[3] = row14.createCell(9);
+		cellsRow14[4] = row14.createCell(10);
+
+		row15 = sheet.createRow(15);
+		cellsRow15 = new Cell[5];
+		cellsRow15[0] = row15.createCell(0);
+		cellsRow15[1] = row15.createCell(1);
+		cellsRow15[2] = row15.createCell(2);
+		cellsRow15[3] = row15.createCell(9);
+		cellsRow15[4] = row15.createCell(10);
+
+		row16 = sheet.createRow(16);
+		cellsRow16 = new Cell[5];
+		cellsRow16[0] = row16.createCell(0);
+		cellsRow16[1] = row16.createCell(1);
+		cellsRow16[2] = row16.createCell(2);
+		cellsRow16[3] = row16.createCell(9);
+		cellsRow16[4] = row16.createCell(10);
 	}
 
 	/**
@@ -178,11 +208,23 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
-		cellFullName.setCellValue(EXISTING_FULLNAME);
-		cellSAGA.setCellValue(EXISTING_SAGA);
-		cellEmail.setCellValue(EXISTING_EMAIL);
-		cellPeriod.setCellValue(EXISTING_PERIOD);
-		cellStatus.setCellValue(EXISTING_TYPE);
+		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRow14[3].setCellValue(EXISTING_PERIOD_W4);
+		cellsRow14[4].setCellValue(EXISTING_TYPE_1);
+
+		cellsRow15[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRow15[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRow15[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRow15[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRow15[4].setCellValue(EXISTING_TYPE_2);
+
+		cellsRow16[0].setCellValue(EXISTING_FULLNAME_P2);
+		cellsRow16[1].setCellValue(EXISTING_SAGA_P2);
+		cellsRow16[2].setCellValue(EXISTING_EMAIL_P2);
+		cellsRow16[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRow16[4].setCellValue(EXISTING_TYPE_1);
 
 		MockMultipartFile file = new MockMultipartFile("test.xslx", "test.xlsx",
 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
@@ -199,7 +241,7 @@ public class EvidenceIT extends BaseITAbstract {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(null, response.getBody());
-		assertEquals(1, evidenceService.getEvidences().size());
+		assertEquals(2, evidenceService.getEvidences().size());
 	}
 
 	/**
@@ -211,11 +253,11 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(NONEXISTING_RUNDATE);
 
-		cellFullName.setCellValue(EXISTING_FULLNAME);
-		cellSAGA.setCellValue(EXISTING_SAGA);
-		cellEmail.setCellValue(EXISTING_EMAIL);
-		cellPeriod.setCellValue(EXISTING_PERIOD);
-		cellStatus.setCellValue(EXISTING_TYPE);
+		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRow14[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRow14[4].setCellValue(EXISTING_TYPE_1);
 
 		MockMultipartFile file = new MockMultipartFile("test.xslx", "test.xlsx",
 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
@@ -231,7 +273,7 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		assertTrue(((String) response.getBody()).contains("[date]"));
+		assertTrue(response.getBody() != null);
 		assertEquals(0, evidenceService.getEvidences().size());
 
 		cellFromDate.setCellValue(NONEXISTING_FROMDATE);
@@ -252,7 +294,7 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		assertTrue(((String) response.getBody()).contains("[date]"));
+		assertTrue(response.getBody() != null);
 		assertEquals(0, evidenceService.getEvidences().size());
 
 		cellFromDate.setCellValue(EXISTING_FROMDATE);
@@ -273,7 +315,7 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		assertTrue(((String) response.getBody()).contains("[date]"));
+		assertTrue(response.getBody() != null);
 		assertEquals(0, evidenceService.getEvidences().size());
 	}
 
@@ -287,11 +329,23 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
-		cellFullName.setCellValue(EXISTING_FULLNAME);
-		cellSAGA.setCellValue(NONEXISTING_SAGA);
-		cellEmail.setCellValue(EXISTING_EMAIL);
-		cellPeriod.setCellValue(EXISTING_PERIOD);
-		cellStatus.setCellValue(EXISTING_TYPE);
+		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRow14[1].setCellValue(NONEXISTING_SAGA);
+		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRow14[3].setCellValue(EXISTING_PERIOD_W4);
+		cellsRow14[4].setCellValue(EXISTING_TYPE_1);
+
+		cellsRow15[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRow15[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRow15[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRow15[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRow15[4].setCellValue(EXISTING_TYPE_2);
+
+		cellsRow16[0].setCellValue(EXISTING_FULLNAME_P2);
+		cellsRow16[1].setCellValue(EXISTING_SAGA_P2);
+		cellsRow16[2].setCellValue(EXISTING_EMAIL_P2);
+		cellsRow16[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRow16[4].setCellValue(EXISTING_TYPE_1);
 
 		MockMultipartFile file = new MockMultipartFile("test.xslx", "test.xlsx",
 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
@@ -307,14 +361,14 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(((String) response.getBody()).contains("[errors]"));
-		assertEquals(0, evidenceService.getEvidences().size());
+		assertTrue(response.getBody() != null);
+		assertEquals(2, evidenceService.getEvidences().size());
 
-		cellFullName.setCellValue(EXISTING_FULLNAME);
-		cellSAGA.setCellValue(EXISTING_SAGA);
-		cellEmail.setCellValue(EXISTING_EMAIL);
-		cellPeriod.setCellValue(NONEXISTING_PERIOD);
-		cellStatus.setCellValue(EXISTING_TYPE);
+		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRow14[3].setCellValue(NONEXISTING_PERIOD);
+		cellsRow14[4].setCellValue(EXISTING_TYPE_1);
 
 		file = new MockMultipartFile("test.xslx", "test.xlsx",
 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
@@ -330,15 +384,15 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(((String) response.getBody()).contains("[errors]"));
-		assertEquals(0, evidenceService.getEvidences().size());
+		assertTrue(!response.getBody().equals(null));
+		assertEquals(2, evidenceService.getEvidences().size());
 		assertEquals(1, evidenceService.getEvidenceErrors().size());
 
-		cellFullName.setCellValue(EXISTING_FULLNAME);
-		cellSAGA.setCellValue(EXISTING_SAGA);
-		cellEmail.setCellValue(EXISTING_EMAIL);
-		cellPeriod.setCellValue(EXISTING_PERIOD);
-		cellStatus.setCellValue(NONEXISTING_TYPE);
+		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRow14[3].setCellValue(EXISTING_PERIOD_W4);
+		cellsRow14[4].setCellValue(NONEXISTING_TYPE);
 
 		file = new MockMultipartFile("test.xslx", "test.xlsx",
 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
@@ -354,8 +408,8 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(((String) response.getBody()).contains("[errors]"));
-		assertEquals(0, evidenceService.getEvidences().size());
+		assertTrue(!response.getBody().equals(null));
+		assertEquals(2, evidenceService.getEvidences().size());
 		assertEquals(1, evidenceService.getEvidenceErrors().size());
 	}
 
@@ -368,11 +422,11 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
-		cellFullName.setCellValue(EXISTING_FULLNAME);
-		cellSAGA.setCellValue(EXISTING_SAGA);
-		cellEmail.setCellValue(EXISTING_EMAIL);
-		cellPeriod.setCellValue(EXISTING_PERIOD);
-		cellStatus.setCellValue(EXISTING_TYPE);
+		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRow14[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRow14[4].setCellValue(EXISTING_TYPE_1);
 
 		MockMultipartFile file = new MockMultipartFile("test.xslx", "test.xlsx",
 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
@@ -395,7 +449,7 @@ public class EvidenceIT extends BaseITAbstract {
 		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW2());
 		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW3());
 		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW4());
-		assertEquals(evidenceService.findEvidenceType(EXISTING_TYPE).getCode(),
+		assertEquals(evidenceService.findEvidenceType(EXISTING_TYPE_1).getCode(),
 				evidenceService.getEvidences().get(0).getEvidenceTypeW5().getCode());
 		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW6());
 	}

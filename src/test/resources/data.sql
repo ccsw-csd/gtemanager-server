@@ -52,6 +52,7 @@ CREATE TABLE person (
 );
 
 INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('1','anacardo','anacardo@example.com','Ana','Cardo','3', 'XXX', 'E', true);
+INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('00B1','aitortilla','aitortilla@example.com','Aitor','Tilla','3', 'XXX', 'E', true);
 INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A1','aelmouss','aelmouss@bidoffice.com','Ayoub','El Moussaoui','3', 'XXX', 'A', true);
 INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A2','jopepe','jopepe@bidoffice.com','Jopepe','Jopepe','3', 'XXX', 'B', false);
 INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A3','amirzoya','amirzoya@bidoffice.com','Armen','Mirzoyan Denisov','3', 'XXX', 'C', true);
