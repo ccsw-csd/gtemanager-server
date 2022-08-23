@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import javax.transaction.Transactional;
 
+import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -166,7 +167,15 @@ public class DefaultEvidenceService implements EvidenceService {
 		boolean ok = true;
 		clearEvidenceData(upload.isDeleteComments());
 
-		Workbook gteEvidences = WorkbookFactory.create(upload.getFile().getInputStream());
+		Workbook gteEvidences;
+		try {
+			gteEvidences = WorkbookFactory.create(upload.getFile().getInputStream());
+		} catch (EncryptedDocumentException e) {
+			throw new IllegalArgumentException("El archivo se encuentra encriptado.");
+		} catch (Exception e) {
+			throw new IllegalArgumentException(
+					"Se ha producido un error leyendo el archivo. ¿Son las celdas correctas?");
+		}
 
 		Sheet sheet = gteEvidences.getSheetAt(0);
 

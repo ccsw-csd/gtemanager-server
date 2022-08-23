@@ -1,7 +1,5 @@
 package com.ccsw.gtemanager.evidence;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,27 +38,28 @@ public class EvidenceController {
 	public ResponseEntity<String> uploadEvidence(@ModelAttribute FormDataDto upload) {
 		if (upload.getFile() == null || !StringUtils.hasText(upload.getFile().getContentType()))
 			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-					.body("No se ha recibido un fichero válido.");
+					.body("\"No se ha recibido un fichero válido.\"");
 
 		if (!upload.getFile().getContentType().equals("application/vnd.ms-excel") && !upload.getFile().getContentType()
 				.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-					.body("No se ha recibido un fichero de hoja de cálculo.");
+					.body("\"No se ha recibido un fichero de hoja de cálculo.\"");
 
 		boolean ok;
 		try {
 			ok = evidenceService.uploadEvidence(upload);
-		} catch (IllegalArgumentException | IOException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getLocalizedMessage());
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\""+e.getLocalizedMessage()+"\"");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-					"Se ha producido un error interno. Por favor, póngase en contacto con un administrador. Disculpe las molestias.");
+					"\"Se ha producido un error interno. Por favor, póngase en contacto con un administrador. Disculpe las molestias. ["
+							+ e + "]\"");
 		}
 
 		if (ok)
 			return ResponseEntity.status(HttpStatus.OK).body(null);
 		else
 			return ResponseEntity.status(HttpStatus.OK)
-					.body("Se ha guardado el informe correctamente con algunos errores de evidencias. [errors]");
+					.body("\"Se ha guardado el informe correctamente con algunos errores de evidencias.\"");
 	}
 }
