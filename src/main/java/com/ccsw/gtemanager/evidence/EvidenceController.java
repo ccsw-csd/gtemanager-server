@@ -49,11 +49,10 @@ public class EvidenceController {
 		try {
 			ok = evidenceService.uploadEvidence(upload);
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\""+e.getLocalizedMessage()+"\"");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\"" + e.getLocalizedMessage() + "\"");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-					"\"Se ha producido un error interno. Por favor, póngase en contacto con un administrador. Disculpe las molestias. ["
-							+ e + "]\"");
+					"\"Se ha producido un error interno. Por favor, póngase en contacto con un administrador. Disculpe las molestias.\"");
 		}
 
 		if (ok)
