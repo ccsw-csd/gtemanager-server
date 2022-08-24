@@ -19,7 +19,7 @@ public class Properties {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "key", nullable = false)
+	@Column(name = "`key`", nullable = false)
 	private String key;
 
 	@Column(name = "value")
