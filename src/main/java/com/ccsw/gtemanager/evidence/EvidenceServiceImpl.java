@@ -184,11 +184,12 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 		LocalDate fromDate = null;
 		LocalDate toDate = null;
+		LocalDateTime runDate = null;
 		List<String> weeks;
 		try {
 			fromDate = LocalDate.parse(sheet.getRow(1).getCell(1).getStringCellValue(), formatDate);
 			toDate = LocalDate.parse(sheet.getRow(2).getCell(1).getStringCellValue(), formatDate);
-			LocalDate.parse(sheet.getRow(9).getCell(1).getStringCellValue(), formatDateTimeFile);
+			runDate = LocalDateTime.parse(sheet.getRow(9).getCell(1).getStringCellValue(), formatDateTimeFile);
 			weeks = obtainWeeks(fromDate);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(
@@ -198,7 +199,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 		if (fromDate.compareTo(toDate) > 0)
 			throw new IllegalArgumentException("El informe no se corresponde con un mes o periodo válido.");
 
-		parseProperties(weeks);
+		parseProperties(runDate, weeks);
 
 		List<Person> people = personService.getPeople();
 
@@ -316,9 +317,9 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * @param weeks Listado de semanas dentro del periodo de evidencias
 	 * @throws IllegalArgumentException Existen fechas no admisibles
 	 */
-	protected void parseProperties(List<String> weeks) throws IllegalArgumentException {
+	protected void parseProperties(LocalDateTime runDate, List<String> weeks) throws IllegalArgumentException {
 		List<Properties> propertiesList = new ArrayList<>();
-		propertiesList.add(new Properties("LOAD_DATE", LocalDateTime.now().format(formatDateTimeDB)));
+		propertiesList.add(new Properties("LOAD_DATE", runDate.format(formatDateTimeDB)));
 
 		propertiesList.add(new Properties("LOAD_USERNAME", UserUtils.getUserDetails().getUsername()));
 
