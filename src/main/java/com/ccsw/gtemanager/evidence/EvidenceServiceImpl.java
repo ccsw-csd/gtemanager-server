@@ -67,8 +67,11 @@ public class EvidenceServiceImpl implements EvidenceService {
 	private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
 
+	private static DateTimeFormatter formatDateTimeFile = new DateTimeFormatterBuilder().parseCaseInsensitive()
+			.appendPattern("LLLL dd, yyyy hh:mm a").toFormatter(Locale.getDefault());
+	
 	private static DateTimeFormatter formatDateTimeDB = new DateTimeFormatterBuilder().parseCaseInsensitive()
-			.appendPattern("dd/MM/yyyy hh:mm").toFormatter(Locale.getDefault());
+			.appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
 
 	@Override
 	public List<Evidence> getEvidences() {
@@ -160,7 +163,8 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * leen las líneas a partir de la 15 para los registros de evidencias. Se
 	 * almacena un Evidence por cada Person. Si algún dato no es correcto, se
 	 * registra en EvidenceError. Se detiene el proceso en caso de existir
-	 * propiedades incorrectas.
+	 * propiedades incorrectas, o de no poder procesar fechas de periodo y
+	 * ejecución.
 	 */
 	@Override
 	public boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException {
@@ -178,14 +182,23 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 		Sheet sheet = gteEvidences.getSheetAt(0);
 
+		LocalDate fromDate = null;
+		LocalDate toDate = null;
 		List<String> weeks;
 		try {
-			weeks = obtainWeeks(LocalDate.parse(sheet.getRow(1).getCell(1).getStringCellValue(), formatDate));
+			fromDate = LocalDate.parse(sheet.getRow(1).getCell(1).getStringCellValue(), formatDate);
+			toDate = LocalDate.parse(sheet.getRow(2).getCell(1).getStringCellValue(), formatDate);
+			LocalDate.parse(sheet.getRow(9).getCell(1).getStringCellValue(), formatDateTimeFile);
+			weeks = obtainWeeks(fromDate);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(
 					"El informe no contiene fechas de periodo y/o ejecución válidas (B2, C2, B10).");
 		}
-		parseProperties(sheet, weeks);
+
+		if (fromDate.compareTo(toDate) > 0)
+			throw new IllegalArgumentException("El informe no se corresponde con un mes o periodo válido.");
+
+		parseProperties(weeks);
 
 		List<Person> people = personService.getPeople();
 
@@ -296,31 +309,14 @@ public class EvidenceServiceImpl implements EvidenceService {
 	}
 
 	/**
-	 * Leer y almacenar propiedades de la hoja de cálculo recibida. Deducir fechas
-	 * de carga y periodo, nombre de usuario, semanas dentro del periodo, y número
-	 * de semanas. Almacenar como objetos Properties.
+	 * Leer y almacenar propiedades de la hoja de cálculo recibida. Deducir fecha de
+	 * carga, nombre de usuario, semanas dentro del periodo, y número de semanas.
+	 * Almacenar como objetos Properties.
 	 * 
-	 * @param sheet Hoja de cálculo a procesar
 	 * @param weeks Listado de semanas dentro del periodo de evidencias
 	 * @throws IllegalArgumentException Existen fechas no admisibles
 	 */
-	protected void parseProperties(Sheet sheet, List<String> weeks) throws IllegalArgumentException {
-		String sFromDate = sheet.getRow(1).getCell(1).getStringCellValue();
-		String sToDate = sheet.getRow(2).getCell(1).getStringCellValue();
-
-		LocalDate fromDate = null;
-		LocalDate toDate = null;
-		try {
-			fromDate = LocalDate.parse(sFromDate, formatDate);
-			toDate = LocalDate.parse(sToDate, formatDate);
-
-			if (fromDate.compareTo(toDate) > 0)
-				throw new IllegalArgumentException("El informe no se corresponde con un mes o periodo válido.");
-		} catch (DateTimeParseException e) {
-			throw new IllegalArgumentException(
-					"El informe no contiene fechas de periodo y/o ejecución válidas (B2, C2, B10).");
-		}
-
+	protected void parseProperties(List<String> weeks) throws IllegalArgumentException {
 		List<Properties> propertiesList = new ArrayList<>();
 		propertiesList.add(new Properties("LOAD_DATE", LocalDateTime.now().format(formatDateTimeDB)));
 
