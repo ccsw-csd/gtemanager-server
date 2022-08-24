@@ -69,7 +69,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 	private static DateTimeFormatter formatDateTimeFile = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("LLLL dd, yyyy hh:mm a").toFormatter(Locale.getDefault());
-	
+
 	private static DateTimeFormatter formatDateTimeDB = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
 
@@ -314,7 +314,8 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * carga, nombre de usuario, semanas dentro del periodo, y número de semanas.
 	 * Almacenar como objetos Properties.
 	 * 
-	 * @param weeks Listado de semanas dentro del periodo de evidencias
+	 * @param runDate Fecha de ejecución de informe
+	 * @param weeks   Listado de semanas dentro del periodo de evidencias
 	 * @throws IllegalArgumentException Existen fechas no admisibles
 	 */
 	protected void parseProperties(LocalDateTime runDate, List<String> weeks) throws IllegalArgumentException {
