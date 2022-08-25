@@ -27,6 +27,7 @@ INSERT INTO user (id,username,email,first_name,last_name) VALUES (4,'USERNAME4',
 INSERT INTO user (id,username,email,first_name,last_name) VALUES (5,'USERNAME5','USER5@USER.COM','NAME','LASTNAME');
 INSERT INTO user (id,username,email,first_name,last_name) VALUES (6,'USERNAME6','USER6@USER.COM','NAME6','LASTNAME6');
 
+
 CREATE TABLE person (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   saga varchar(25) NOT NULL,
@@ -41,7 +42,6 @@ CREATE TABLE person (
   PRIMARY KEY (id)
 );
 
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A1','aelmouss','aelmouss@bidoffice.com','Ayoub','El Moussaoui','VLC', 'XXX', 'A', true);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A2','jopepe','jopepe@bidoffice.com','Jopepe','Jopepe','VLC', 'XXX', 'B', false);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A3','amirzoya','amirzoya@bidoffice.com','Armen','Mirzoyan Denisov','VLC', 'XXX', 'C', true);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A4','pajimene','amirzoya@bidoffice.com','Pablo','Jimenez Martinez','VLC', 'XXX', 'D', true);
+INSERT INTO person (id,saga,username,email,name,lastname,center,businesscode,grade,active) VALUES (1,'A1','aelmouss','aelmouss@bidoffice.com','Ayoub','El Moussaoui',null, 'XXX', 'A', 1);
+INSERT INTO person (id,saga,username,email,name,lastname,center,businesscode,grade,active) VALUES (2,'A3','amirzoya','amirzoya@bidoffice.com','Armen','Mirzoyan Denisov',null, 'XXX', 'C', 1);
+INSERT INTO person (id,saga,username,email,name,lastname,center,businesscode,grade,active) VALUES (3,'A4','pajimene','amirzoya@bidoffice.com','Pablo','Jimenez Martinez',null, 'XXX', 'D', 1);
