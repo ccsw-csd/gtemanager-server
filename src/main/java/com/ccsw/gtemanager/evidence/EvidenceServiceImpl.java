@@ -47,6 +47,38 @@ import com.ccsw.gtemanager.properties.model.Properties;
 @Transactional
 public class EvidenceServiceImpl implements EvidenceService {
 
+	private static final String PROPERTY_LOAD_DATE = "LOAD_DATE";
+	private static final String PROPERTY_LOAD_USERNAME = "LOAD_USERNAME";
+	private static final String PROPERTY_LOAD_WEEKS = "LOAD_WEEKS";
+	private static final String PROPERTY_WEEK = "WEEK_";
+
+	private static final int MONTH_START = 1;
+	private static final int WEEK_OFFSET = 7;
+
+	private static final int WEEK_LIST_1 = 0;
+	private static final int WEEK_LIST_2 = 1;
+	private static final int WEEK_LIST_3 = 2;
+	private static final int WEEK_LIST_4 = 3;
+	private static final int WEEK_LIST_5 = 4;
+	private static final int WEEK_LIST_6 = 5;
+
+	private static final int SHEET_0 = 0;
+
+	private static final int ROW_2 = 1;
+	private static final int ROW_3 = 2;
+	private static final int ROW_10 = 9;
+	private static final int ROW_15 = 14;
+
+	private static final int COL_A = 0;
+	private static final int COL_B = 1;
+	private static final int COL_C = 2;
+	private static final int COL_J = 9;
+	private static final int COL_K = 10;
+
+	private static final int EVIDENCE_LIST_START = 15;
+
+	private static final String PERIOD_SEPARATOR = " - ";
+
 	@Autowired
 	private EvidenceErrorService evidenceErrorService;
 
@@ -87,22 +119,22 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * @throws IllegalArgumentException No se ha introducido un periodo admisible
 	 */
 	protected String findWeekForPeriod(String period) throws IllegalArgumentException {
-		String[] days = period.split(" - ");
-		LocalDate d1 = null;
-		LocalDate d2 = null;
+		String[] days = period.split(PERIOD_SEPARATOR);
+		LocalDate firstDay = null;
+		LocalDate lastDay = null;
 		try {
-			d1 = LocalDate.parse(days[0], formatDate);
-			d2 = LocalDate.parse(days[1], formatDate);
+			firstDay = LocalDate.parse(days[0], formatDate);
+			lastDay = LocalDate.parse(days[1], formatDate);
 		} catch (DateTimeParseException e) {
 			throw new IllegalArgumentException("El periodo introducido no es correcto.");
 		}
 
-		String week1 = findWeekForDay(d1);
-		String week2 = findWeekForDay(d2);
-		if (!week1.equals(week2))
+		String firstWeek = findWeekForDay(firstDay);
+		String secondWeek = findWeekForDay(lastDay);
+		if (!firstWeek.equals(secondWeek))
 			throw new IllegalArgumentException("El periodo introducido no es correcto.");
 
-		return week1;
+		return firstWeek;
 	}
 
 	/**
@@ -117,7 +149,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 			String monday = date.with(DayOfWeek.MONDAY).format(formatDate).toUpperCase();
 			String sunday = date.with(DayOfWeek.SUNDAY).format(formatDate).toUpperCase();
 
-			return monday + " - " + sunday;
+			return monday + PERIOD_SEPARATOR + sunday;
 		} catch (DateTimeParseException e) {
 			throw new IllegalArgumentException("La fecha introducida no es correcta.");
 		}
@@ -135,6 +167,9 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * propiedades incorrectas, o de no poder procesar fechas de periodo y
 	 * ejecución.
 	 */
+	/**
+	 *
+	 */
 	@Override
 	public boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException {
 		clearEvidenceData(upload.isDeleteComments());
@@ -149,16 +184,16 @@ public class EvidenceServiceImpl implements EvidenceService {
 					"Se ha producido un error leyendo el archivo. ¿Son las celdas correctas?");
 		}
 
-		Sheet sheet = gteEvidences.getSheetAt(0);
+		Sheet sheet = gteEvidences.getSheetAt(SHEET_0);
 
 		LocalDate fromDate = null;
 		LocalDate toDate = null;
 		LocalDateTime runDate = null;
 		List<String> weeks;
 		try {
-			fromDate = LocalDate.parse(sheet.getRow(1).getCell(1).getStringCellValue(), formatDate);
-			toDate = LocalDate.parse(sheet.getRow(2).getCell(1).getStringCellValue(), formatDate);
-			runDate = LocalDateTime.parse(sheet.getRow(9).getCell(1).getStringCellValue(), formatDateTimeFile);
+			fromDate = LocalDate.parse(sheet.getRow(ROW_2).getCell(COL_B).getStringCellValue(), formatDate);
+			toDate = LocalDate.parse(sheet.getRow(ROW_3).getCell(COL_B).getStringCellValue(), formatDate);
+			runDate = LocalDateTime.parse(sheet.getRow(ROW_10).getCell(COL_B).getStringCellValue(), formatDateTimeFile);
 			weeks = obtainWeeks(fromDate);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(
@@ -178,16 +213,16 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 		List<EvidenceError> evidenceErrors = new ArrayList<>();
 
-		Row currentRow = sheet.getRow(14);
+		Row currentRow = sheet.getRow(ROW_15);
 		Person person = null;
 		Evidence evidence = null;
 		String sagaPrev = "";
-		for (int i = 15; currentRow != null; i++) {
-			String fullName = currentRow.getCell(0).getStringCellValue();
-			String saga = currentRow.getCell(1).getStringCellValue();
-			String email = currentRow.getCell(2).getStringCellValue();
-			String period = currentRow.getCell(9).getStringCellValue();
-			String type = currentRow.getCell(10).getStringCellValue();
+		for (int i = EVIDENCE_LIST_START; currentRow != null; i++) {
+			String fullName = currentRow.getCell(COL_A).getStringCellValue();
+			String saga = currentRow.getCell(COL_B).getStringCellValue();
+			String email = currentRow.getCell(COL_C).getStringCellValue();
+			String period = currentRow.getCell(COL_J).getStringCellValue();
+			String type = currentRow.getCell(COL_K).getStringCellValue();
 
 			if (!StringUtils.hasText(fullName) && !StringUtils.hasText(saga) && !StringUtils.hasText(email)
 					&& !StringUtils.hasText(period) && !StringUtils.hasText(type)) {
@@ -244,17 +279,17 @@ public class EvidenceServiceImpl implements EvidenceService {
 				evidenceType = types.get(types.indexOf(evidenceType));
 
 			if (weeks.contains(week)) {
-				if (week.equals(weeks.get(0)))
+				if (week.equals(weeks.get(WEEK_LIST_1)))
 					evidence.setEvidenceTypeW1(evidenceType);
-				else if (week.equals(weeks.get(1)))
+				else if (week.equals(weeks.get(WEEK_LIST_2)))
 					evidence.setEvidenceTypeW2(evidenceType);
-				else if (week.equals(weeks.get(2)))
+				else if (week.equals(weeks.get(WEEK_LIST_3)))
 					evidence.setEvidenceTypeW3(evidenceType);
-				else if (week.equals(weeks.get(3)))
+				else if (week.equals(weeks.get(WEEK_LIST_4)))
 					evidence.setEvidenceTypeW4(evidenceType);
-				else if (week.equals(weeks.get(4)))
+				else if (week.equals(weeks.get(WEEK_LIST_5)))
 					evidence.setEvidenceTypeW5(evidenceType);
-				else if (week.equals(weeks.get(5)))
+				else if (week.equals(weeks.get(WEEK_LIST_6)))
 					evidence.setEvidenceTypeW6(evidenceType);
 			} else {
 				evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
@@ -289,13 +324,13 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 */
 	protected void parseProperties(LocalDateTime runDate, List<String> weeks) throws IllegalArgumentException {
 		List<Properties> propertiesList = new ArrayList<>();
-		propertiesList.add(new Properties("LOAD_DATE", runDate.format(formatDateTimeDB)));
+		propertiesList.add(new Properties(PROPERTY_LOAD_DATE, runDate.format(formatDateTimeDB)));
 
-		propertiesList.add(new Properties("LOAD_USERNAME", UserUtils.getUserDetails().getUsername()));
+		propertiesList.add(new Properties(PROPERTY_LOAD_USERNAME, UserUtils.getUserDetails().getUsername()));
 
 		List<Properties> weekProperties = new ArrayList<>();
 		for (int i = 1; i <= 6; i++) {
-			Properties pWeek = new Properties("WEEK_" + i, null);
+			Properties pWeek = new Properties(PROPERTY_WEEK + i, null);
 			try {
 				pWeek.setValue(weeks.get(i - 1));
 			} catch (IndexOutOfBoundsException e) {
@@ -304,7 +339,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 			weekProperties.add(pWeek);
 		}
 
-		propertiesList.add(new Properties("LOAD_WEEKS", String.valueOf(weeks.size())));
+		propertiesList.add(new Properties(PROPERTY_LOAD_WEEKS, String.valueOf(weeks.size())));
 		propertiesService.saveAll(propertiesList);
 		propertiesService.saveAll(weekProperties);
 	}
@@ -319,12 +354,12 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * @throws IllegalArgumentException No se ha introducido una fecha admisible
 	 */
 	protected List<String> obtainWeeks(LocalDate initialDate) throws IllegalArgumentException {
-		LocalDate date = initialDate.withDayOfMonth(1);
+		LocalDate date = initialDate.withDayOfMonth(MONTH_START);
 		int currentMonth = initialDate.getMonthValue();
 		List<String> weeks = new ArrayList<>();
 		while (date.getMonthValue() == currentMonth) {
 			weeks.add(findWeekForDay(date));
-			date = date.plusDays(7).with(DayOfWeek.MONDAY);
+			date = date.plusDays(WEEK_OFFSET).with(DayOfWeek.MONDAY);
 		}
 
 		return weeks;

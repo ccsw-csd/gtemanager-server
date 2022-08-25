@@ -40,6 +40,30 @@ import com.ccsw.gtemanager.evidencetype.EvidenceTypeService;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class EvidenceIT extends BaseITAbstract {
 
+	private static final String SHEET_NAME = "Sheet1";
+
+	private static final int ROW_2 = 1;
+	private static final int ROW_3 = 2;
+	private static final int ROW_10 = 9;
+	private static final int ROW_15 = 14;
+	private static final int ROW_16 = 15;
+	private static final int ROW_17 = 16;
+
+	private static final int COL_A = 0;
+	private static final int COL_B = 1;
+	private static final int COL_C = 2;
+	private static final int COL_J = 9;
+	private static final int COL_K = 10;
+
+	private static final String FILE_VARIABLE = "file";
+	private static final String DELETE_COMMENTS_VARIABLE = "deleteComments";
+
+	private static final String TEST_STRING = "test";
+
+	private static final String PDF_FILE_NAME = "test.pdf";
+	private static final String XLSX_FILE_NAME = "test.xlsx";
+	private static final String XSLX_FILE_FORMAT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
 	private static final String LOCALHOST = "http://localhost:";
 	private static final String SERVICE_PATH = "/evidence";
 
@@ -87,20 +111,20 @@ public class EvidenceIT extends BaseITAbstract {
 	private static Workbook gteEvidences;
 	private static Sheet sheet;
 
-	private static Row row1;
-	private static Row row2;
-	private static Row row9;
-	private static Row row14;
-	private static Row row15;
-	private static Row row16;
+	private static Row rowFromDate;
+	private static Row rowToDate;
+	private static Row rowRunDate;
+	private static Row rowFirstEvidence;
+	private static Row rowSecondEvidence;
+	private static Row rowThirdEvidence;
 
 	private static Cell cellFromDate;
 	private static Cell cellToDate;
 	private static Cell cellRunDate;
 
-	private static Cell[] cellsRow14;
-	private static Cell[] cellsRow15;
-	private static Cell[] cellsRow16;
+	private static Cell[] cellsRowFirstEvidence;
+	private static Cell[] cellsRowSecondEvidence;
+	private static Cell[] cellsRowThirdEvidence;
 
 	/**
 	 * Inicializar hoja de cálculo y celdas de valores previo a la ejecución de los
@@ -110,39 +134,39 @@ public class EvidenceIT extends BaseITAbstract {
 	public void initializeSpreadsheet() {
 		gteEvidences = new XSSFWorkbook();
 
-		sheet = gteEvidences.createSheet("Sheet1");
+		sheet = gteEvidences.createSheet(SHEET_NAME);
 
-		row1 = sheet.createRow(1);
-		cellFromDate = row1.createCell(1);
-		row2 = sheet.createRow(2);
-		cellToDate = row2.createCell(1);
+		rowFromDate = sheet.createRow(ROW_2);
+		cellFromDate = rowFromDate.createCell(COL_B);
+		rowToDate = sheet.createRow(ROW_3);
+		cellToDate = rowToDate.createCell(COL_B);
 
-		row9 = sheet.createRow(9);
-		cellRunDate = row9.createCell(1);
+		rowRunDate = sheet.createRow(ROW_10);
+		cellRunDate = rowRunDate.createCell(COL_B);
 
-		row14 = sheet.createRow(14);
-		cellsRow14 = new Cell[5];
-		cellsRow14[0] = row14.createCell(0);
-		cellsRow14[1] = row14.createCell(1);
-		cellsRow14[2] = row14.createCell(2);
-		cellsRow14[3] = row14.createCell(9);
-		cellsRow14[4] = row14.createCell(10);
+		rowFirstEvidence = sheet.createRow(ROW_15);
+		cellsRowFirstEvidence = new Cell[5];
+		cellsRowFirstEvidence[0] = rowFirstEvidence.createCell(COL_A);
+		cellsRowFirstEvidence[1] = rowFirstEvidence.createCell(COL_B);
+		cellsRowFirstEvidence[2] = rowFirstEvidence.createCell(COL_C);
+		cellsRowFirstEvidence[3] = rowFirstEvidence.createCell(COL_J);
+		cellsRowFirstEvidence[4] = rowFirstEvidence.createCell(COL_K);
 
-		row15 = sheet.createRow(15);
-		cellsRow15 = new Cell[5];
-		cellsRow15[0] = row15.createCell(0);
-		cellsRow15[1] = row15.createCell(1);
-		cellsRow15[2] = row15.createCell(2);
-		cellsRow15[3] = row15.createCell(9);
-		cellsRow15[4] = row15.createCell(10);
+		rowSecondEvidence = sheet.createRow(ROW_16);
+		cellsRowSecondEvidence = new Cell[5];
+		cellsRowSecondEvidence[0] = rowSecondEvidence.createCell(COL_A);
+		cellsRowSecondEvidence[1] = rowSecondEvidence.createCell(COL_B);
+		cellsRowSecondEvidence[2] = rowSecondEvidence.createCell(COL_C);
+		cellsRowSecondEvidence[3] = rowSecondEvidence.createCell(COL_J);
+		cellsRowSecondEvidence[4] = rowSecondEvidence.createCell(COL_K);
 
-		row16 = sheet.createRow(16);
-		cellsRow16 = new Cell[5];
-		cellsRow16[0] = row16.createCell(0);
-		cellsRow16[1] = row16.createCell(1);
-		cellsRow16[2] = row16.createCell(2);
-		cellsRow16[3] = row16.createCell(9);
-		cellsRow16[4] = row16.createCell(10);
+		rowThirdEvidence = sheet.createRow(ROW_17);
+		cellsRowThirdEvidence = new Cell[5];
+		cellsRowThirdEvidence[0] = rowThirdEvidence.createCell(COL_A);
+		cellsRowThirdEvidence[1] = rowThirdEvidence.createCell(COL_B);
+		cellsRowThirdEvidence[2] = rowThirdEvidence.createCell(COL_C);
+		cellsRowThirdEvidence[3] = rowThirdEvidence.createCell(COL_J);
+		cellsRowThirdEvidence[4] = rowThirdEvidence.createCell(COL_K);
 	}
 
 	/**
@@ -165,7 +189,7 @@ public class EvidenceIT extends BaseITAbstract {
 	 */
 	@Test
 	public void sendingElementWithoutTokenShouldReturnError() {
-		String test = "test";
+		String test = TEST_STRING;
 
 		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST,
 				new HttpEntity<>(test), String.class);
@@ -178,7 +202,7 @@ public class EvidenceIT extends BaseITAbstract {
 	 */
 	@Test
 	public void sendingInvalidElementShouldReturnError() {
-		String test = "test";
+		String test = TEST_STRING;
 
 		ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST,
 				new HttpEntity<>(test, getHeaders()), String.class);
@@ -191,12 +215,12 @@ public class EvidenceIT extends BaseITAbstract {
 	 */
 	@Test
 	public void sendingNonSpreadsheetFileShouldReturnError() {
-		MockMultipartFile file = new MockMultipartFile("test.pdf", "test.pdf", MediaType.APPLICATION_PDF_VALUE,
-				"test".getBytes());
+		MockMultipartFile file = new MockMultipartFile(PDF_FILE_NAME, PDF_FILE_NAME, MediaType.APPLICATION_PDF_VALUE,
+				TEST_STRING.getBytes());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-		body.add("file", file.getResource());
-		body.add("deleteComments", false);
+		body.add(FILE_VARIABLE, file.getResource());
+		body.add(DELETE_COMMENTS_VARIABLE, false);
 
 		HttpHeaders headers = getHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -216,30 +240,30 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
-		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
-		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
-		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
-		cellsRow14[3].setCellValue(EXISTING_PERIOD_W4);
-		cellsRow14[4].setCellValue(EXISTING_TYPE_1);
+		cellsRowFirstEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRowFirstEvidence[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRowFirstEvidence[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W4);
+		cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		cellsRow15[0].setCellValue(EXISTING_FULLNAME_P1);
-		cellsRow15[1].setCellValue(EXISTING_SAGA_P1);
-		cellsRow15[2].setCellValue(EXISTING_EMAIL_P1);
-		cellsRow15[3].setCellValue(EXISTING_PERIOD_W5);
-		cellsRow15[4].setCellValue(EXISTING_TYPE_2);
+		cellsRowSecondEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRowSecondEvidence[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRowSecondEvidence[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRowSecondEvidence[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRowSecondEvidence[4].setCellValue(EXISTING_TYPE_2);
 
-		cellsRow16[0].setCellValue(EXISTING_FULLNAME_P2);
-		cellsRow16[1].setCellValue(EXISTING_SAGA_P2);
-		cellsRow16[2].setCellValue(EXISTING_EMAIL_P2);
-		cellsRow16[3].setCellValue(EXISTING_PERIOD_W5);
-		cellsRow16[4].setCellValue(EXISTING_TYPE_1);
+		cellsRowThirdEvidence[0].setCellValue(EXISTING_FULLNAME_P2);
+		cellsRowThirdEvidence[1].setCellValue(EXISTING_SAGA_P2);
+		cellsRowThirdEvidence[2].setCellValue(EXISTING_EMAIL_P2);
+		cellsRowThirdEvidence[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRowThirdEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		MockMultipartFile file = new MockMultipartFile("test.xslx", "test.xlsx",
-				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
+		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT,
+				exportSpreadsheet());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-		body.add("file", file.getResource());
-		body.add("deleteComments", false);
+		body.add(FILE_VARIABLE, file.getResource());
+		body.add(DELETE_COMMENTS_VARIABLE, false);
 
 		HttpHeaders headers = getHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -261,18 +285,18 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(NONEXISTING_RUNDATE);
 
-		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
-		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
-		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
-		cellsRow14[3].setCellValue(EXISTING_PERIOD_W5);
-		cellsRow14[4].setCellValue(EXISTING_TYPE_1);
+		cellsRowFirstEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRowFirstEvidence[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRowFirstEvidence[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		MockMultipartFile file = new MockMultipartFile("test.xslx", "test.xlsx",
-				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
+		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT,
+				exportSpreadsheet());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-		body.add("file", file.getResource());
-		body.add("deleteComments", false);
+		body.add(FILE_VARIABLE, file.getResource());
+		body.add(DELETE_COMMENTS_VARIABLE, false);
 
 		HttpHeaders headers = getHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -288,12 +312,11 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
-		file = new MockMultipartFile("test.xslx", "test.xlsx",
-				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
+		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT, exportSpreadsheet());
 
 		body = new LinkedMultiValueMap<>();
-		body.add("file", file.getResource());
-		body.add("deleteComments", false);
+		body.add(FILE_VARIABLE, file.getResource());
+		body.add(DELETE_COMMENTS_VARIABLE, false);
 
 		headers = getHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -309,12 +332,11 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(NONEXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
-		file = new MockMultipartFile("test.xslx", "test.xlsx",
-				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
+		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT, exportSpreadsheet());
 
 		body = new LinkedMultiValueMap<>();
-		body.add("file", file.getResource());
-		body.add("deleteComments", false);
+		body.add(FILE_VARIABLE, file.getResource());
+		body.add(DELETE_COMMENTS_VARIABLE, false);
 
 		headers = getHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -337,30 +359,30 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
-		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
-		cellsRow14[1].setCellValue(NONEXISTING_SAGA);
-		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
-		cellsRow14[3].setCellValue(EXISTING_PERIOD_W4);
-		cellsRow14[4].setCellValue(EXISTING_TYPE_1);
+		cellsRowFirstEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRowFirstEvidence[1].setCellValue(NONEXISTING_SAGA);
+		cellsRowFirstEvidence[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W4);
+		cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		cellsRow15[0].setCellValue(EXISTING_FULLNAME_P1);
-		cellsRow15[1].setCellValue(EXISTING_SAGA_P1);
-		cellsRow15[2].setCellValue(EXISTING_EMAIL_P1);
-		cellsRow15[3].setCellValue(EXISTING_PERIOD_W5);
-		cellsRow15[4].setCellValue(EXISTING_TYPE_2);
+		cellsRowSecondEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRowSecondEvidence[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRowSecondEvidence[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRowSecondEvidence[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRowSecondEvidence[4].setCellValue(EXISTING_TYPE_2);
 
-		cellsRow16[0].setCellValue(EXISTING_FULLNAME_P2);
-		cellsRow16[1].setCellValue(EXISTING_SAGA_P2);
-		cellsRow16[2].setCellValue(EXISTING_EMAIL_P2);
-		cellsRow16[3].setCellValue(EXISTING_PERIOD_W5);
-		cellsRow16[4].setCellValue(EXISTING_TYPE_1);
+		cellsRowThirdEvidence[0].setCellValue(EXISTING_FULLNAME_P2);
+		cellsRowThirdEvidence[1].setCellValue(EXISTING_SAGA_P2);
+		cellsRowThirdEvidence[2].setCellValue(EXISTING_EMAIL_P2);
+		cellsRowThirdEvidence[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRowThirdEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		MockMultipartFile file = new MockMultipartFile("test.xslx", "test.xlsx",
-				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
+		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT,
+				exportSpreadsheet());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-		body.add("file", file.getResource());
-		body.add("deleteComments", false);
+		body.add(FILE_VARIABLE, file.getResource());
+		body.add(DELETE_COMMENTS_VARIABLE, false);
 
 		HttpHeaders headers = getHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -372,18 +394,17 @@ public class EvidenceIT extends BaseITAbstract {
 		assertTrue(response.getBody() != null);
 		assertEquals(2, evidenceService.getAll().size());
 
-		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
-		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
-		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
-		cellsRow14[3].setCellValue(NONEXISTING_PERIOD);
-		cellsRow14[4].setCellValue(EXISTING_TYPE_1);
+		cellsRowFirstEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRowFirstEvidence[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRowFirstEvidence[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRowFirstEvidence[3].setCellValue(NONEXISTING_PERIOD);
+		cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		file = new MockMultipartFile("test.xslx", "test.xlsx",
-				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
+		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT, exportSpreadsheet());
 
 		body = new LinkedMultiValueMap<>();
-		body.add("file", file.getResource());
-		body.add("deleteComments", false);
+		body.add(FILE_VARIABLE, file.getResource());
+		body.add(DELETE_COMMENTS_VARIABLE, false);
 
 		headers = getHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -396,18 +417,17 @@ public class EvidenceIT extends BaseITAbstract {
 		assertEquals(2, evidenceService.getAll().size());
 		assertEquals(1, evidenceErrorService.getAll().size());
 
-		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
-		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
-		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
-		cellsRow14[3].setCellValue(EXISTING_PERIOD_W4);
-		cellsRow14[4].setCellValue(NONEXISTING_TYPE);
+		cellsRowFirstEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRowFirstEvidence[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRowFirstEvidence[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W4);
+		cellsRowFirstEvidence[4].setCellValue(NONEXISTING_TYPE);
 
-		file = new MockMultipartFile("test.xslx", "test.xlsx",
-				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
+		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT, exportSpreadsheet());
 
 		body = new LinkedMultiValueMap<>();
-		body.add("file", file.getResource());
-		body.add("deleteComments", false);
+		body.add(FILE_VARIABLE, file.getResource());
+		body.add(DELETE_COMMENTS_VARIABLE, false);
 
 		headers = getHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -430,18 +450,18 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
-		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
-		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
-		cellsRow14[2].setCellValue(EXISTING_EMAIL_P1);
-		cellsRow14[3].setCellValue(EXISTING_PERIOD_W5);
-		cellsRow14[4].setCellValue(EXISTING_TYPE_1);
+		cellsRowFirstEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
+		cellsRowFirstEvidence[1].setCellValue(EXISTING_SAGA_P1);
+		cellsRowFirstEvidence[2].setCellValue(EXISTING_EMAIL_P1);
+		cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W5);
+		cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		MockMultipartFile file = new MockMultipartFile("test.xslx", "test.xlsx",
-				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportSpreadsheet());
+		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT,
+				exportSpreadsheet());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-		body.add("file", file.getResource());
-		body.add("deleteComments", false);
+		body.add(FILE_VARIABLE, file.getResource());
+		body.add(DELETE_COMMENTS_VARIABLE, false);
 
 		HttpHeaders headers = getHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);

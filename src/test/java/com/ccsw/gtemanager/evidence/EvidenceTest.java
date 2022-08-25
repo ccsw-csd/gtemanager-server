@@ -31,6 +31,10 @@ import com.ccsw.gtemanager.properties.PropertiesServiceImpl;
 @ExtendWith(MockitoExtension.class)
 public class EvidenceTest {
 
+	private static final int WEEK_LIST_1 = 0;
+	private static final int WEEK_LIST_3 = 2;
+	private static final int WEEK_LIST_6 = 5;
+
 	private static final String EXISTING_PERIOD = "29-AUG-2022 - 31-AUG-2022";
 	private static final String EXISTING_PERIOD_WEEK = "29-AUG-2022 - 04-SEP-2022";
 	private static final String NONEXISTING_PERIOD = "29-AUG-2022 - 21-AUG-2022";
@@ -109,9 +113,9 @@ public class EvidenceTest {
 		assertEquals(EXISTING_MONTH2_WEEKS, weeks2.size());
 		assertEquals(EXISTING_MONTH3_WEEKS, weeks3.size());
 
-		assertEquals(EXISTING_MONTH1_WEEK1, weeks1.get(0));
-		assertEquals(EXISTING_MONTH2_WEEK3, weeks2.get(2));
-		assertEquals(EXISTING_MONTH3_WEEK6, weeks3.get(5));
+		assertEquals(EXISTING_MONTH1_WEEK1, weeks1.get(WEEK_LIST_1));
+		assertEquals(EXISTING_MONTH2_WEEK3, weeks2.get(WEEK_LIST_3));
+		assertEquals(EXISTING_MONTH3_WEEK6, weeks3.get(WEEK_LIST_6));
 	}
 
 	/**
