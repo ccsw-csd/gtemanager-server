@@ -1,0 +1,34 @@
+package com.ccsw.gtemanager.evidencecomment;
+
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
+
+/**
+ * 
+ * TODO DOCS
+ *
+ */
+@Service
+@Transactional
+public class EvidenceCommentServiceImpl implements EvidenceCommentService {
+
+	@Autowired
+	private EvidenceCommentRepository evidenceCommentRepository;
+
+	@Override
+	public List<EvidenceComment> getAll() {
+		return (List<EvidenceComment>) evidenceCommentRepository.findAll();
+	}
+
+	@Override
+	public void clear() {
+		evidenceCommentRepository.deleteAll();
+	}
+
+}

@@ -4,12 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ccsw.gtemanager.evidence.model.Evidence;
-import com.ccsw.gtemanager.evidence.model.EvidenceError;
-import com.ccsw.gtemanager.evidence.model.EvidenceType;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
-import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
-import com.ccsw.gtemanager.person.model.Person;
-import com.ccsw.gtemanager.properties.model.Properties;
 
 /**
  * EvidenceService: servicio de datos de evidencias.
@@ -21,52 +16,7 @@ public interface EvidenceService {
 	 * 
 	 * @return Listado de Evidences
 	 */
-	List<Evidence> getEvidences();
-
-	/**
-	 * Obtener un listado de todos los errores de evidencias.
-	 * 
-	 * @return Listado de EvidenceErrors
-	 */
-	List<EvidenceError> getEvidenceErrors();
-
-	/**
-	 * Obtener un listado de todos los comentarios de evidencias.
-	 * 
-	 * @return Listado de EvidenceComments
-	 */
-	List<EvidenceComment> getEvidenceComments();
-
-	/**
-	 * Obtener un listado de propiedades del informe.
-	 * 
-	 * @return Listado de Properties
-	 */
-	List<Properties> getProperties();
-
-	/**
-	 * Obtener un listado de tipos de evidencia.
-	 * 
-	 * @return Listado de EvidenceType
-	 */
-	List<EvidenceType> getEvidenceTypes();
-
-	/**
-	 * Obtener tipo de evidencia dado código del tipo, ignorando mayúsculas y
-	 * minúsculas.
-	 * 
-	 * @param type Código de EvidenceType a buscar
-	 * @return EvidenceType encontrado
-	 */
-	EvidenceType findEvidenceType(String type);
-
-	/**
-	 * Obtener persona dado un código de saga.
-	 * 
-	 * @param saga Código saga por el que buscar
-	 * @return Person encontrado
-	 */
-	Person findPersonBySaga(String saga);
+	List<Evidence> getAll();
 
 	/**
 	 * Leer y procesar un archivo de hoja de cálculo para obtener y almacenar
@@ -83,10 +33,14 @@ public interface EvidenceService {
 	boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException;
 
 	/**
-	 * Limpiar datos de evidencias, comentarios, errores, y parámetros.
+	 * Guardar todos los registros de Evidence proporcionados.
 	 * 
-	 * @param deleteComments Controlar si se desea borrar comentarios
+	 * @param evidences Listado de Evidence a almacenar
 	 */
-	void clearEvidenceData(boolean deleteComments);
+	void saveAll(List<Evidence> evidences);
 
+	/**
+	 * Eliminar todos los registros de Evidence.
+	 */
+	void clear();
 }

@@ -1,4 +1,4 @@
-package com.ccsw.gtemanager.evidence.model;
+package com.ccsw.gtemanager.evidencetype.model;
 
 import java.util.Objects;
 

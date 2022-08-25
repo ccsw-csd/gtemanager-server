@@ -1,4 +1,4 @@
-package com.ccsw.gtemanager.evidence.model;
+package com.ccsw.gtemanager.evidenceerror.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

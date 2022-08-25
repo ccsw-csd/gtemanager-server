@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 import com.ccsw.gtemanager.person.model.Person;
 
 /**

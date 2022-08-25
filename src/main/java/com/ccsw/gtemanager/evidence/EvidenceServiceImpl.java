@@ -26,18 +26,19 @@ import org.springframework.util.StringUtils;
 
 import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
-import com.ccsw.gtemanager.evidence.model.EvidenceError;
-import com.ccsw.gtemanager.evidence.model.EvidenceType;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
-import com.ccsw.gtemanager.evidencecomment.EvidenceCommentRepository;
-import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
+import com.ccsw.gtemanager.evidencecomment.EvidenceCommentService;
+import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
+import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
+import com.ccsw.gtemanager.evidencetype.EvidenceTypeService;
+import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 import com.ccsw.gtemanager.person.PersonService;
 import com.ccsw.gtemanager.person.model.Person;
-import com.ccsw.gtemanager.properties.PropertiesRepository;
+import com.ccsw.gtemanager.properties.PropertiesService;
 import com.ccsw.gtemanager.properties.model.Properties;
 
 /**
- * DefaultEvidenceService: clase de implementación de EvidenceService. Contiene
+ * EvidenceServiceImpl: clase de implementación de EvidenceService. Contiene
  * métodos adicionales para el apoyo del procesamiento de datos de evidencias.
  * Se encarga de la gestión adicional de repositorios de comentarios, tipos, y
  * errores de evidencias, además de propiedades.
@@ -47,22 +48,22 @@ import com.ccsw.gtemanager.properties.model.Properties;
 public class EvidenceServiceImpl implements EvidenceService {
 
 	@Autowired
+	private EvidenceErrorService evidenceErrorService;
+
+	@Autowired
+	private EvidenceCommentService evidenceCommentService;
+
+	@Autowired
+	private EvidenceTypeService evidenceTypeService;
+
+	@Autowired
 	private PersonService personService;
 
 	@Autowired
+	private PropertiesService propertiesService;
+
+	@Autowired
 	private EvidenceRepository evidenceRepository;
-
-	@Autowired
-	private EvidenceErrorRepository evidenceErrorRepository;
-
-	@Autowired
-	private EvidenceCommentRepository evidenceCommentRepository;
-
-	@Autowired
-	private EvidenceTypeRepository evidenceTypeRepository;
-
-	@Autowired
-	private PropertiesRepository propertiesRepository;
 
 	private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
@@ -74,40 +75,8 @@ public class EvidenceServiceImpl implements EvidenceService {
 			.appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
 
 	@Override
-	public List<Evidence> getEvidences() {
+	public List<Evidence> getAll() {
 		return (List<Evidence>) evidenceRepository.findAll();
-	}
-
-	@Override
-	public List<EvidenceError> getEvidenceErrors() {
-		return (List<EvidenceError>) evidenceErrorRepository.findAll();
-	}
-
-	@Override
-	public List<EvidenceComment> getEvidenceComments() {
-		return (List<EvidenceComment>) evidenceCommentRepository.findAll();
-	}
-
-	@Override
-	public List<EvidenceType> getEvidenceTypes() {
-		return (List<EvidenceType>) evidenceTypeRepository.findAll();
-	}
-
-	@Override
-	public List<Properties> getProperties() {
-		return (List<Properties>) propertiesRepository.findAll();
-	}
-
-	@Override
-	public EvidenceType findEvidenceType(String type) {
-		List<EvidenceType> types = evidenceTypeRepository.findByCodeIgnoreCase(type);
-		return types.isEmpty() ? null : types.get(0);
-	}
-
-	@Override
-	public Person findPersonBySaga(String saga) {
-		List<Person> people = personService.getBySaga(saga);
-		return people.size() == 1 ? people.get(0) : null;
 	}
 
 	/**
@@ -203,7 +172,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 		List<Person> people = personService.getPeople();
 
-		List<EvidenceType> types = getEvidenceTypes();
+		List<EvidenceType> types = evidenceTypeService.getAll();
 
 		Map<Person, Evidence> evidences = new LinkedHashMap<>();
 
@@ -237,7 +206,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 			}
 
 			try {
-				saga = parseSaga(saga);
+				saga = personService.parseSaga(saga);
 			} catch (IndexOutOfBoundsException e) {
 				evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
 				sagaPrev = saga;
@@ -250,7 +219,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 			}
 
 			if (!people.contains(person)) {
-				person = findPersonBySaga(saga);
+				person = personService.getBySaga(saga);
 				if (person == null) {
 					evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
 					sagaPrev = saga;
@@ -301,9 +270,9 @@ public class EvidenceServiceImpl implements EvidenceService {
 		}
 
 		gteEvidences.close();
-		evidenceRepository.saveAll(evidences.values());
+		saveAll(new ArrayList<>(evidences.values()));
 		if (!evidenceErrors.isEmpty()) {
-			evidenceErrorRepository.saveAll(evidenceErrors);
+			evidenceErrorService.saveAll(evidenceErrors);
 			return false;
 		} else
 			return true;
@@ -336,8 +305,8 @@ public class EvidenceServiceImpl implements EvidenceService {
 		}
 
 		propertiesList.add(new Properties("LOAD_WEEKS", String.valueOf(weeks.size())));
-		propertiesRepository.saveAll(propertiesList);
-		propertiesRepository.saveAll(weekProperties);
+		propertiesService.saveAll(propertiesList);
+		propertiesService.saveAll(weekProperties);
 	}
 
 	/**
@@ -362,33 +331,25 @@ public class EvidenceServiceImpl implements EvidenceService {
 	}
 
 	/**
-	 * Leer y deducir código saga de la persona implicada.
+	 * Limpiar datos de evidencias, comentarios, errores, y parámetros.
 	 * 
-	 * @param saga Código a procesar
-	 * @return Código truncado y validado en formato numérico, o en longitud de 4
-	 *         caracteres alfanuméricos
-	 * @throws IllegalArgumentException No se ha introducido un código admisible
+	 * @param deleteComments Controlar si se desea borrar comentarios
 	 */
-	protected String parseSaga(String saga) throws IllegalArgumentException {
-		try {
-			saga = saga.split("_")[1];
-		} catch (IndexOutOfBoundsException e) {
-			throw new IllegalArgumentException("Código Saga introducido no es válido.");
-		}
-		try {
-			return String.valueOf(Long.parseLong(saga));
-		} catch (NumberFormatException ex) {
-			return saga.substring(saga.length() - 4);
-		}
+	public void clearEvidenceData(boolean deleteComments) {
+		if (deleteComments)
+			evidenceCommentService.clear();
+		clear();
+		evidenceErrorService.clear();
+		propertiesService.clear();
 	}
 
 	@Override
-	public void clearEvidenceData(boolean deleteComments) {
-		evidenceRepository.deleteAll();
-		evidenceErrorRepository.deleteAll();
-		propertiesRepository.deleteAll();
-		if (deleteComments)
-			evidenceCommentRepository.deleteAll();
+	public void saveAll(List<Evidence> evidences) {
+		evidenceRepository.saveAll(evidences);
 	}
 
+	@Override
+	public void clear() {
+		evidenceRepository.deleteAll();
+	}
 }

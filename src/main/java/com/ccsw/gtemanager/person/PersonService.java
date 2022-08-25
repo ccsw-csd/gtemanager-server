@@ -10,6 +10,13 @@ import com.ccsw.gtemanager.person.model.Person;
 public interface PersonService {
 
 	/**
+	 * Obtener listado de todas las personas en la base de datos.
+	 * 
+	 * @return Listado de Person
+	 */
+	List<Person> getPeople();
+
+	/**
 	 * Obtener Person dado un ID.
 	 * 
 	 * @param id ID por el que buscar persona
@@ -18,17 +25,21 @@ public interface PersonService {
 	Person getById(Long id);
 
 	/**
-	 * Obtener listado de personas dado un código saga.
+	 * Obtener persona dado un código de saga.
 	 * 
 	 * @param saga Código saga por el que buscar
-	 * @return Listado de Person encontrados
+	 * @return Person encontrado
 	 */
-	List<Person> getBySaga(String saga);
+	Person getBySaga(String saga);
 
 	/**
-	 * Obtener listado de todas las personas en la base de datos.
+	 * Leer y deducir código saga de la persona implicada.
 	 * 
-	 * @return Listado de Person
+	 * @param saga Código a procesar
+	 * @return Código truncado y validado en formato numérico, o en longitud de 4
+	 *         caracteres alfanuméricos
+	 * @throws IllegalArgumentException No se ha introducido un código admisible
 	 */
-	List<Person> getPeople();
+	String parseSaga(String saga) throws IllegalArgumentException;
+
 }

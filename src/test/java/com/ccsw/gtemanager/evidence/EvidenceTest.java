@@ -17,7 +17,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.ccsw.gtemanager.evidencecomment.EvidenceCommentRepository;
+import com.ccsw.gtemanager.evidencecomment.EvidenceCommentServiceImpl;
+import com.ccsw.gtemanager.evidenceerror.EvidenceErrorRepository;
+import com.ccsw.gtemanager.evidenceerror.EvidenceErrorServiceImpl;
+import com.ccsw.gtemanager.person.PersonServiceImpl;
 import com.ccsw.gtemanager.properties.PropertiesRepository;
+import com.ccsw.gtemanager.properties.PropertiesServiceImpl;
 
 /**
  * EvidenceTest: colección de tests unitarios que prueban funcionalidades de la
@@ -60,6 +65,18 @@ public class EvidenceTest {
 	@InjectMocks
 	private EvidenceServiceImpl evidenceService;
 
+	@InjectMocks
+	private EvidenceErrorServiceImpl evidenceErrorService;
+
+	@InjectMocks
+	private EvidenceCommentServiceImpl evidenceCommentService;
+
+	@InjectMocks
+	private PersonServiceImpl personService;
+
+	@InjectMocks
+	private PropertiesServiceImpl propertiesService;
+
 	private static DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
 
@@ -68,7 +85,7 @@ public class EvidenceTest {
 	 */
 	@Test
 	public void parseValidSagaShouldReturnSaga() {
-		assertEquals(EXISTING_SAGA, evidenceService.parseSaga(EXISTING_UNPARSED_SAGA));
+		assertEquals(EXISTING_SAGA, personService.parseSaga(EXISTING_UNPARSED_SAGA));
 	}
 
 	/**
@@ -76,7 +93,7 @@ public class EvidenceTest {
 	 */
 	@Test
 	public void parseInvalidSagaShouldReturnError() {
-		assertThrows(IllegalArgumentException.class, () -> evidenceService.parseSaga(NONEXISTING_UNPARSED_SAGA));
+		assertThrows(IllegalArgumentException.class, () -> personService.parseSaga(NONEXISTING_UNPARSED_SAGA));
 	}
 
 	/**
@@ -127,7 +144,7 @@ public class EvidenceTest {
 	@Test
 	public void ifDeleteCommentsEmptyEvidenceComment() {
 		evidenceService.clearEvidenceData(true);
-		assertTrue(evidenceService.getEvidenceComments().isEmpty());
+		assertTrue(evidenceCommentService.getAll().isEmpty());
 	}
 
 	/**
@@ -136,8 +153,8 @@ public class EvidenceTest {
 	@Test
 	public void beginningProcessShouldEmptyEvidence() {
 		evidenceService.clearEvidenceData(false);
-		assertTrue(evidenceService.getEvidences().isEmpty());
-		assertTrue(evidenceService.getEvidenceErrors().isEmpty());
-		assertTrue(evidenceService.getProperties().isEmpty());
+		assertTrue(evidenceService.getAll().isEmpty());
+		assertTrue(evidenceErrorService.getAll().isEmpty());
+		assertTrue(propertiesService.getAll().isEmpty());
 	}
 }

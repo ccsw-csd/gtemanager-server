@@ -29,6 +29,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.ccsw.gtemanager.config.BaseITAbstract;
+import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
+import com.ccsw.gtemanager.evidencetype.EvidenceTypeService;
 
 /**
  * EvidenceTestIT: colección de tests integrados que prueban funcionalidad del
@@ -75,6 +77,12 @@ public class EvidenceIT extends BaseITAbstract {
 
 	@Autowired
 	private EvidenceService evidenceService;
+
+	@Autowired
+	private EvidenceErrorService evidenceErrorService;
+
+	@Autowired
+	private EvidenceTypeService evidenceTypeService;
 
 	private static Workbook gteEvidences;
 	private static Sheet sheet;
@@ -241,7 +249,7 @@ public class EvidenceIT extends BaseITAbstract {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(null, response.getBody());
-		assertEquals(2, evidenceService.getEvidences().size());
+		assertEquals(2, evidenceService.getAll().size());
 	}
 
 	/**
@@ -274,7 +282,7 @@ public class EvidenceIT extends BaseITAbstract {
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 		assertTrue(response.getBody() != null);
-		assertEquals(0, evidenceService.getEvidences().size());
+		assertEquals(0, evidenceService.getAll().size());
 
 		cellFromDate.setCellValue(NONEXISTING_FROMDATE);
 		cellToDate.setCellValue(EXISTING_TODATE);
@@ -295,7 +303,7 @@ public class EvidenceIT extends BaseITAbstract {
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 		assertTrue(response.getBody() != null);
-		assertEquals(0, evidenceService.getEvidences().size());
+		assertEquals(0, evidenceService.getAll().size());
 
 		cellFromDate.setCellValue(EXISTING_FROMDATE);
 		cellToDate.setCellValue(NONEXISTING_TODATE);
@@ -316,7 +324,7 @@ public class EvidenceIT extends BaseITAbstract {
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 		assertTrue(response.getBody() != null);
-		assertEquals(0, evidenceService.getEvidences().size());
+		assertEquals(0, evidenceService.getAll().size());
 	}
 
 	/**
@@ -362,7 +370,7 @@ public class EvidenceIT extends BaseITAbstract {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertTrue(response.getBody() != null);
-		assertEquals(2, evidenceService.getEvidences().size());
+		assertEquals(2, evidenceService.getAll().size());
 
 		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
 		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
@@ -385,8 +393,8 @@ public class EvidenceIT extends BaseITAbstract {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertTrue(!response.getBody().equals(null));
-		assertEquals(2, evidenceService.getEvidences().size());
-		assertEquals(1, evidenceService.getEvidenceErrors().size());
+		assertEquals(2, evidenceService.getAll().size());
+		assertEquals(1, evidenceErrorService.getAll().size());
 
 		cellsRow14[0].setCellValue(EXISTING_FULLNAME_P1);
 		cellsRow14[1].setCellValue(EXISTING_SAGA_P1);
@@ -409,8 +417,8 @@ public class EvidenceIT extends BaseITAbstract {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertTrue(!response.getBody().equals(null));
-		assertEquals(2, evidenceService.getEvidences().size());
-		assertEquals(1, evidenceService.getEvidenceErrors().size());
+		assertEquals(2, evidenceService.getAll().size());
+		assertEquals(1, evidenceErrorService.getAll().size());
 	}
 
 	/**
@@ -443,14 +451,14 @@ public class EvidenceIT extends BaseITAbstract {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(null, response.getBody());
-		assertEquals(1, evidenceService.getEvidences().size());
+		assertEquals(1, evidenceService.getAll().size());
 
-		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW1());
-		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW2());
-		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW3());
-		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW4());
-		assertEquals(evidenceService.findEvidenceType(EXISTING_TYPE_1).getCode(),
-				evidenceService.getEvidences().get(0).getEvidenceTypeW5().getCode());
-		assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW6());
+		assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW1());
+		assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW2());
+		assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW3());
+		assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW4());
+		assertEquals(evidenceTypeService.getByCode(EXISTING_TYPE_1).getCode(),
+				evidenceService.getAll().get(0).getEvidenceTypeW5().getCode());
+		assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW6());
 	}
 }

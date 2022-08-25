@@ -1,11 +1,11 @@
-package com.ccsw.gtemanager.evidence;
+package com.ccsw.gtemanager.evidencetype;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ccsw.gtemanager.evidence.model.EvidenceType;
+import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 
 /**
  * EvidenceTypeRepository: repositorio de tipos de evidencia.
