@@ -62,7 +62,7 @@ public class EvidenceIT extends BaseITAbstract {
 
 	private static final String PDF_FILE_NAME = "test.pdf";
 	private static final String XLSX_FILE_NAME = "test.xlsx";
-	private static final String XSLX_FILE_FORMAT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+	private static final String XLSX_FILE_FORMAT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 	private static final String LOCALHOST = "http://localhost:";
 	private static final String SERVICE_PATH = "/evidence";
@@ -258,7 +258,7 @@ public class EvidenceIT extends BaseITAbstract {
 		cellsRowThirdEvidence[3].setCellValue(EXISTING_PERIOD_W5);
 		cellsRowThirdEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT,
+		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT,
 				exportSpreadsheet());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -291,7 +291,7 @@ public class EvidenceIT extends BaseITAbstract {
 		cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W5);
 		cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT,
+		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT,
 				exportSpreadsheet());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -312,7 +312,7 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(EXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
-		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT, exportSpreadsheet());
+		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT, exportSpreadsheet());
 
 		body = new LinkedMultiValueMap<>();
 		body.add(FILE_VARIABLE, file.getResource());
@@ -332,7 +332,7 @@ public class EvidenceIT extends BaseITAbstract {
 		cellToDate.setCellValue(NONEXISTING_TODATE);
 		cellRunDate.setCellValue(EXISTING_RUNDATE);
 
-		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT, exportSpreadsheet());
+		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT, exportSpreadsheet());
 
 		body = new LinkedMultiValueMap<>();
 		body.add(FILE_VARIABLE, file.getResource());
@@ -377,7 +377,7 @@ public class EvidenceIT extends BaseITAbstract {
 		cellsRowThirdEvidence[3].setCellValue(EXISTING_PERIOD_W5);
 		cellsRowThirdEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT,
+		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT,
 				exportSpreadsheet());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -400,7 +400,7 @@ public class EvidenceIT extends BaseITAbstract {
 		cellsRowFirstEvidence[3].setCellValue(NONEXISTING_PERIOD);
 		cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT, exportSpreadsheet());
+		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT, exportSpreadsheet());
 
 		body = new LinkedMultiValueMap<>();
 		body.add(FILE_VARIABLE, file.getResource());
@@ -423,7 +423,7 @@ public class EvidenceIT extends BaseITAbstract {
 		cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W4);
 		cellsRowFirstEvidence[4].setCellValue(NONEXISTING_TYPE);
 
-		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT, exportSpreadsheet());
+		file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT, exportSpreadsheet());
 
 		body = new LinkedMultiValueMap<>();
 		body.add(FILE_VARIABLE, file.getResource());
@@ -456,7 +456,7 @@ public class EvidenceIT extends BaseITAbstract {
 		cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W5);
 		cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
 
-		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XSLX_FILE_FORMAT,
+		MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT,
 				exportSpreadsheet());
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
