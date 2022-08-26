@@ -1,41 +1,46 @@
 package com.ccsw.gtemanager.evidenceerror.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+public class EvidenceErrorDto {
 
-/**
- * EvidenceError: clase para la gestión de errores en evidencias. Contiene
- * atributos para el registro de la evidencia (nombre de persona, código saga,
- * email, periodo, y tipo), además de getters y setters.
- */
-@Entity
-@Table(name = "evidence_error")
-public class EvidenceError {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "saga", nullable = false)
 	private String saga;
 
-	@Column(name = "email", nullable = false)
 	private String email;
 
-	@Column(name = "period", nullable = false)
 	private String period;
 
-	@Column(name = "status", nullable = false)
 	private String status;
 
 	/**
-	 * Obtener ID de EvidenceError
+	 * Constructor vacío para la creación de EvidenceErrorDto
+	 */
+	public EvidenceErrorDto() {
+
+	}
+
+	/**
+	 * Constructor con parámetros de la evidencia a asociar con el error del
+	 * registro
+	 * 
+	 * @param name   Nombre completo de la persona implicada
+	 * @param saga   Código saga obtenido del fichero
+	 * @param email  Correo electrónico de la persona implicada
+	 * @param period Periodo obtenido del fichero
+	 * @param status Estado (tipo) de evidencia obtenido del fichero
+	 */
+	public EvidenceErrorDto(String name, String saga, String email, String period, String status) {
+		this.name = name;
+		this.saga = saga;
+		this.email = email;
+		this.period = period;
+		this.status = status;
+	}
+
+	/**
+	 * Obtener ID de EvidenceErrorDto
 	 * 
 	 * @return ID en formato Long
 	 */
@@ -89,9 +94,9 @@ public class EvidenceError {
 	}
 
 	/**
-	 * Almacenar ID de EvidenceError
+	 * Almacenar ID de EvidenceErrorDto
 	 * 
-	 * @param id ID de EvidenceError (Long)
+	 * @param id ID de EvidenceErrorDto (Long)
 	 */
 	public void setId(Long id) {
 		this.id = id;

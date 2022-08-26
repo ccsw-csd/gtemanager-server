@@ -7,8 +7,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ccsw.gtemanager.config.mapper.BeanMapper;
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
-
+import com.ccsw.gtemanager.evidenceerror.model.EvidenceErrorDto;
 
 @Service
 @Transactional
@@ -17,14 +18,17 @@ public class EvidenceErrorServiceImpl implements EvidenceErrorService {
 	@Autowired
 	private EvidenceErrorRepository evidenceErrorRepository;
 
+	@Autowired
+	private BeanMapper beanMapper;
+
 	@Override
-	public List<EvidenceError> getAll() {
-		return (List<EvidenceError>) evidenceErrorRepository.findAll();
+	public List<EvidenceErrorDto> getAll() {
+		return beanMapper.mapList((List<EvidenceError>) evidenceErrorRepository.findAll(), EvidenceErrorDto.class);
 	}
 
 	@Override
-	public void saveAll(List<EvidenceError> errors) {
-		evidenceErrorRepository.saveAll(errors);
+	public void saveAll(List<EvidenceErrorDto> errors) {
+		evidenceErrorRepository.saveAll(beanMapper.mapList(errors, EvidenceError.class));
 	}
 
 	@Override

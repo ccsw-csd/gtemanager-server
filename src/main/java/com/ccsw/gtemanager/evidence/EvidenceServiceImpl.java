@@ -1,6 +1,5 @@
 package com.ccsw.gtemanager.evidence;
 
-import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,13 +22,14 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 import com.ccsw.gtemanager.evidencecomment.EvidenceCommentService;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
-import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
+import com.ccsw.gtemanager.evidenceerror.model.EvidenceErrorDto;
 import com.ccsw.gtemanager.evidencetype.EvidenceTypeService;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 import com.ccsw.gtemanager.person.PersonService;
@@ -155,6 +155,11 @@ public class EvidenceServiceImpl implements EvidenceService {
 		}
 	}
 
+	private List<Person> people;
+	private List<String> weeks;
+	private Map<Person, Evidence> evidences;
+	private List<EvidenceType> types;
+
 	/**
 	 * Leer y procesar un archivo de hoja de cálculo para obtener y almacenar
 	 * evidencias.
@@ -167,29 +172,15 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * propiedades incorrectas, o de no poder procesar fechas de periodo y
 	 * ejecución.
 	 */
-	/**
-	 *
-	 */
 	@Override
-	public boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException, IOException {
+	public boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException {
 		clearEvidenceData(upload.isDeleteComments());
 
-		Workbook gteEvidences;
-		try {
-			gteEvidences = WorkbookFactory.create(upload.getFile().getInputStream());
-		} catch (EncryptedDocumentException e) {
-			throw new IllegalArgumentException("El archivo se encuentra encriptado.");
-		} catch (Exception e) {
-			throw new IllegalArgumentException(
-					"Se ha producido un error leyendo el archivo. ¿Son las celdas correctas?");
-		}
-
-		Sheet sheet = gteEvidences.getSheetAt(SHEET_0);
+		Sheet sheet = obtainSheet(upload.getFile());
 
 		LocalDate fromDate = null;
 		LocalDate toDate = null;
 		LocalDateTime runDate = null;
-		List<String> weeks;
 		try {
 			fromDate = LocalDate.parse(sheet.getRow(ROW_2).getCell(COL_B).getStringCellValue(), formatDate);
 			toDate = LocalDate.parse(sheet.getRow(ROW_3).getCell(COL_B).getStringCellValue(), formatDate);
@@ -205,18 +196,20 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 		parseProperties(runDate, weeks);
 
-		List<Person> people = personService.getPeople();
+		people = personService.getPeople();
 
-		List<EvidenceType> types = evidenceTypeService.getAll();
+		types = evidenceTypeService.getAll();
 
-		Map<Person, Evidence> evidences = new LinkedHashMap<>();
+		evidences = new LinkedHashMap<>();
 
-		List<EvidenceError> evidenceErrors = new ArrayList<>();
+		List<EvidenceErrorDto> evidenceErrors = new ArrayList<>();
 
 		Row currentRow = sheet.getRow(ROW_15);
 		Person person = null;
 		Evidence evidence = null;
+		EvidenceType evidenceType = null;
 		String sagaPrev = "";
+		String week;
 		for (int i = EVIDENCE_LIST_START; currentRow != null; i++) {
 			String fullName = currentRow.getCell(COL_A).getStringCellValue();
 			String saga = currentRow.getCell(COL_B).getStringCellValue();
@@ -224,76 +217,21 @@ public class EvidenceServiceImpl implements EvidenceService {
 			String period = currentRow.getCell(COL_J).getStringCellValue();
 			String type = currentRow.getCell(COL_K).getStringCellValue();
 
-			if (!StringUtils.hasText(fullName) && !StringUtils.hasText(saga) && !StringUtils.hasText(email)
-					&& !StringUtils.hasText(period) && !StringUtils.hasText(type)) {
-				currentRow = sheet.getRow(i);
-				continue;
-			}
-
-			String week;
+			boolean hasText = false;
 			try {
+				hasText = rowHasText(fullName, saga, email, period, type);
 				week = findWeekForPeriod(period);
-			} catch (IllegalArgumentException e) {
-				evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
-				sagaPrev = saga;
-				currentRow = sheet.getRow(i);
-				continue;
-			}
-
-			try {
 				saga = personService.parseSaga(saga);
-			} catch (IndexOutOfBoundsException e) {
-				evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
-				sagaPrev = saga;
-				currentRow = sheet.getRow(i);
-				continue;
-			}
+				evidenceType = getEvidenceType(type);
+				if (!saga.equals(sagaPrev))
+					person = getPersonBySaga(saga);
 
-			if (!saga.equals(sagaPrev)) {
-				person = new Person(saga);
-			}
-
-			if (!people.contains(person)) {
-				person = personService.getBySaga(saga);
-				if (person == null) {
-					evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
+				evidence = setTypeForWeek(getEvidenceForPerson(person), week, evidenceType);
+			} catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+				if (hasText) {
+					evidenceErrors.add(new EvidenceErrorDto(fullName, saga, email, period, type));
 					sagaPrev = saga;
-					currentRow = sheet.getRow(i);
-					continue;
 				}
-			} else {
-				person = people.get(people.indexOf(person));
-			}
-
-			evidence = evidences.get(person);
-			if (evidence == null)
-				evidence = new Evidence(person);
-
-			EvidenceType evidenceType = new EvidenceType(type);
-			if (!types.contains(evidenceType)) {
-				evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
-				sagaPrev = saga;
-				currentRow = sheet.getRow(i);
-				continue;
-			} else
-				evidenceType = types.get(types.indexOf(evidenceType));
-
-			if (weeks.contains(week)) {
-				if (week.equals(weeks.get(WEEK_LIST_1)))
-					evidence.setEvidenceTypeW1(evidenceType);
-				else if (week.equals(weeks.get(WEEK_LIST_2)))
-					evidence.setEvidenceTypeW2(evidenceType);
-				else if (week.equals(weeks.get(WEEK_LIST_3)))
-					evidence.setEvidenceTypeW3(evidenceType);
-				else if (week.equals(weeks.get(WEEK_LIST_4)))
-					evidence.setEvidenceTypeW4(evidenceType);
-				else if (week.equals(weeks.get(WEEK_LIST_5)))
-					evidence.setEvidenceTypeW5(evidenceType);
-				else if (week.equals(weeks.get(WEEK_LIST_6)))
-					evidence.setEvidenceTypeW6(evidenceType);
-			} else {
-				evidenceErrors.add(new EvidenceError(fullName, saga, email, period, type));
-				sagaPrev = saga;
 				currentRow = sheet.getRow(i);
 				continue;
 			}
@@ -304,13 +242,70 @@ public class EvidenceServiceImpl implements EvidenceService {
 			currentRow = sheet.getRow(i);
 		}
 
-		gteEvidences.close();
 		saveAll(new ArrayList<>(evidences.values()));
 		if (!evidenceErrors.isEmpty()) {
 			evidenceErrorService.saveAll(evidenceErrors);
 			return false;
 		} else
 			return true;
+	}
+
+	private boolean rowHasText(String fullName, String saga, String email, String period, String type) {
+		return StringUtils.hasText(fullName) || StringUtils.hasText(saga) || StringUtils.hasText(email)
+				|| StringUtils.hasText(period) || StringUtils.hasText(type);
+	}
+
+	private Person getPersonBySaga(String saga) throws IllegalArgumentException {
+		try {
+			return people.get(people.indexOf(new Person(saga)));
+		} catch (IndexOutOfBoundsException e) {
+			Person person = personService.getBySaga(saga);
+			if (person == null)
+				throw new IllegalArgumentException();
+			else
+				return person;
+		}
+	}
+
+	private Evidence setTypeForWeek(Evidence evidence, String week, EvidenceType evidenceType)
+			throws IllegalArgumentException {
+		if (weeks.contains(week)) {
+			if (week.equals(weeks.get(WEEK_LIST_1)))
+				evidence.setEvidenceTypeW1(evidenceType);
+			else if (week.equals(weeks.get(WEEK_LIST_2)))
+				evidence.setEvidenceTypeW2(evidenceType);
+			else if (week.equals(weeks.get(WEEK_LIST_3)))
+				evidence.setEvidenceTypeW3(evidenceType);
+			else if (week.equals(weeks.get(WEEK_LIST_4)))
+				evidence.setEvidenceTypeW4(evidenceType);
+			else if (week.equals(weeks.get(WEEK_LIST_5)))
+				evidence.setEvidenceTypeW5(evidenceType);
+			else if (week.equals(weeks.get(WEEK_LIST_6)))
+				evidence.setEvidenceTypeW6(evidenceType);
+		} else
+			throw new IllegalArgumentException("No existen evidencias en el periodo.");
+
+		return evidence;
+	}
+
+	private EvidenceType getEvidenceType(String type) throws IndexOutOfBoundsException {
+		return types.get(types.indexOf(new EvidenceType(type)));
+	}
+
+	private Evidence getEvidenceForPerson(Person person) {
+		Evidence evidence = evidences.get(person);
+		return evidence != null ? evidence : new Evidence(person);
+	}
+
+	private Sheet obtainSheet(MultipartFile file) {
+		try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+			return workbook.getSheetAt(SHEET_0);
+		} catch (EncryptedDocumentException e) {
+			throw new IllegalArgumentException("El archivo se encuentra encriptado.");
+		} catch (Exception e) {
+			throw new IllegalArgumentException(
+					"Se ha producido un error leyendo el archivo. ¿Son las celdas correctas?");
+		}
 	}
 
 	/**
@@ -356,13 +351,13 @@ public class EvidenceServiceImpl implements EvidenceService {
 	protected List<String> obtainWeeks(LocalDate initialDate) throws IllegalArgumentException {
 		LocalDate date = initialDate.withDayOfMonth(MONTH_START);
 		int currentMonth = initialDate.getMonthValue();
-		List<String> weeks = new ArrayList<>();
+		List<String> weekList = new ArrayList<>();
 		while (date.getMonthValue() == currentMonth) {
-			weeks.add(findWeekForDay(date));
+			weekList.add(findWeekForDay(date));
 			date = date.plusDays(WEEK_OFFSET).with(DayOfWeek.MONDAY);
 		}
 
-		return weeks;
+		return weekList;
 	}
 
 	/**
