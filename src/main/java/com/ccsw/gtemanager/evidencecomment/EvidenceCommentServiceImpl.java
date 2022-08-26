@@ -22,7 +22,7 @@ public class EvidenceCommentServiceImpl implements EvidenceCommentService {
 
 	@Override
 	public List<EvidenceComment> getAll() {
-		return (List<EvidenceComment>) evidenceCommentRepository.findAll();
+		return evidenceCommentRepository.findAll();
 	}
 
 	@Override

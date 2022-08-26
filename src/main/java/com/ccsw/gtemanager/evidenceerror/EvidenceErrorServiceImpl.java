@@ -26,7 +26,7 @@ public class EvidenceErrorServiceImpl implements EvidenceErrorService {
 
 	@Override
 	public List<EvidenceErrorDto> getAll() {
-		return beanMapper.mapList((List<EvidenceError>) evidenceErrorRepository.findAll(), EvidenceErrorDto.class);
+		return beanMapper.mapList(evidenceErrorRepository.findAll(), EvidenceErrorDto.class);
 	}
 
 	@Override

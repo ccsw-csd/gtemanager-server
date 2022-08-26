@@ -104,6 +104,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 	private List<Properties> weekProperties;
 	private List<Person> people;
 	private List<EvidenceType> types;
+	private List<String> weeks;
 	private Map<Person, Evidence> evidences;
 	private List<EvidenceErrorDto> evidenceErrors;
 
@@ -116,7 +117,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 	@Override
 	public List<Evidence> getAll() {
-		return (List<Evidence>) evidenceRepository.findAll();
+		return evidenceRepository.findAll();
 	}
 
 	/**
@@ -143,7 +144,6 @@ public class EvidenceServiceImpl implements EvidenceService {
 		LocalDate fromDate = null;
 		LocalDate toDate = null;
 		LocalDateTime runDate = null;
-		List<String> weeks;
 		try {
 			fromDate = LocalDate.parse(sheet.getRow(ROW_2).getCell(COL_B).getStringCellValue(), formatDate);
 			toDate = LocalDate.parse(sheet.getRow(ROW_3).getCell(COL_B).getStringCellValue(), formatDate);
@@ -152,7 +152,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 			runDate = LocalDateTime.parse(sheet.getRow(ROW_10).getCell(COL_B).getStringCellValue(), formatDateTimeFile);
 			weeks = obtainWeeks(fromDate);
-			parseProperties(runDate, weeks);
+			parseProperties(runDate);
 		} catch (NullPointerException | DateTimeException e) {
 			throw new InvalidReportDatesException();
 		}
@@ -251,10 +251,9 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * Almacenar como objetos Properties.
 	 * 
 	 * @param runDate Fecha de ejecución de informe
-	 * @param weeks   Listado de semanas dentro del periodo de evidencias
 	 * @throws DateTimeException Existen fechas no admisibles
 	 */
-	protected void parseProperties(LocalDateTime runDate, List<String> weeks) throws DateTimeException {
+	protected void parseProperties(LocalDateTime runDate) throws DateTimeException {
 		propertiesList = new ArrayList<>();
 		propertiesList.add(new Properties(PROPERTY_LOAD_DATE, runDate.format(formatDateTimeDB)));
 
