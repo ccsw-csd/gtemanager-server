@@ -1,5 +1,7 @@
 package com.ccsw.gtemanager.evidence;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +10,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.ccsw.gtemanager.common.exception.InvalidFileException;
+import com.ccsw.gtemanager.common.exception.InvalidFileFormatException;
+import com.ccsw.gtemanager.common.exception.InvalidReportDateException;
+import com.ccsw.gtemanager.common.exception.UnreadableReportException;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 
 /**
@@ -18,7 +25,7 @@ import com.ccsw.gtemanager.evidence.model.FormDataDto;
 @RequestMapping(value = "/evidence")
 @RestController
 public class EvidenceController {
-
+	
 	@Autowired
 	private EvidenceService evidenceService;
 
@@ -31,31 +38,13 @@ public class EvidenceController {
 	 * MEDIA TYPE o 422 UNPROCESSABLE ENTITY si el elemento recibido no es
 	 * procesable, y 500 INTERNAL SERVER ERROR si se ha producido una excepción
 	 * inesperada.
-	 * 
+	 * TODO DOCS
 	 * @param upload Elemento FormDataDto recibido desde el frontend
+	 * @throws IOException 
 	 */
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public ResponseEntity<String> uploadEvidence(@ModelAttribute FormDataDto upload) {
-		if (upload.getFile() == null || !StringUtils.hasText(upload.getFile().getContentType()))
-			return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-					.body("\"No se ha recibido un fichero válido.\"");
-
-		if (!upload.getFile().getContentType().equals("application/vnd.ms-excel") && !upload.getFile().getContentType()
-				.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-					.body("\"No se ha recibido un fichero de hoja de cálculo.\"");
-
-		boolean ok;
-		try {
-			ok = evidenceService.uploadEvidence(upload);
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\"" + e.getLocalizedMessage() + "\"");
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-					"\"Se ha producido un error interno. Por favor, póngase en contacto con un administrador. Disculpe las molestias.\"");
-		}
-
-		if (ok)
+	public ResponseEntity<String> uploadEvidence(@ModelAttribute FormDataDto upload) throws IOException {
+		if (evidenceService.uploadEvidence(upload))
 			return ResponseEntity.status(HttpStatus.OK).body(null);
 		else
 			return ResponseEntity.status(HttpStatus.OK)
