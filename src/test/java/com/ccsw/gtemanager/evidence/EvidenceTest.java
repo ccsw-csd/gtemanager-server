@@ -43,10 +43,6 @@ public class EvidenceTest {
 	private static final String EXISTING_DAY2 = "29-AUG-2022";
 	private static final String EXISTING_DAY3 = "02-OCT-2022";
 
-	private static final String EXISTING_UNPARSED_SAGA = "S_000A2";
-	private static final String NONEXISTING_UNPARSED_SAGA = "FD242";
-	private static final String EXISTING_SAGA = "00A2";
-
 	private static final int EXISTING_MONTH1_WEEKS = 4;
 	private static final int EXISTING_MONTH2_WEEKS = 5;
 	private static final int EXISTING_MONTH3_WEEKS = 6;
@@ -69,36 +65,20 @@ public class EvidenceTest {
 	@InjectMocks
 	private EvidenceServiceImpl evidenceService;
 
-	@InjectMocks
+	@Mock
 	private EvidenceErrorServiceImpl evidenceErrorService;
 
-	@InjectMocks
+	@Mock
 	private EvidenceCommentServiceImpl evidenceCommentService;
 
-	@InjectMocks
+	@Mock
 	private PersonServiceImpl personService;
 
-	@InjectMocks
+	@Mock
 	private PropertiesServiceImpl propertiesService;
 
 	private static DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
-
-	/**
-	 * Un código saga válido debe poder procesarse.
-	 */
-	@Test
-	public void parseValidSagaShouldReturnSaga() {
-		assertEquals(EXISTING_SAGA, personService.parseSaga(EXISTING_UNPARSED_SAGA));
-	}
-
-	/**
-	 * Un código saga inválido debe resultar en error de lectura.
-	 */
-	@Test
-	public void parseInvalidSagaShouldReturnError() {
-		assertThrows(IllegalArgumentException.class, () -> personService.parseSaga(NONEXISTING_UNPARSED_SAGA));
-	}
 
 	/**
 	 * Se debe obtener el número y nombre apropiado de semanas en un mes.

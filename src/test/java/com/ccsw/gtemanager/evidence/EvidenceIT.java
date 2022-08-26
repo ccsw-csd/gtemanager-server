@@ -1,7 +1,7 @@
 package com.ccsw.gtemanager.evidence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -305,7 +305,7 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		assertTrue(response.getBody() != null);
+		assertNotEquals(null, response.getBody());
 		assertEquals(0, evidenceService.getAll().size());
 
 		cellFromDate.setCellValue(NONEXISTING_FROMDATE);
@@ -325,7 +325,7 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		assertTrue(response.getBody() != null);
+		assertNotEquals(null, response.getBody());
 		assertEquals(0, evidenceService.getAll().size());
 
 		cellFromDate.setCellValue(EXISTING_FROMDATE);
@@ -345,7 +345,7 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		assertTrue(response.getBody() != null);
+		assertNotEquals(null, response.getBody());
 		assertEquals(0, evidenceService.getAll().size());
 	}
 
@@ -391,7 +391,7 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(response.getBody() != null);
+		assertNotEquals(null, response.getBody());
 		assertEquals(2, evidenceService.getAll().size());
 
 		cellsRowFirstEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
@@ -413,7 +413,7 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(!response.getBody().equals(null));
+		assertNotEquals(null, response.getBody());
 		assertEquals(2, evidenceService.getAll().size());
 		assertEquals(1, evidenceErrorService.getAll().size());
 
@@ -436,7 +436,7 @@ public class EvidenceIT extends BaseITAbstract {
 				new HttpEntity<>(body, headers), String.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(!response.getBody().equals(null));
+		assertNotEquals(null, response.getBody());
 		assertEquals(2, evidenceService.getAll().size());
 		assertEquals(1, evidenceErrorService.getAll().size());
 	}
