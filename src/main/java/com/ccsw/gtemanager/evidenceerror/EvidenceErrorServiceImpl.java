@@ -36,7 +36,7 @@ public class EvidenceErrorServiceImpl implements EvidenceErrorService {
 
 	@Override
 	public void clear() {
-		evidenceErrorRepository.deleteAll();
+		evidenceErrorRepository.deleteAllInBatch();
 	}
 
 }

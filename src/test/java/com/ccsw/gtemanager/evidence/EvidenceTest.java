@@ -127,7 +127,7 @@ public class EvidenceTest {
 	 */
 	@Test
 	public void ifDeleteCommentsEmptyEvidenceComment() {
-		evidenceService.clearEvidenceData(true);
+		evidenceService.clearReport(true);
 		assertTrue(evidenceCommentService.getAll().isEmpty());
 	}
 
@@ -136,7 +136,7 @@ public class EvidenceTest {
 	 */
 	@Test
 	public void beginningProcessShouldEmptyEvidence() {
-		evidenceService.clearEvidenceData(false);
+		evidenceService.clearReport(false);
 		assertTrue(evidenceService.getAll().isEmpty());
 		assertTrue(evidenceErrorService.getAll().isEmpty());
 		assertTrue(propertiesService.getAll().isEmpty());

@@ -31,7 +31,7 @@ public class PropertiesServiceImpl implements PropertiesService {
 
 	@Override
 	public void clear() {
-		propertiesRepository.deleteAll();
+		propertiesRepository.deleteAllInBatch();
 	}
 
 }

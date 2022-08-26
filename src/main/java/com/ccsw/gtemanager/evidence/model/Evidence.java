@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
@@ -24,7 +25,7 @@ public class Evidence {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "person_id", nullable = false)
 	private Person personId;
 

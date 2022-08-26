@@ -1,6 +1,6 @@
 package com.ccsw.gtemanager.evidenceerror;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
@@ -9,6 +9,6 @@ import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
  * EvidenceErrorRepository: repositorio de datos de errores de evidencias.
  */
 @Repository
-public interface EvidenceErrorRepository extends CrudRepository<EvidenceError, Long> {
+public interface EvidenceErrorRepository extends JpaRepository<EvidenceError, Long> {
 
 }

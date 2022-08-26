@@ -27,7 +27,7 @@ public class EvidenceCommentServiceImpl implements EvidenceCommentService {
 
 	@Override
 	public void clear() {
-		evidenceCommentRepository.deleteAll();
+		evidenceCommentRepository.deleteAllInBatch();
 	}
 
 }

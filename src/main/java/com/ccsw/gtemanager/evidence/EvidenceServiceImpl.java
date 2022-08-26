@@ -100,9 +100,12 @@ public class EvidenceServiceImpl implements EvidenceService {
 	@Autowired
 	private EvidenceRepository evidenceRepository;
 
+	private List<Properties> propertiesList;
+	private List<Properties> weekProperties;
 	private List<Person> people;
 	private List<EvidenceType> types;
 	private Map<Person, Evidence> evidences;
+	private List<EvidenceErrorDto> evidenceErrors;
 
 	private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
@@ -137,8 +140,6 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 		Sheet sheet = obtainSheet(upload.getFile());
 
-		clearEvidenceData(upload.isDeleteComments());
-
 		LocalDate fromDate = null;
 		LocalDate toDate = null;
 		LocalDateTime runDate = null;
@@ -162,7 +163,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 		evidences = new LinkedHashMap<>();
 
-		List<EvidenceErrorDto> evidenceErrors = new ArrayList<>();
+		evidenceErrors = new ArrayList<>();
 
 		Row currentRow = sheet.getRow(ROW_15);
 		Person person = null;
@@ -193,8 +194,8 @@ public class EvidenceServiceImpl implements EvidenceService {
 			currentRow = sheet.getRow(i);
 		}
 
-		saveAll(new ArrayList<>(evidences.values()));
-		evidenceErrorService.saveAll(evidenceErrors);
+		clearReport(upload.isDeleteComments());
+		saveReport();
 		return evidenceErrors.isEmpty();
 	}
 
@@ -205,7 +206,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 	@Override
 	public void clear() {
-		evidenceRepository.deleteAll();
+		evidenceRepository.deleteAllInBatch();
 	}
 
 	/**
@@ -221,19 +222,6 @@ public class EvidenceServiceImpl implements EvidenceService {
 		} catch (Exception e) {
 			throw new UnreadableReportException();
 		}
-	}
-
-	/**
-	 * Limpiar datos de evidencias, comentarios, errores, y parámetros.
-	 * 
-	 * @param deleteComments Controlar si se desea borrar comentarios
-	 */
-	public void clearEvidenceData(boolean deleteComments) {
-		if (deleteComments)
-			evidenceCommentService.clear();
-		clear();
-		evidenceErrorService.clear();
-		propertiesService.clear();
 	}
 
 	/**
@@ -267,12 +255,12 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * @throws DateTimeException Existen fechas no admisibles
 	 */
 	protected void parseProperties(LocalDateTime runDate, List<String> weeks) throws DateTimeException {
-		List<Properties> propertiesList = new ArrayList<>();
+		propertiesList = new ArrayList<>();
 		propertiesList.add(new Properties(PROPERTY_LOAD_DATE, runDate.format(formatDateTimeDB)));
 
 		propertiesList.add(new Properties(PROPERTY_LOAD_USERNAME, UserUtils.getUserDetails().getUsername()));
 
-		List<Properties> weekProperties = new ArrayList<>();
+		weekProperties = new ArrayList<>();
 		for (int i = 1; i <= 6; i++) {
 			Properties pWeek = new Properties(PROPERTY_WEEK + i, null);
 			try {
@@ -284,8 +272,6 @@ public class EvidenceServiceImpl implements EvidenceService {
 		}
 
 		propertiesList.add(new Properties(PROPERTY_LOAD_WEEKS, String.valueOf(weeks.size())));
-		propertiesService.saveAll(propertiesList);
-		propertiesService.saveAll(weekProperties);
 	}
 
 	/**
@@ -416,6 +402,29 @@ public class EvidenceServiceImpl implements EvidenceService {
 		}
 
 		return evidence;
+	}
+
+	/**
+	 * Limpiar datos de parámetros, evidencias, comentarios, y errores.
+	 * 
+	 * @param deleteComments Controlar si se desea borrar comentarios
+	 */
+	public void clearReport(boolean deleteComments) {
+		propertiesService.clear();
+		if (deleteComments)
+			evidenceCommentService.clear();
+		clear();
+		evidenceErrorService.clear();
+	}
+
+	/**
+	 * Almacenar datos de parámetros, evidencias, y errores.
+	 */
+	private void saveReport() {
+		propertiesService.saveAll(propertiesList);
+		propertiesService.saveAll(weekProperties);
+		saveAll(new ArrayList<>(evidences.values()));
+		evidenceErrorService.saveAll(evidenceErrors);
 	}
 
 }
