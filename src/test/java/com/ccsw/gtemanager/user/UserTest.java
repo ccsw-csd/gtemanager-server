@@ -25,7 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import com.ccsw.gtemanager.common.exception.AlreadyExistException;
+import com.ccsw.gtemanager.common.exception.AlreadyExistsException;
 import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.user.model.UserDto;
 import com.ccsw.gtemanager.user.model.UserEntity;
@@ -106,7 +106,7 @@ public class UserTest {
     }
 
     @Test
-    public void saveNewUserShouldSave() throws AlreadyExistException {
+    public void saveNewUserShouldSave() throws AlreadyExistsException {
         UserDto dto = new UserDto();
 
         dto.setEmail("nuevo@gmail.com");
@@ -122,7 +122,7 @@ public class UserTest {
     }
 
     @Test
-    public void saveNewUserWithExistEmailShouldThrowException() throws AlreadyExistException {
+    public void saveNewUserWithExistEmailShouldThrowException() throws AlreadyExistsException {
         UserDto dto = new UserDto();
 
         dto.setEmail(EXISTS_USER_EMAIL);
@@ -134,14 +134,14 @@ public class UserTest {
 
         when(userRepository.existsByEmail(EXISTS_USER_EMAIL)).thenReturn(true);
 
-        assertThrows(AlreadyExistException.class, () -> this.userServiceImpl.createUser(dto));
+        assertThrows(AlreadyExistsException.class, () -> this.userServiceImpl.createUser(dto));
 
         verify(this.userRepository, never()).save(userEntity.capture());
 
     }
 
     @Test
-    public void saveNewUserWithExistUsernameShouldThrowException() throws AlreadyExistException {
+    public void saveNewUserWithExistUsernameShouldThrowException() throws AlreadyExistsException {
         UserDto dto = new UserDto();
 
         dto.setEmail("nuevo@gmail.com");
@@ -153,7 +153,7 @@ public class UserTest {
 
         when(userRepository.existsByUsername(EXISTS_USER_USERNAME)).thenReturn(true);
 
-        assertThrows(AlreadyExistException.class, () -> this.userServiceImpl.createUser(dto));
+        assertThrows(AlreadyExistsException.class, () -> this.userServiceImpl.createUser(dto));
 
         verify(this.userRepository, never()).save(userEntity.capture());
 
