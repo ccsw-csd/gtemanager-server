@@ -22,7 +22,7 @@ public class EvidenceComment {
 
 	@ManyToOne
 	@JoinColumn(name = "person_id", nullable = false)
-	private Person personId;
+	private Person person;
 
 	@Column(name = "comment", nullable = false)
 	private String comment;
@@ -31,8 +31,8 @@ public class EvidenceComment {
 		return id;
 	}
 
-	public Person getPersonId() {
-		return personId;
+	public Person getPerson() {
+		return person;
 	}
 
 	public String getComment() {
@@ -43,8 +43,8 @@ public class EvidenceComment {
 		this.id = id;
 	}
 
-	public void setPersonId(Person personId) {
-		this.personId = personId;
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 
 	public void setComment(String comment) {

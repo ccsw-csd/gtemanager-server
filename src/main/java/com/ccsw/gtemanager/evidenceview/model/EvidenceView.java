@@ -2,86 +2,103 @@ package com.ccsw.gtemanager.evidenceview.model;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.Immutable;
 
-import com.ccsw.gtemanager.evidence.model.Evidence;
-import com.ccsw.gtemanager.evidenceview.model.EvidenceViewPK;
 import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
-import com.ccsw.gtemanager.evidence.model.EvidenceType;
-import com.ccsw.gtemanager.person.model.Person;
+import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 
 @Entity
 @Table(name = "v_evidence_with_comment")
 @Immutable
+@NamedEntityGraph(
+	name = "evidence-view-graph",
+	attributeNodes = {
+		@NamedAttributeNode("comment"),
+		@NamedAttributeNode("evidenteTypeW1"),
+		@NamedAttributeNode("evidenteTypeW2"),
+		@NamedAttributeNode("evidenteTypeW3"),
+		@NamedAttributeNode("evidenteTypeW4"),
+		@NamedAttributeNode("evidenteTypeW5"),
+		@NamedAttributeNode("evidenteTypeW6")
+	},
+	subgraphs = {
+		@NamedSubgraph(
+			name = "id-subgraph",
+			attributeNodes = {
+				@NamedAttributeNode("person")
+			}
+		)
+	}
+)
 public class EvidenceView {
 
 	@EmbeddedId
-	private EvidenceViewPK evidence;
+	private EvidenceViewId evidence;
 
 	@ManyToOne
-	@JoinColumn(name = "person_id", nullable = false)
-	private Person person;
+	@JoinColumn(name = "comment_id", nullable = true)
+	private EvidenceComment comment;
 	
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w1", nullable = false)
-	private EvidenceType evidenceW1;
+	@JoinColumn(name = "evidente_type_w1", nullable = true)
+	private EvidenceType evidenteTypeW1;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w2", nullable = false)
-	private EvidenceType evidenceW2;
+	@JoinColumn(name = "evidente_type_w2", nullable = true)
+	private EvidenceType evidenteTypeW2;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w3", nullable = false)
-	private EvidenceType evidenceW3;
+	@JoinColumn(name = "evidente_type_w3", nullable = true)
+	private EvidenceType evidenteTypeW3;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w4", nullable = false)
-	private EvidenceType evidenceW4;
+	@JoinColumn(name = "evidente_type_w4", nullable = true)
+	private EvidenceType evidenteTypeW4;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w5", nullable = false)
-	private EvidenceType evidenceW5;
+	@JoinColumn(name = "evidente_type_w5", nullable = true)
+	private EvidenceType evidenteTypeW5;
 
 	@ManyToOne
-	@JoinColumn(name = "evidente_type_w6", nullable = false)
-	private EvidenceType evidenceW6;
-
-	public EvidenceViewPK getEvidencePK() {
+	@JoinColumn(name = "evidente_type_w6", nullable = true)
+	private EvidenceType evidenteTypeW6;
+	
+	public EvidenceViewId getEvidence() {
 		return evidence;
 	}
 	
-	public Person getPerson() {
-		return person;
+	public EvidenceComment getComment() {
+		return comment;
 	}
 
-	public EvidenceType getEvidenceW1() {
-		return evidenceW1;
+	public EvidenceType getEvidenteTypeW1() {
+		return evidenteTypeW1;
 	}
 
-	public EvidenceType getEvidenceW2() {
-		return evidenceW2;
+	public EvidenceType getEvidenteTypeW2() {
+		return evidenteTypeW2;
 	}
 
-	public EvidenceType getEvidenceW3() {
-		return evidenceW3;
+	public EvidenceType getEvidenteTypeW3() {
+		return evidenteTypeW3;
 	}
 
-	public EvidenceType getEvidenceW4() {
-		return evidenceW4;
+	public EvidenceType getEvidenteTypeW4() {
+		return evidenteTypeW4;
 	}
 
-	public EvidenceType getEvidenceW5() {
-		return evidenceW5;
+	public EvidenceType getEvidenteTypeW5() {
+		return evidenteTypeW5;
 	}
 
-	public EvidenceType getEvidenceW6() {
-		return evidenceW6;
+	public EvidenceType getEvidenteTypeW6() {
+		return evidenteTypeW6;
 	}
 }

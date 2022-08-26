@@ -1,14 +1,15 @@
-package com.ccsw.gtemanager.evidencecomment.model;
+package com.ccsw.gtemanager.evidenceview.model;
 
+import com.ccsw.gtemanager.evidence.model.Evidence;
+import com.ccsw.gtemanager.evidence.model.EvidenceDto;
+import com.ccsw.gtemanager.evidencecomment.model.EvidenceCommentDto;
 import com.ccsw.gtemanager.person.model.PersonDto;
 
-public class EvidenceCommentDto {
+public class EvidenceViewIdDto {
 	
 	private Long id;
 	
 	private PersonDto person;
-	
-	private String comment;
 
 	public Long getId() {
 		return id;
@@ -25,12 +26,6 @@ public class EvidenceCommentDto {
 	public void setPerson(PersonDto person) {
 		this.person = person;
 	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+	
+	
 }

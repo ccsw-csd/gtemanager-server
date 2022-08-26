@@ -1,5 +1,6 @@
 package com.ccsw.gtemanager.evidence.model;
 
+import com.ccsw.gtemanager.evidencetype.model.EvidenceTypeDto;
 import com.ccsw.gtemanager.person.model.PersonDto;
 
 public class EvidenceDto {

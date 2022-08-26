@@ -1,4 +1,4 @@
-package com.ccsw.gtemanager.evidence.model;
+package com.ccsw.gtemanager.evidencetype.model;
 
 public class EvidenceTypeDto {
 

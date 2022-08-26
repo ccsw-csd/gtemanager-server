@@ -1,4 +1,4 @@
-package com.ccsw.gtemanager.evidence.model;
+package com.ccsw.gtemanager.evidencetype.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +15,7 @@ public class EvidenceType {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "code")
+	@Column(name = "code", nullable = false)
 	private String code;
 
 	@Column(name = "name")
