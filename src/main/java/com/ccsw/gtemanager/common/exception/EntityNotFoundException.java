@@ -1,9 +1,12 @@
 package com.ccsw.gtemanager.common.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Entity Not Found")
-public class EntityNotFoundException extends Exception {
+public class EntityNotFoundException extends ResponseStatusException {
+
+	public EntityNotFoundException() {
+		super(HttpStatus.NOT_FOUND, "Entity Not Found");
+	}
 
 }

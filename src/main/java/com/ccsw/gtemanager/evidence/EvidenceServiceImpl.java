@@ -1,5 +1,7 @@
 package com.ccsw.gtemanager.evidence;
 
+import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,7 +16,6 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
-import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -23,7 +24,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.ccsw.gtemanager.common.exception.InvalidFileException;
+import com.ccsw.gtemanager.common.exception.InvalidFileFormatException;
+import com.ccsw.gtemanager.common.exception.InvalidReportDateException;
+import com.ccsw.gtemanager.common.exception.UnreadableReportException;
 import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
@@ -46,6 +52,9 @@ import com.ccsw.gtemanager.properties.model.Properties;
 @Service
 @Transactional
 public class EvidenceServiceImpl implements EvidenceService {
+
+	private static final String XLS_FILE_FORMAT = "application/vnd.ms-excel";
+	private static final String XLSX_FILE_FORMAT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 	private static final String PROPERTY_LOAD_DATE = "LOAD_DATE";
 	private static final String PROPERTY_LOAD_USERNAME = "LOAD_USERNAME";
@@ -187,14 +196,17 @@ public class EvidenceServiceImpl implements EvidenceService {
 			runDate = LocalDateTime.parse(sheet.getRow(ROW_10).getCell(COL_B).getStringCellValue(), formatDateTimeFile);
 			weeks = obtainWeeks(fromDate);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(
-					"El informe no contiene fechas de periodo y/o ejecución válidas (B2, C2, B10).");
+			throw new InvalidReportDateException();
 		}
 
 		if (fromDate.compareTo(toDate) > 0)
-			throw new IllegalArgumentException("El informe no se corresponde con un mes o periodo válido.");
+			throw new InvalidReportDateException();
 
-		parseProperties(runDate, weeks);
+		try {
+			parseProperties(runDate, weeks);
+		} catch (Exception e) {
+			throw new InvalidReportDateException();
+		}
 
 		people = personService.getPeople();
 
@@ -315,9 +327,9 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * 
 	 * @param runDate Fecha de ejecución de informe
 	 * @param weeks   Listado de semanas dentro del periodo de evidencias
-	 * @throws IllegalArgumentException Existen fechas no admisibles
+	 * @throws DateTimeException Existen fechas no admisibles
 	 */
-	protected void parseProperties(LocalDateTime runDate, List<String> weeks) throws IllegalArgumentException {
+	protected void parseProperties(LocalDateTime runDate, List<String> weeks) throws DateTimeException {
 		List<Properties> propertiesList = new ArrayList<>();
 		propertiesList.add(new Properties(PROPERTY_LOAD_DATE, runDate.format(formatDateTimeDB)));
 
