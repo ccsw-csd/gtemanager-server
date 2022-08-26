@@ -35,9 +35,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleInternalServerError(Exception e) {
-		return new ResponseEntity<>(
-				"Se ha producido un error interno. Por favor, póngase en contacto con un administrador. Disculpe las molestias.",
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }
