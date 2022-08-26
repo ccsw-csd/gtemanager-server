@@ -1,6 +1,5 @@
 package com.ccsw.gtemanager.evidence;
 
-import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -9,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -26,10 +26,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.ccsw.gtemanager.common.exception.InvalidFileException;
 import com.ccsw.gtemanager.common.exception.InvalidFileFormatException;
-import com.ccsw.gtemanager.common.exception.InvalidReportDateException;
-import com.ccsw.gtemanager.common.exception.UnreadableReportException;
+import com.ccsw.gtemanager.common.exception.InvalidReportDatesException;
+import com.ccsw.gtemanager.common.exception.InvalidUploadException;
 import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
@@ -55,6 +54,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 	private static final String XLS_FILE_FORMAT = "application/vnd.ms-excel";
 	private static final String XLSX_FILE_FORMAT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+	private static final List<String> ALLOWED_FORMATS = Arrays.asList(XLS_FILE_FORMAT, XLSX_FILE_FORMAT);
 
 	private static final String PROPERTY_LOAD_DATE = "LOAD_DATE";
 	private static final String PROPERTY_LOAD_USERNAME = "LOAD_USERNAME";
@@ -182,10 +182,15 @@ public class EvidenceServiceImpl implements EvidenceService {
 	 * ejecución.
 	 */
 	@Override
-	public boolean uploadEvidence(FormDataDto upload) throws IllegalArgumentException {
-		clearEvidenceData(upload.isDeleteComments());
+	public boolean uploadEvidence(FormDataDto upload) throws ResponseStatusException {
+		if (upload.getFile() == null)
+			throw new InvalidUploadException();
+		else if (!ALLOWED_FORMATS.contains(upload.getFile().getContentType()))
+			throw new InvalidFileFormatException();
 
 		Sheet sheet = obtainSheet(upload.getFile());
+
+		clearEvidenceData(upload.isDeleteComments());
 
 		LocalDate fromDate = null;
 		LocalDate toDate = null;
@@ -193,19 +198,14 @@ public class EvidenceServiceImpl implements EvidenceService {
 		try {
 			fromDate = LocalDate.parse(sheet.getRow(ROW_2).getCell(COL_B).getStringCellValue(), formatDate);
 			toDate = LocalDate.parse(sheet.getRow(ROW_3).getCell(COL_B).getStringCellValue(), formatDate);
+			if (fromDate.compareTo(toDate) > 0)
+				throw new InvalidReportDatesException();
+
 			runDate = LocalDateTime.parse(sheet.getRow(ROW_10).getCell(COL_B).getStringCellValue(), formatDateTimeFile);
 			weeks = obtainWeeks(fromDate);
-		} catch (Exception e) {
-			throw new InvalidReportDateException();
-		}
-
-		if (fromDate.compareTo(toDate) > 0)
-			throw new InvalidReportDateException();
-
-		try {
 			parseProperties(runDate, weeks);
-		} catch (Exception e) {
-			throw new InvalidReportDateException();
+		} catch (NullPointerException | DateTimeException e) {
+			throw new InvalidReportDatesException();
 		}
 
 		people = personService.getPeople();
@@ -219,9 +219,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 		Row currentRow = sheet.getRow(ROW_15);
 		Person person = null;
 		Evidence evidence = null;
-		EvidenceType evidenceType = null;
-		String sagaPrev = "";
-		String week;
+		String previousSaga = "";
 		for (int i = EVIDENCE_LIST_START; currentRow != null; i++) {
 			String fullName = currentRow.getCell(COL_A).getStringCellValue();
 			String saga = currentRow.getCell(COL_B).getStringCellValue();
@@ -229,37 +227,26 @@ public class EvidenceServiceImpl implements EvidenceService {
 			String period = currentRow.getCell(COL_J).getStringCellValue();
 			String type = currentRow.getCell(COL_K).getStringCellValue();
 
-			boolean hasText = false;
-			try {
-				hasText = rowHasText(fullName, saga, email, period, type);
-				week = findWeekForPeriod(period);
-				saga = personService.parseSaga(saga);
-				evidenceType = getEvidenceType(type);
-				if (!saga.equals(sagaPrev))
-					person = getPersonBySaga(saga);
+			if (rowHasText(fullName, saga, email, period, type)) {
+				try {
+					saga = personService.parseSaga(saga);
+					if (!saga.equals(previousSaga) || person == null)
+						person = getPersonBySaga(saga);
 
-				evidence = setTypeForWeek(getEvidenceForPerson(person), week, evidenceType);
-			} catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-				if (hasText) {
+					evidence = setTypeForWeek(getEvidenceForPerson(person), findWeekForPeriod(period),
+							getEvidenceType(type));
+					evidences.put(person, evidence);
+				} catch (IllegalArgumentException | IndexOutOfBoundsException e) {
 					evidenceErrors.add(new EvidenceErrorDto(fullName, saga, email, period, type));
-					sagaPrev = saga;
 				}
-				currentRow = sheet.getRow(i);
-				continue;
+				previousSaga = saga;
 			}
-
-			evidences.put(person, evidence);
-
-			sagaPrev = saga;
 			currentRow = sheet.getRow(i);
 		}
 
 		saveAll(new ArrayList<>(evidences.values()));
-		if (!evidenceErrors.isEmpty()) {
-			evidenceErrorService.saveAll(evidenceErrors);
-			return false;
-		} else
-			return true;
+		evidenceErrorService.saveAll(evidenceErrors);
+		return evidenceErrors.isEmpty();
 	}
 
 	private boolean rowHasText(String fullName, String saga, String email, String period, String type) {
@@ -309,14 +296,11 @@ public class EvidenceServiceImpl implements EvidenceService {
 		return evidence != null ? evidence : new Evidence(person);
 	}
 
-	private Sheet obtainSheet(MultipartFile file) {
+	private Sheet obtainSheet(MultipartFile file) throws InvalidUploadException {
 		try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
 			return workbook.getSheetAt(SHEET_0);
-		} catch (EncryptedDocumentException e) {
-			throw new IllegalArgumentException("El archivo se encuentra encriptado.");
 		} catch (Exception e) {
-			throw new IllegalArgumentException(
-					"Se ha producido un error leyendo el archivo. ¿Son las celdas correctas?");
+			throw new InvalidUploadException();
 		}
 	}
 
