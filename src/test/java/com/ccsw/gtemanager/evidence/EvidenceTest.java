@@ -111,7 +111,7 @@ public class EvidenceTest {
 	 */
 	@Test
 	public void existingPeriodShouldReturnWeek() {
-		assertEquals(EXISTING_PERIOD_WEEK, evidenceService.findWeekForPeriod(EXISTING_PERIOD));
+		assertEquals(EXISTING_PERIOD_WEEK, evidenceService.getWeekForPeriod(EXISTING_PERIOD));
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class EvidenceTest {
 	 */
 	@Test
 	public void nonexistingPeriodShouldReturnError() {
-		assertThrows(IllegalArgumentException.class, () -> evidenceService.findWeekForPeriod(NONEXISTING_PERIOD));
+		assertThrows(IllegalArgumentException.class, () -> evidenceService.getWeekForPeriod(NONEXISTING_PERIOD));
 	}
 
 	/**

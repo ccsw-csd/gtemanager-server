@@ -21,7 +21,7 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public List<Person> getPeople() {
-		return (List<Person>) personRepository.findAll();
+		return personRepository.findAll();
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class PersonServiceImpl implements PersonService {
 		List<Person> people = personRepository.findBySaga(saga);
 		return people.size() == 1 ? people.get(0) : null;
 	}
-	
+
 	@Override
 	public String parseSaga(String saga) throws IllegalArgumentException {
 		try {

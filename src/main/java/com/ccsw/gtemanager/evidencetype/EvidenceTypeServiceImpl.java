@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 
-
+/**
+ * EvidenceTypeServiceImpl: clase de implementación de EvidenceTypeService.
+ */
 @Service
 @Transactional
 public class EvidenceTypeServiceImpl implements EvidenceTypeService {

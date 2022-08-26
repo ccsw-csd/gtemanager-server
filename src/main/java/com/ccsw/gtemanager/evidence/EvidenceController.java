@@ -1,7 +1,5 @@
 package com.ccsw.gtemanager.evidence;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ccsw.gtemanager.common.exception.GlobalExceptionHandler;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 
 /**
@@ -27,17 +26,13 @@ public class EvidenceController {
 	 * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
 	 * booleano de borrado de comentarios.
 	 * 
-	 * Se devuelve 200 OK si se ha procesado sin errores, 200 y un mensaje si
-	 * existen errores, 400 BAD REQUEST si hay datos incorrectos, 415 UNSUPPORTED
-	 * MEDIA TYPE o 422 UNPROCESSABLE ENTITY si el elemento recibido no es
-	 * procesable, y 500 INTERNAL SERVER ERROR si se ha producido una excepción
-	 * inesperada. TODO DOCS
+	 * La gestión de errores y excepciones se realiza en
+	 * {@link GlobalExceptionHandler}.
 	 * 
 	 * @param upload Elemento FormDataDto recibido desde el frontend
-	 * @throws IOException
 	 */
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public ResponseEntity<String> uploadEvidence(@ModelAttribute FormDataDto upload) throws IOException {
+	public ResponseEntity<String> uploadEvidence(@ModelAttribute FormDataDto upload) {
 		if (evidenceService.uploadEvidence(upload))
 			return ResponseEntity.status(HttpStatus.OK).body(null);
 		else

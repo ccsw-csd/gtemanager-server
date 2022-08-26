@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.ccsw.gtemanager.properties.model.Properties;
 
+/**
+ * PropertiesService: servicio de datos de propiedades.
+ */
 public interface PropertiesService {
 
 	/**

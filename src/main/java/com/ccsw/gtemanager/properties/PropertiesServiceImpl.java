@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.ccsw.gtemanager.properties.model.Properties;
 
-
+/**
+ * PropertiesServiceImpl: clase de implementación de PropertiesService
+ */
 @Service
 @Transactional
 public class PropertiesServiceImpl implements PropertiesService {

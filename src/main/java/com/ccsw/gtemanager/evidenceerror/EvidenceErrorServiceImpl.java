@@ -11,6 +11,9 @@ import com.ccsw.gtemanager.config.mapper.BeanMapper;
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceErrorDto;
 
+/**
+ * EvidenceErrorServiceImpl: clase de implementación de EvidenceErrorService.
+ */
 @Service
 @Transactional
 public class EvidenceErrorServiceImpl implements EvidenceErrorService {

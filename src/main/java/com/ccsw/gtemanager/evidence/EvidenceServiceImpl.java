@@ -29,6 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.ccsw.gtemanager.common.exception.InvalidFileFormatException;
 import com.ccsw.gtemanager.common.exception.InvalidReportDatesException;
 import com.ccsw.gtemanager.common.exception.InvalidUploadException;
+import com.ccsw.gtemanager.common.exception.UnreadableReportException;
 import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
@@ -63,13 +64,6 @@ public class EvidenceServiceImpl implements EvidenceService {
 
 	private static final int MONTH_START = 1;
 	private static final int WEEK_OFFSET = 7;
-
-	private static final int WEEK_LIST_1 = 0;
-	private static final int WEEK_LIST_2 = 1;
-	private static final int WEEK_LIST_3 = 2;
-	private static final int WEEK_LIST_4 = 3;
-	private static final int WEEK_LIST_5 = 4;
-	private static final int WEEK_LIST_6 = 5;
 
 	private static final int SHEET_0 = 0;
 
@@ -106,12 +100,14 @@ public class EvidenceServiceImpl implements EvidenceService {
 	@Autowired
 	private EvidenceRepository evidenceRepository;
 
+	private List<Person> people;
+	private List<EvidenceType> types;
+	private Map<Person, Evidence> evidences;
+
 	private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
-
 	private static DateTimeFormatter formatDateTimeFile = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("LLLL dd, yyyy hh:mm a").toFormatter(Locale.getDefault());
-
 	private static DateTimeFormatter formatDateTimeDB = new DateTimeFormatterBuilder().parseCaseInsensitive()
 			.appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
 
@@ -119,55 +115,6 @@ public class EvidenceServiceImpl implements EvidenceService {
 	public List<Evidence> getAll() {
 		return (List<Evidence>) evidenceRepository.findAll();
 	}
-
-	/**
-	 * Obtener semana dado un periodo de tiempo.
-	 * 
-	 * @param period Periodo de tiempo en formato String, compatible
-	 * @return String con día de inicio y fin de la semana
-	 * @throws IllegalArgumentException No se ha introducido un periodo admisible
-	 */
-	protected String findWeekForPeriod(String period) throws IllegalArgumentException {
-		String[] days = period.split(PERIOD_SEPARATOR);
-		LocalDate firstDay = null;
-		LocalDate lastDay = null;
-		try {
-			firstDay = LocalDate.parse(days[0], formatDate);
-			lastDay = LocalDate.parse(days[1], formatDate);
-		} catch (DateTimeParseException e) {
-			throw new IllegalArgumentException("El periodo introducido no es correcto.");
-		}
-
-		String firstWeek = findWeekForDay(firstDay);
-		String secondWeek = findWeekForDay(lastDay);
-		if (!firstWeek.equals(secondWeek))
-			throw new IllegalArgumentException("El periodo introducido no es correcto.");
-
-		return firstWeek;
-	}
-
-	/**
-	 * Obtener semana dado un día concreto.
-	 * 
-	 * @param date Fecha compatible a averiguar
-	 * @return String con día de inicio y fin de la semana
-	 * @throws IllegalArgumentException No se ha introducido una fecha admisible
-	 */
-	protected String findWeekForDay(LocalDate date) throws IllegalArgumentException {
-		try {
-			String monday = date.with(DayOfWeek.MONDAY).format(formatDate).toUpperCase();
-			String sunday = date.with(DayOfWeek.SUNDAY).format(formatDate).toUpperCase();
-
-			return monday + PERIOD_SEPARATOR + sunday;
-		} catch (DateTimeParseException e) {
-			throw new IllegalArgumentException("La fecha introducida no es correcta.");
-		}
-	}
-
-	private List<Person> people;
-	private List<String> weeks;
-	private Map<Person, Evidence> evidences;
-	private List<EvidenceType> types;
 
 	/**
 	 * Leer y procesar un archivo de hoja de cálculo para obtener y almacenar
@@ -195,6 +142,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 		LocalDate fromDate = null;
 		LocalDate toDate = null;
 		LocalDateTime runDate = null;
+		List<String> weeks;
 		try {
 			fromDate = LocalDate.parse(sheet.getRow(ROW_2).getCell(COL_B).getStringCellValue(), formatDate);
 			toDate = LocalDate.parse(sheet.getRow(ROW_3).getCell(COL_B).getStringCellValue(), formatDate);
@@ -227,13 +175,14 @@ public class EvidenceServiceImpl implements EvidenceService {
 			String period = currentRow.getCell(COL_J).getStringCellValue();
 			String type = currentRow.getCell(COL_K).getStringCellValue();
 
-			if (rowHasText(fullName, saga, email, period, type)) {
+			if (StringUtils.hasText(fullName) || StringUtils.hasText(saga) || StringUtils.hasText(email)
+					|| StringUtils.hasText(period) || StringUtils.hasText(type)) {
 				try {
 					saga = personService.parseSaga(saga);
 					if (!saga.equals(previousSaga) || person == null)
 						person = getPersonBySaga(saga);
 
-					evidence = setTypeForWeek(getEvidenceForPerson(person), findWeekForPeriod(period),
+					evidence = setTypeForWeek(getEvidenceForPerson(person), weeks.indexOf(getWeekForPeriod(period)),
 							getEvidenceType(type));
 					evidences.put(person, evidence);
 				} catch (IllegalArgumentException | IndexOutOfBoundsException e) {
@@ -249,59 +198,63 @@ public class EvidenceServiceImpl implements EvidenceService {
 		return evidenceErrors.isEmpty();
 	}
 
-	private boolean rowHasText(String fullName, String saga, String email, String period, String type) {
-		return StringUtils.hasText(fullName) || StringUtils.hasText(saga) || StringUtils.hasText(email)
-				|| StringUtils.hasText(period) || StringUtils.hasText(type);
+	@Override
+	public void saveAll(List<Evidence> evidences) {
+		evidenceRepository.saveAll(evidences);
 	}
 
-	private Person getPersonBySaga(String saga) throws IllegalArgumentException {
-		try {
-			return people.get(people.indexOf(new Person(saga)));
-		} catch (IndexOutOfBoundsException e) {
-			Person person = personService.getBySaga(saga);
-			if (person == null)
-				throw new IllegalArgumentException();
-			else
-				return person;
-		}
+	@Override
+	public void clear() {
+		evidenceRepository.deleteAll();
 	}
 
-	private Evidence setTypeForWeek(Evidence evidence, String week, EvidenceType evidenceType)
-			throws IllegalArgumentException {
-		if (weeks.contains(week)) {
-			if (week.equals(weeks.get(WEEK_LIST_1)))
-				evidence.setEvidenceTypeW1(evidenceType);
-			else if (week.equals(weeks.get(WEEK_LIST_2)))
-				evidence.setEvidenceTypeW2(evidenceType);
-			else if (week.equals(weeks.get(WEEK_LIST_3)))
-				evidence.setEvidenceTypeW3(evidenceType);
-			else if (week.equals(weeks.get(WEEK_LIST_4)))
-				evidence.setEvidenceTypeW4(evidenceType);
-			else if (week.equals(weeks.get(WEEK_LIST_5)))
-				evidence.setEvidenceTypeW5(evidenceType);
-			else if (week.equals(weeks.get(WEEK_LIST_6)))
-				evidence.setEvidenceTypeW6(evidenceType);
-		} else
-			throw new IllegalArgumentException("No existen evidencias en el periodo.");
-
-		return evidence;
-	}
-
-	private EvidenceType getEvidenceType(String type) throws IndexOutOfBoundsException {
-		return types.get(types.indexOf(new EvidenceType(type)));
-	}
-
-	private Evidence getEvidenceForPerson(Person person) {
-		Evidence evidence = evidences.get(person);
-		return evidence != null ? evidence : new Evidence(person);
-	}
-
-	private Sheet obtainSheet(MultipartFile file) throws InvalidUploadException {
+	/**
+	 * Obtener la hoja de cálculo principal dado un fichero
+	 * 
+	 * @param file Archivo de hojas de cálculo
+	 * @return Hoja de cálculo elegida
+	 * @throws UnreadableReportException No es posible leer el fichero proporcionado
+	 */
+	private Sheet obtainSheet(MultipartFile file) throws UnreadableReportException {
 		try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
 			return workbook.getSheetAt(SHEET_0);
 		} catch (Exception e) {
-			throw new InvalidUploadException();
+			throw new UnreadableReportException();
 		}
+	}
+
+	/**
+	 * Limpiar datos de evidencias, comentarios, errores, y parámetros.
+	 * 
+	 * @param deleteComments Controlar si se desea borrar comentarios
+	 */
+	public void clearEvidenceData(boolean deleteComments) {
+		if (deleteComments)
+			evidenceCommentService.clear();
+		clear();
+		evidenceErrorService.clear();
+		propertiesService.clear();
+	}
+
+	/**
+	 * Obtener listado de semanas dentro de un periodo de evidencias. Un periodo
+	 * siempre estará comprendido dentro de un mes, por lo que no se darán más de 6
+	 * semanas.
+	 * 
+	 * @param initialDate Fecha a deducir
+	 * @return Listado de String con valores de las semanas
+	 * @throws IllegalArgumentException No se ha introducido una fecha admisible
+	 */
+	protected List<String> obtainWeeks(LocalDate initialDate) throws IllegalArgumentException {
+		LocalDate date = initialDate.withDayOfMonth(MONTH_START);
+		int currentMonth = initialDate.getMonthValue();
+		List<String> weekList = new ArrayList<>();
+		while (date.getMonthValue() == currentMonth) {
+			weekList.add(findWeekForDay(date));
+			date = date.plusDays(WEEK_OFFSET).with(DayOfWeek.MONDAY);
+		}
+
+		return weekList;
 	}
 
 	/**
@@ -336,46 +289,133 @@ public class EvidenceServiceImpl implements EvidenceService {
 	}
 
 	/**
-	 * Obtener listado de semanas dentro de un periodo de evidencias. Un periodo
-	 * siempre estará comprendido dentro de un mes, por lo que no se darán más de 6
-	 * semanas.
+	 * Obtener persona dado un código saga determinado. No se devuelve un valor
+	 * NULL, en su lugar lanzando una excepción, al no poder procesarse una
+	 * evidencia sin Person asociado.
 	 * 
-	 * @param initialDate Fecha a deducir
-	 * @return Listado de String con valores de las semanas
-	 * @throws IllegalArgumentException No se ha introducido una fecha admisible
+	 * @param saga Código saga por el que buscar
+	 * @return Person hallado en base de datos
+	 * @throws IllegalArgumentException No se ha podido encontrar la persona
+	 *                                  especificada
 	 */
-	protected List<String> obtainWeeks(LocalDate initialDate) throws IllegalArgumentException {
-		LocalDate date = initialDate.withDayOfMonth(MONTH_START);
-		int currentMonth = initialDate.getMonthValue();
-		List<String> weekList = new ArrayList<>();
-		while (date.getMonthValue() == currentMonth) {
-			weekList.add(findWeekForDay(date));
-			date = date.plusDays(WEEK_OFFSET).with(DayOfWeek.MONDAY);
+	private Person getPersonBySaga(String saga) throws IllegalArgumentException {
+		try {
+			return people.get(people.indexOf(new Person(saga)));
+		} catch (IndexOutOfBoundsException e) {
+			Person person = personService.getBySaga(saga);
+			if (person == null)
+				throw new IllegalArgumentException("No existe persona con el código saga especificado.");
+			else
+				return person;
 		}
-
-		return weekList;
 	}
 
 	/**
-	 * Limpiar datos de evidencias, comentarios, errores, y parámetros.
+	 * Obtener evidencia para una persona determinada. Se busca en el mapa de
+	 * evidencias en procesamiento, y se devuelve un Evidence vacío, con la persona
+	 * asociada, en caso de no encontrarse.
 	 * 
-	 * @param deleteComments Controlar si se desea borrar comentarios
+	 * @param person Person por el que buscar
+	 * @return Evidence hallado o Evidence nuevo en caso de no hallarse
 	 */
-	public void clearEvidenceData(boolean deleteComments) {
-		if (deleteComments)
-			evidenceCommentService.clear();
-		clear();
-		evidenceErrorService.clear();
-		propertiesService.clear();
+	private Evidence getEvidenceForPerson(Person person) {
+		Evidence evidence = evidences.get(person);
+		return evidence != null ? evidence : new Evidence(person);
 	}
 
-	@Override
-	public void saveAll(List<Evidence> evidences) {
-		evidenceRepository.saveAll(evidences);
+	/**
+	 * Obtener semana dado un periodo de tiempo.
+	 * 
+	 * @param period Periodo de tiempo en formato String, compatible
+	 * @return String con día de inicio y fin de la semana
+	 * @throws IllegalArgumentException No se ha introducido un periodo admisible
+	 */
+	protected String getWeekForPeriod(String period) throws IllegalArgumentException {
+		String[] days = period.split(PERIOD_SEPARATOR);
+		LocalDate firstDay = null;
+		LocalDate lastDay = null;
+		try {
+			firstDay = LocalDate.parse(days[0], formatDate);
+			lastDay = LocalDate.parse(days[1], formatDate);
+		} catch (DateTimeParseException e) {
+			throw new IllegalArgumentException("El periodo introducido no es correcto.");
+		}
+
+		String firstWeek = findWeekForDay(firstDay);
+		String secondWeek = findWeekForDay(lastDay);
+		if (!firstWeek.equals(secondWeek))
+			throw new IllegalArgumentException("El periodo introducido no es correcto.");
+
+		return firstWeek;
 	}
 
-	@Override
-	public void clear() {
-		evidenceRepository.deleteAll();
+	/**
+	 * Obtener semana dado un día concreto.
+	 * 
+	 * @param date Fecha compatible a averiguar
+	 * @return String con día de inicio y fin de la semana
+	 * @throws IllegalArgumentException No se ha introducido una fecha admisible
+	 */
+	protected String findWeekForDay(LocalDate date) throws IllegalArgumentException {
+		try {
+			String monday = date.with(DayOfWeek.MONDAY).format(formatDate).toUpperCase();
+			String sunday = date.with(DayOfWeek.SUNDAY).format(formatDate).toUpperCase();
+
+			return String.format("%s%s%s", monday, PERIOD_SEPARATOR, sunday);
+		} catch (DateTimeParseException e) {
+			throw new IllegalArgumentException("La fecha introducida no es correcta.");
+		}
 	}
+
+	/**
+	 * Obtener tipo de evidencia dado un código determinado. No se devuelve un valor
+	 * NULL, en su lugar lanzando una excepción, al no poder procesarse una
+	 * evidencia sin EvidenceType correctos.
+	 * 
+	 * @param type Tipo de evidencia por el que buscar
+	 * @return EvidenceType hallado en base de datos
+	 * @throws IndexOutOfBoundsException No se ha podido encontrar el tipo
+	 *                                   especificado
+	 */
+	private EvidenceType getEvidenceType(String type) throws IndexOutOfBoundsException {
+		return types.get(types.indexOf(new EvidenceType(type)));
+	}
+
+	/**
+	 * Almacenar tipo de evidencia procesado en la semana correspondiente.
+	 * 
+	 * @param evidence     Evidencia sobre la que almacenar el dato
+	 * @param week         Indicador de semana en proceso según listado de semanas
+	 * @param evidenceType Tipo de evidencia determinado
+	 * @return Evidence con tipo de evidencia registrado en la semana
+	 * @throws IllegalArgumentException No se ha especificado una semana correcta
+	 */
+	private Evidence setTypeForWeek(Evidence evidence, int week, EvidenceType evidenceType)
+			throws IllegalArgumentException {
+		switch (week) {
+		case 0:
+			evidence.setEvidenceTypeW1(evidenceType);
+			break;
+		case 1:
+			evidence.setEvidenceTypeW2(evidenceType);
+			break;
+		case 2:
+			evidence.setEvidenceTypeW3(evidenceType);
+			break;
+		case 3:
+			evidence.setEvidenceTypeW4(evidenceType);
+			break;
+		case 4:
+			evidence.setEvidenceTypeW5(evidenceType);
+			break;
+		case 5:
+			evidence.setEvidenceTypeW6(evidenceType);
+			break;
+		default:
+			throw new IllegalArgumentException("No existen evidencias en el periodo.");
+		}
+
+		return evidence;
+	}
+
 }

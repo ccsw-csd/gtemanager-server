@@ -1,5 +1,10 @@
 package com.ccsw.gtemanager.evidenceerror.model;
 
+/**
+ * EvidenceErrorDto: DTO para datos errores en procesamiento de eidencia.
+ * Contiene atributos para almacenar los datos de la línea, además de getters y
+ * setters.
+ */
 public class EvidenceErrorDto {
 
 	private Long id;

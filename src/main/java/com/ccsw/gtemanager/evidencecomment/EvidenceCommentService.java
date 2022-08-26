@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
 
+/**
+ * EvidenceCommentService: servicio de datos de comentarios de evidencias.
+ */
 public interface EvidenceCommentService {
 
 	/**
@@ -11,7 +14,6 @@ public interface EvidenceCommentService {
 	 * 
 	 * @return Listado de EvidenceComments
 	 */
-
 	List<EvidenceComment> getAll();
 
 	/**

@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
 
 /**
- * 
- * TODO DOCS
- *
+ * EvidenceCommentServiceImpl: clase de implementación de
+ * EvidenceCommentService.
  */
 @Service
 @Transactional

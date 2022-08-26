@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceErrorDto;
 
+/**
+ * EvidenceErrorService: servicio de datos de errores de evidencias.
+ */
 public interface EvidenceErrorService {
 
 	/**
