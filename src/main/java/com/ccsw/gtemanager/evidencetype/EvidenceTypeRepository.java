@@ -13,12 +13,12 @@ import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 @Repository
 public interface EvidenceTypeRepository extends CrudRepository<EvidenceType, Long> {
 
-	/**
-	 * Obtener listado de tipos de evidencia dado un código
-	 * 
-	 * @param code código (String) cuyo registro de tipos se desea encontrar
-	 * @return Listado de tipos obtenido
-	 */
-	List<EvidenceType> findByCodeIgnoreCase(String code);
+    /**
+     * Obtener listado de tipos de evidencia dado un código
+     * 
+     * @param code código (String) cuyo registro de tipos se desea encontrar
+     * @return Listado de tipos obtenido
+     */
+    List<EvidenceType> findByCodeIgnoreCase(String code);
 
 }

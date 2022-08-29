@@ -16,37 +16,37 @@ import com.ccsw.gtemanager.person.model.Person;
 @Transactional
 public class PersonServiceImpl implements PersonService {
 
-	@Autowired
-	private PersonRepository personRepository;
+    @Autowired
+    private PersonRepository personRepository;
 
-	@Override
-	public List<Person> getPeople() {
-		return personRepository.findAll();
-	}
+    @Override
+    public List<Person> getPeople() {
+        return personRepository.findAll();
+    }
 
-	@Override
-	public Person getById(Long id) {
-		return personRepository.getById(id);
-	}
+    @Override
+    public Person getById(Long id) {
+        return personRepository.getById(id);
+    }
 
-	@Override
-	public Person getBySaga(String saga) {
-		List<Person> people = personRepository.findBySaga(saga);
-		return people.size() == 1 ? people.get(0) : null;
-	}
+    @Override
+    public Person getBySaga(String saga) {
+        List<Person> people = personRepository.findBySaga(saga);
+        return people.size() == 1 ? people.get(0) : null;
+    }
 
-	@Override
-	public String parseSaga(String saga) throws IllegalArgumentException {
-		try {
-			saga = saga.split("_")[1];
-		} catch (IndexOutOfBoundsException e) {
-			throw new IllegalArgumentException("Código Saga introducido no es válido.");
-		}
-		try {
-			return String.valueOf(Long.parseLong(saga));
-		} catch (NumberFormatException ex) {
-			return saga.substring(saga.length() - 4);
-		}
-	}
+    @Override
+    public String parseSaga(String saga) throws IllegalArgumentException {
+        try {
+            saga = saga.split("_")[1];
+        } catch (IndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("Código Saga introducido no es válido.");
+        }
+        try {
+            return String.valueOf(Long.parseLong(saga));
+        } catch (NumberFormatException ex) {
+            return saga.substring(saga.length() - 4);
+        }
+    }
 
 }

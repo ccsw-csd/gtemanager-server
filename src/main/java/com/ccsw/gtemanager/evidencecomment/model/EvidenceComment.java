@@ -20,69 +20,69 @@ import com.ccsw.gtemanager.person.model.Person;
 @Table(name = "evidence_comment")
 public class EvidenceComment {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "person_id", nullable = false)
-	private Person personId;
+    @ManyToOne
+    @JoinColumn(name = "person_id", nullable = false)
+    private Person personId;
 
-	@Column(name = "comment")
-	private String comment;
+    @Column(name = "comment")
+    private String comment;
 
-	/**
-	 * Obtener ID de EvidenceComment
-	 * 
-	 * @return ID en formato Long
-	 */
-	public Long getId() {
-		return id;
-	}
+    /**
+     * Obtener ID de EvidenceComment
+     * 
+     * @return ID en formato Long
+     */
+    public Long getId() {
+        return id;
+    }
 
-	/**
-	 * Obtener Person implicada en EvidenceComment
-	 * 
-	 * @return persona (Person)
-	 */
-	public Person getPersonId() {
-		return personId;
-	}
+    /**
+     * Obtener Person implicada en EvidenceComment
+     * 
+     * @return persona (Person)
+     */
+    public Person getPersonId() {
+        return personId;
+    }
 
-	/**
-	 * Obtener comentario almacenado en EvidenceComment
-	 * 
-	 * @return comentario en formato String
-	 */
-	public String getComment() {
-		return comment;
-	}
+    /**
+     * Obtener comentario almacenado en EvidenceComment
+     * 
+     * @return comentario en formato String
+     */
+    public String getComment() {
+        return comment;
+    }
 
-	/**
-	 * Almacenar ID de EvidenceComment
-	 * 
-	 * @param id ID de EvidenceComment (Long)
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /**
+     * Almacenar ID de EvidenceComment
+     * 
+     * @param id ID de EvidenceComment (Long)
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/**
-	 * Almacenar Person implicada en EvidenceComment
-	 * 
-	 * @param personId persona (Person)
-	 */
-	public void setPersonId(Person personId) {
-		this.personId = personId;
-	}
+    /**
+     * Almacenar Person implicada en EvidenceComment
+     * 
+     * @param personId persona (Person)
+     */
+    public void setPersonId(Person personId) {
+        this.personId = personId;
+    }
 
-	/**
-	 * Almacenar comentario en EvidenceComment
-	 * 
-	 * @param comment comentario (String)
-	 */
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+    /**
+     * Almacenar comentario en EvidenceComment
+     * 
+     * @param comment comentario (String)
+     */
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
 }

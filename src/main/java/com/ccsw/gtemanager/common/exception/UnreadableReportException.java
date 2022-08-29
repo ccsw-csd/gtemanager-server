@@ -10,12 +10,12 @@ import org.springframework.web.server.ResponseStatusException;
  */
 public class UnreadableReportException extends ResponseStatusException {
 
-	/**
-	 * Constructor: crear ResponseStatusException con código 400 y mensaje de error.
-	 */
-	public UnreadableReportException() {
-		super(HttpStatus.BAD_REQUEST,
-				"Se ha producido un error leyendo el archivo. Compruebe la validez de los datos y que no se encuentra encriptado.");
-	}
+    /**
+     * Constructor: crear ResponseStatusException con código 400 y mensaje de error.
+     */
+    public UnreadableReportException() {
+        super(HttpStatus.BAD_REQUEST,
+                "Se ha producido un error leyendo el archivo. Compruebe la validez de los datos y que no se encuentra encriptado.");
+    }
 
 }

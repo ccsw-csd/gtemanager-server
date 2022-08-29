@@ -14,28 +14,28 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-	/**
-	 * Obtener estado HTTP y mensaje de la excepción para devolver respuesta a
-	 * frontend.
-	 * 
-	 * @param e Excepción (ResponseStatusException) capturada
-	 * @return Respuesta (ResponseEntity) para frontend
-	 */
-	@ExceptionHandler(ResponseStatusException.class)
-	public ResponseEntity<String> handleException(ResponseStatusException e) {
-		return new ResponseEntity<>(e.getReason(), e.getStatus());
-	}
+    /**
+     * Obtener estado HTTP y mensaje de la excepción para devolver respuesta a
+     * frontend.
+     * 
+     * @param e Excepción (ResponseStatusException) capturada
+     * @return Respuesta (ResponseEntity) para frontend
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<String> handleException(ResponseStatusException e) {
+        return new ResponseEntity<>(e.getReason(), e.getStatus());
+    }
 
-	/**
-	 * Devolver respuesta 500 INTERNAL SERVER ERROR en excepciones genéricas a
-	 * frontend.
-	 * 
-	 * @param e Excepción capturada
-	 * @return Respuesta (ResponseEntity) para frontend
-	 */
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> handleInternalServerError(Exception e) {
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+    /**
+     * Devolver respuesta 500 INTERNAL SERVER ERROR en excepciones genéricas a
+     * frontend.
+     * 
+     * @param e Excepción capturada
+     * @return Respuesta (ResponseEntity) para frontend
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleInternalServerError(Exception e) {
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }

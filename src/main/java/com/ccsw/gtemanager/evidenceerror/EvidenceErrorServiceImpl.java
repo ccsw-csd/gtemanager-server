@@ -18,25 +18,25 @@ import com.ccsw.gtemanager.evidenceerror.model.EvidenceErrorDto;
 @Transactional
 public class EvidenceErrorServiceImpl implements EvidenceErrorService {
 
-	@Autowired
-	private EvidenceErrorRepository evidenceErrorRepository;
+    @Autowired
+    private EvidenceErrorRepository evidenceErrorRepository;
 
-	@Autowired
-	private BeanMapper beanMapper;
+    @Autowired
+    private BeanMapper beanMapper;
 
-	@Override
-	public List<EvidenceErrorDto> getAll() {
-		return beanMapper.mapList(evidenceErrorRepository.findAll(), EvidenceErrorDto.class);
-	}
+    @Override
+    public List<EvidenceErrorDto> getAll() {
+        return beanMapper.mapList(evidenceErrorRepository.findAll(), EvidenceErrorDto.class);
+    }
 
-	@Override
-	public void saveAll(List<EvidenceErrorDto> errors) {
-		evidenceErrorRepository.saveAll(beanMapper.mapList(errors, EvidenceError.class));
-	}
+    @Override
+    public void saveAll(List<EvidenceErrorDto> errors) {
+        evidenceErrorRepository.saveAll(beanMapper.mapList(errors, EvidenceError.class));
+    }
 
-	@Override
-	public void clear() {
-		evidenceErrorRepository.deleteAllInBatch();
-	}
+    @Override
+    public void clear() {
+        evidenceErrorRepository.deleteAllInBatch();
+    }
 
 }

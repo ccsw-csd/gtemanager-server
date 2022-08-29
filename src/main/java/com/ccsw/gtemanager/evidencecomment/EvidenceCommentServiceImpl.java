@@ -17,17 +17,17 @@ import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
 @Transactional
 public class EvidenceCommentServiceImpl implements EvidenceCommentService {
 
-	@Autowired
-	private EvidenceCommentRepository evidenceCommentRepository;
+    @Autowired
+    private EvidenceCommentRepository evidenceCommentRepository;
 
-	@Override
-	public List<EvidenceComment> getAll() {
-		return evidenceCommentRepository.findAll();
-	}
+    @Override
+    public List<EvidenceComment> getAll() {
+        return evidenceCommentRepository.findAll();
+    }
 
-	@Override
-	public void clear() {
-		evidenceCommentRepository.deleteAllInBatch();
-	}
+    @Override
+    public void clear() {
+        evidenceCommentRepository.deleteAllInBatch();
+    }
 
 }

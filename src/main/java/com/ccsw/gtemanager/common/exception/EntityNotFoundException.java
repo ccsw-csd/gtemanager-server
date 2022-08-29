@@ -9,11 +9,11 @@ import org.springframework.web.server.ResponseStatusException;
  */
 public class EntityNotFoundException extends ResponseStatusException {
 
-	/**
-	 * Constructor: crear ResponseStatusException con código 404 y mensaje de error.
-	 */
-	public EntityNotFoundException() {
-		super(HttpStatus.NOT_FOUND, "Entity Not Found");
-	}
+    /**
+     * Constructor: crear ResponseStatusException con código 404 y mensaje de error.
+     */
+    public EntityNotFoundException() {
+        super(HttpStatus.NOT_FOUND, "Entity Not Found");
+    }
 
 }

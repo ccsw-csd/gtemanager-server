@@ -16,22 +16,22 @@ import com.ccsw.gtemanager.properties.model.Properties;
 @Transactional
 public class PropertiesServiceImpl implements PropertiesService {
 
-	@Autowired
-	private PropertiesRepository propertiesRepository;
+    @Autowired
+    private PropertiesRepository propertiesRepository;
 
-	@Override
-	public List<Properties> getAll() {
-		return propertiesRepository.findAll();
-	}
+    @Override
+    public List<Properties> getAll() {
+        return propertiesRepository.findAll();
+    }
 
-	@Override
-	public void saveAll(List<Properties> propertiesList) {
-		propertiesRepository.saveAll(propertiesList);
-	}
+    @Override
+    public void saveAll(List<Properties> propertiesList) {
+        propertiesRepository.saveAll(propertiesList);
+    }
 
-	@Override
-	public void clear() {
-		propertiesRepository.deleteAllInBatch();
-	}
+    @Override
+    public void clear() {
+        propertiesRepository.deleteAllInBatch();
+    }
 
 }

@@ -9,45 +9,45 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class FormDataDto {
 
-	private MultipartFile file;
-	private Boolean deleteComments;
+    private MultipartFile file;
+    private Boolean deleteComments;
 
-	/**
-	 * Obtener archivo recibido.
-	 * 
-	 * @return Fichero (MultipartFile)
-	 */
-	public MultipartFile getFile() {
-		return file;
-	}
+    /**
+     * Obtener archivo recibido.
+     * 
+     * @return Fichero (MultipartFile)
+     */
+    public MultipartFile getFile() {
+        return file;
+    }
 
-	/**
-	 * Obtener estado de boolean deleteComments.
-	 * 
-	 * @return true si se ha elegido borrar comentarios, false si no se ha elegido
-	 *         borrar comentarios
-	 */
-	public Boolean isDeleteComments() {
-		return deleteComments;
-	}
+    /**
+     * Obtener estado de boolean deleteComments.
+     * 
+     * @return true si se ha elegido borrar comentarios, false si no se ha elegido
+     *         borrar comentarios
+     */
+    public Boolean isDeleteComments() {
+        return deleteComments;
+    }
 
-	/**
-	 * Almacenar archivo recibido.
-	 * 
-	 * @param file Archivo recibido a almacenar
-	 */
-	public void setFile(MultipartFile file) {
-		this.file = file;
-	}
+    /**
+     * Almacenar archivo recibido.
+     * 
+     * @param file Archivo recibido a almacenar
+     */
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
 
-	/**
-	 * Almacenar estado de deleteComments.
-	 * 
-	 * @param deleteComments Variable de control de borrado de comentarios en
-	 *                       evidencias
-	 */
-	public void setDeleteComments(Boolean deleteComments) {
-		this.deleteComments = deleteComments;
-	}
+    /**
+     * Almacenar estado de deleteComments.
+     * 
+     * @param deleteComments Variable de control de borrado de comentarios en
+     *                       evidencias
+     */
+    public void setDeleteComments(Boolean deleteComments) {
+        this.deleteComments = deleteComments;
+    }
 
 }

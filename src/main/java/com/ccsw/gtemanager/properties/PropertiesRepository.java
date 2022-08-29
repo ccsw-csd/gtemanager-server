@@ -11,12 +11,12 @@ import com.ccsw.gtemanager.properties.model.Properties;
 @Repository
 public interface PropertiesRepository extends JpaRepository<Properties, Long> {
 
-	/**
-	 * Obtener propiedad buscando por clave.
-	 * 
-	 * @param key clave en formato String para buscar
-	 * @return objeto Properties con propiedad almacenada
-	 */
-	Properties findByKey(String key);
+    /**
+     * Obtener propiedad buscando por clave.
+     * 
+     * @param key clave en formato String para buscar
+     * @return objeto Properties con propiedad almacenada
+     */
+    Properties findByKey(String key);
 
 }

@@ -9,11 +9,11 @@ import org.springframework.web.server.ResponseStatusException;
  */
 public class AlreadyExistsException extends ResponseStatusException {
 
-	/**
-	 * Constructor: crear ResponseStatusException con código 409 y mensaje de error.
-	 */
-	public AlreadyExistsException() {
-		super(HttpStatus.CONFLICT, "Already exists");
-	}
+    /**
+     * Constructor: crear ResponseStatusException con código 409 y mensaje de error.
+     */
+    public AlreadyExistsException() {
+        super(HttpStatus.CONFLICT, "Already exists");
+    }
 
 }

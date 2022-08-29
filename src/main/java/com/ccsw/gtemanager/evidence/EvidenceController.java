@@ -19,24 +19,24 @@ import com.ccsw.gtemanager.evidence.model.FormDataDto;
 @RestController
 public class EvidenceController {
 
-	@Autowired
-	private EvidenceService evidenceService;
+    @Autowired
+    private EvidenceService evidenceService;
 
-	/**
-	 * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
-	 * booleano de borrado de comentarios.
-	 * 
-	 * La gestión de errores y excepciones se realiza en
-	 * {@link GlobalExceptionHandler}.
-	 * 
-	 * @param upload Elemento FormDataDto recibido desde el frontend
-	 */
-	@RequestMapping(path = "", method = RequestMethod.POST)
-	public ResponseEntity<String> uploadEvidence(@ModelAttribute FormDataDto upload) {
-		if (evidenceService.uploadEvidence(upload))
-			return ResponseEntity.status(HttpStatus.OK).body(null);
-		else
-			return ResponseEntity.status(HttpStatus.OK)
-					.body("\"Se ha guardado el informe correctamente con algunos errores de evidencias.\"");
-	}
+    /**
+     * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
+     * booleano de borrado de comentarios.
+     * 
+     * La gestión de errores y excepciones se realiza en
+     * {@link GlobalExceptionHandler}.
+     * 
+     * @param upload Elemento FormDataDto recibido desde el frontend
+     */
+    @RequestMapping(path = "", method = RequestMethod.POST)
+    public ResponseEntity<String> uploadEvidence(@ModelAttribute FormDataDto upload) {
+        if (evidenceService.uploadEvidence(upload))
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        else
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("\"Se ha guardado el informe correctamente con algunos errores de evidencias.\"");
+    }
 }

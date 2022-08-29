@@ -15,26 +15,26 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class PersonTest {
 
-	private static final String EXISTING_SAGA = "00A2";
-	private static final String EXISTING_UNPARSED_SAGA = "S_000A2";
-	private static final String NONEXISTING_UNPARSED_SAGA = "FD242";
+    private static final String EXISTING_SAGA = "00A2";
+    private static final String EXISTING_UNPARSED_SAGA = "S_000A2";
+    private static final String NONEXISTING_UNPARSED_SAGA = "FD242";
 
-	@InjectMocks
-	private PersonServiceImpl personService;
+    @InjectMocks
+    private PersonServiceImpl personService;
 
-	/**
-	 * Un código saga válido debe poder procesarse.
-	 */
-	@Test
-	public void parseValidSagaShouldReturnSaga() {
-		assertEquals(EXISTING_SAGA, personService.parseSaga(EXISTING_UNPARSED_SAGA));
-	}
+    /**
+     * Un código saga válido debe poder procesarse.
+     */
+    @Test
+    public void parseValidSagaShouldReturnSaga() {
+        assertEquals(EXISTING_SAGA, personService.parseSaga(EXISTING_UNPARSED_SAGA));
+    }
 
-	/**
-	 * Un código saga inválido debe resultar en error de lectura.
-	 */
-	@Test
-	public void parseInvalidSagaShouldReturnError() {
-		assertThrows(IllegalArgumentException.class, () -> personService.parseSaga(NONEXISTING_UNPARSED_SAGA));
-	}
+    /**
+     * Un código saga inválido debe resultar en error de lectura.
+     */
+    @Test
+    public void parseInvalidSagaShouldReturnError() {
+        assertThrows(IllegalArgumentException.class, () -> personService.parseSaga(NONEXISTING_UNPARSED_SAGA));
+    }
 }
