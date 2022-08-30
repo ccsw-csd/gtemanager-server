@@ -42,18 +42,21 @@ public class EvidenceIT extends BaseITAbstract {
 
     private static final String SHEET_NAME = "Sheet1";
 
-    private static final int ROW_2 = 1;
-    private static final int ROW_3 = 2;
-    private static final int ROW_10 = 9;
-    private static final int ROW_15 = 14;
-    private static final int ROW_16 = 15;
-    private static final int ROW_17 = 16;
+    private static final int ROW_PROPERTY_FROM_DATE = 1;
+    private static final int ROW_PROPERTY_TO_DATE = 2;
+    private static final int ROW_PROPERTY_RUNDATE = 9;
 
-    private static final int COL_A = 0;
-    private static final int COL_B = 1;
-    private static final int COL_C = 2;
-    private static final int COL_J = 9;
-    private static final int COL_K = 10;
+    private static final int ROW_EVIDENCE_LIST_FIRST = 14;
+    private static final int ROW_EVIDENCE_LIST_SECOND = 15;
+    private static final int ROW_EVIDENCE_LIST_THIRD = 16;
+
+    private static final int COL_PROPERTY_VALUE = 1;
+
+    private static final int COL_EVIDENCE_NAME = 0;
+    private static final int COL_EVIDENCE_SAGA = 1;
+    private static final int COL_EVIDENCE_EMAIL = 2;
+    private static final int COL_EVIDENCE_PERIOD = 9;
+    private static final int COL_EVIDENCE_STATUS = 10;
 
     private static final String FILE_VARIABLE = "file";
     private static final String DELETE_COMMENTS_VARIABLE = "deleteComments";
@@ -111,9 +114,6 @@ public class EvidenceIT extends BaseITAbstract {
     private static Workbook gteEvidences;
     private static Sheet sheet;
 
-    private static Row rowFromDate;
-    private static Row rowToDate;
-    private static Row rowRunDate;
     private static Row rowFirstEvidence;
     private static Row rowSecondEvidence;
     private static Row rowThirdEvidence;
@@ -136,37 +136,33 @@ public class EvidenceIT extends BaseITAbstract {
 
         sheet = gteEvidences.createSheet(SHEET_NAME);
 
-        rowFromDate = sheet.createRow(ROW_2);
-        cellFromDate = rowFromDate.createCell(COL_B);
-        rowToDate = sheet.createRow(ROW_3);
-        cellToDate = rowToDate.createCell(COL_B);
+        cellFromDate = sheet.createRow(ROW_PROPERTY_FROM_DATE).createCell(COL_PROPERTY_VALUE);
+        cellToDate = sheet.createRow(ROW_PROPERTY_TO_DATE).createCell(COL_PROPERTY_VALUE);
+        cellRunDate = sheet.createRow(ROW_PROPERTY_RUNDATE).createCell(COL_PROPERTY_VALUE);
 
-        rowRunDate = sheet.createRow(ROW_10);
-        cellRunDate = rowRunDate.createCell(COL_B);
-
-        rowFirstEvidence = sheet.createRow(ROW_15);
+        rowFirstEvidence = sheet.createRow(ROW_EVIDENCE_LIST_FIRST);
         cellsRowFirstEvidence = new Cell[5];
-        cellsRowFirstEvidence[0] = rowFirstEvidence.createCell(COL_A);
-        cellsRowFirstEvidence[1] = rowFirstEvidence.createCell(COL_B);
-        cellsRowFirstEvidence[2] = rowFirstEvidence.createCell(COL_C);
-        cellsRowFirstEvidence[3] = rowFirstEvidence.createCell(COL_J);
-        cellsRowFirstEvidence[4] = rowFirstEvidence.createCell(COL_K);
+        cellsRowFirstEvidence[0] = rowFirstEvidence.createCell(COL_EVIDENCE_NAME);
+        cellsRowFirstEvidence[1] = rowFirstEvidence.createCell(COL_EVIDENCE_SAGA);
+        cellsRowFirstEvidence[2] = rowFirstEvidence.createCell(COL_EVIDENCE_EMAIL);
+        cellsRowFirstEvidence[3] = rowFirstEvidence.createCell(COL_EVIDENCE_PERIOD);
+        cellsRowFirstEvidence[4] = rowFirstEvidence.createCell(COL_EVIDENCE_STATUS);
 
-        rowSecondEvidence = sheet.createRow(ROW_16);
+        rowSecondEvidence = sheet.createRow(ROW_EVIDENCE_LIST_SECOND);
         cellsRowSecondEvidence = new Cell[5];
-        cellsRowSecondEvidence[0] = rowSecondEvidence.createCell(COL_A);
-        cellsRowSecondEvidence[1] = rowSecondEvidence.createCell(COL_B);
-        cellsRowSecondEvidence[2] = rowSecondEvidence.createCell(COL_C);
-        cellsRowSecondEvidence[3] = rowSecondEvidence.createCell(COL_J);
-        cellsRowSecondEvidence[4] = rowSecondEvidence.createCell(COL_K);
+        cellsRowSecondEvidence[0] = rowSecondEvidence.createCell(COL_EVIDENCE_NAME);
+        cellsRowSecondEvidence[1] = rowSecondEvidence.createCell(COL_EVIDENCE_SAGA);
+        cellsRowSecondEvidence[2] = rowSecondEvidence.createCell(COL_EVIDENCE_EMAIL);
+        cellsRowSecondEvidence[3] = rowSecondEvidence.createCell(COL_EVIDENCE_PERIOD);
+        cellsRowSecondEvidence[4] = rowSecondEvidence.createCell(COL_EVIDENCE_STATUS);
 
-        rowThirdEvidence = sheet.createRow(ROW_17);
+        rowThirdEvidence = sheet.createRow(ROW_EVIDENCE_LIST_THIRD);
         cellsRowThirdEvidence = new Cell[5];
-        cellsRowThirdEvidence[0] = rowThirdEvidence.createCell(COL_A);
-        cellsRowThirdEvidence[1] = rowThirdEvidence.createCell(COL_B);
-        cellsRowThirdEvidence[2] = rowThirdEvidence.createCell(COL_C);
-        cellsRowThirdEvidence[3] = rowThirdEvidence.createCell(COL_J);
-        cellsRowThirdEvidence[4] = rowThirdEvidence.createCell(COL_K);
+        cellsRowThirdEvidence[0] = rowThirdEvidence.createCell(COL_EVIDENCE_NAME);
+        cellsRowThirdEvidence[1] = rowThirdEvidence.createCell(COL_EVIDENCE_SAGA);
+        cellsRowThirdEvidence[2] = rowThirdEvidence.createCell(COL_EVIDENCE_EMAIL);
+        cellsRowThirdEvidence[3] = rowThirdEvidence.createCell(COL_EVIDENCE_PERIOD);
+        cellsRowThirdEvidence[4] = rowThirdEvidence.createCell(COL_EVIDENCE_STATUS);
     }
 
     /**

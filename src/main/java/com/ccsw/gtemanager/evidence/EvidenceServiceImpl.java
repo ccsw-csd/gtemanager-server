@@ -63,21 +63,25 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     private static final int MONTH_START = 1;
     private static final int WEEK_OFFSET = 7;
+    private static final int MIN_WEEKS = 1;
+    private static final int MAX_WEEKS = 6;
 
-    private static final int SHEET_0 = 0;
+    private static final int FIRST_SHEET = 0;
 
-    private static final int ROW_2 = 1;
-    private static final int ROW_3 = 2;
-    private static final int ROW_10 = 9;
-    private static final int ROW_15 = 14;
+    private static final int ROW_PROPERTY_FROM_DATE = 1;
+    private static final int ROW_PROPERTY_TO_DATE = 2;
+    private static final int ROW_PROPERTY_RUNDATE = 9;
 
-    private static final int COL_A = 0;
-    private static final int COL_B = 1;
-    private static final int COL_C = 2;
-    private static final int COL_J = 9;
-    private static final int COL_K = 10;
+    private static final int ROW_EVIDENCE_LIST_START = 14;
+    private static final int ROW_EVIDENCE_LIST_NEXT = ROW_EVIDENCE_LIST_START + 1;
 
-    private static final int EVIDENCE_LIST_START = 15;
+    private static final int COL_PROPERTY_VALUE = 1;
+
+    private static final int COL_EVIDENCE_NAME = 0;
+    private static final int COL_EVIDENCE_SAGA = 1;
+    private static final int COL_EVIDENCE_EMAIL = 2;
+    private static final int COL_EVIDENCE_PERIOD = 9;
+    private static final int COL_EVIDENCE_STATUS = 10;
 
     private static final String PERIOD_SEPARATOR = " - ";
 
@@ -144,12 +148,16 @@ public class EvidenceServiceImpl implements EvidenceService {
         LocalDate toDate = null;
         LocalDateTime runDate = null;
         try {
-            fromDate = LocalDate.parse(sheet.getRow(ROW_2).getCell(COL_B).getStringCellValue(), formatDate);
-            toDate = LocalDate.parse(sheet.getRow(ROW_3).getCell(COL_B).getStringCellValue(), formatDate);
+            fromDate = LocalDate.parse(
+                    sheet.getRow(ROW_PROPERTY_FROM_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
+            toDate = LocalDate.parse(
+                    sheet.getRow(ROW_PROPERTY_TO_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
             if (fromDate.compareTo(toDate) > 0)
                 throw new BadRequestException("El informe no contiene fechas de periodo válidas (B2, C2).");
 
-            runDate = LocalDateTime.parse(sheet.getRow(ROW_10).getCell(COL_B).getStringCellValue(), formatDateTimeFile);
+            runDate = LocalDateTime.parse(
+                    sheet.getRow(ROW_PROPERTY_RUNDATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(),
+                    formatDateTimeFile);
             weeks = obtainWeeks(fromDate);
             parseProperties(runDate);
         } catch (NullPointerException | DateTimeException e) {
@@ -164,16 +172,16 @@ public class EvidenceServiceImpl implements EvidenceService {
 
         evidenceErrors = new ArrayList<>();
 
-        Row currentRow = sheet.getRow(ROW_15);
+        Row currentRow = sheet.getRow(ROW_EVIDENCE_LIST_START);
         Person person = null;
         Evidence evidence = null;
         String previousSaga = "";
-        for (int i = EVIDENCE_LIST_START; currentRow != null; i++) {
-            String fullName = currentRow.getCell(COL_A).getStringCellValue();
-            String saga = currentRow.getCell(COL_B).getStringCellValue();
-            String email = currentRow.getCell(COL_C).getStringCellValue();
-            String period = currentRow.getCell(COL_J).getStringCellValue();
-            String type = currentRow.getCell(COL_K).getStringCellValue();
+        for (int i = ROW_EVIDENCE_LIST_NEXT; currentRow != null; i++) {
+            String fullName = currentRow.getCell(COL_EVIDENCE_NAME).getStringCellValue();
+            String saga = currentRow.getCell(COL_EVIDENCE_SAGA).getStringCellValue();
+            String email = currentRow.getCell(COL_EVIDENCE_EMAIL).getStringCellValue();
+            String period = currentRow.getCell(COL_EVIDENCE_PERIOD).getStringCellValue();
+            String type = currentRow.getCell(COL_EVIDENCE_STATUS).getStringCellValue();
 
             if (StringUtils.hasText(fullName) || StringUtils.hasText(saga) || StringUtils.hasText(email)
                     || StringUtils.hasText(period) || StringUtils.hasText(type)) {
@@ -217,7 +225,7 @@ public class EvidenceServiceImpl implements EvidenceService {
      */
     private Sheet obtainSheet(MultipartFile file) throws BadRequestException {
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
-            return workbook.getSheetAt(SHEET_0);
+            return workbook.getSheetAt(FIRST_SHEET);
         } catch (Exception e) {
             throw new BadRequestException(
                     "Se ha producido un error leyendo el archivo. Compruebe la validez de los datos y que no se encuentra encriptado.");
@@ -260,14 +268,14 @@ public class EvidenceServiceImpl implements EvidenceService {
         propertiesList.add(new Properties(PROPERTY_LOAD_USERNAME, UserUtils.getUserDetails().getUsername()));
 
         weekProperties = new ArrayList<>();
-        for (int i = 1; i <= 6; i++) {
-            Properties pWeek = new Properties(PROPERTY_WEEK + i, null);
+        for (int i = MIN_WEEKS; i <= MAX_WEEKS; i++) {
+            Properties weekProperty = new Properties(PROPERTY_WEEK + i, null);
             try {
-                pWeek.setValue(weeks.get(i - 1));
+                weekProperty.setValue(weeks.get(i - 1));
             } catch (IndexOutOfBoundsException e) {
-                pWeek.setValue(null);
+                weekProperty.setValue(null);
             }
-            weekProperties.add(pWeek);
+            weekProperties.add(weekProperty);
         }
 
         propertiesList.add(new Properties(PROPERTY_LOAD_WEEKS, String.valueOf(weeks.size())));
