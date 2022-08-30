@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * InvalidReportDatesException: error con código 404 NOT FOUND, para peticiones
- * de un recurso o elemento que no existe o es inaccesible.
+ * EntityNotFoundException: error con código 404 NOT FOUND, para peticiones de
+ * un recurso o elemento que no existe o es inaccesible.
  */
 public class EntityNotFoundException extends ResponseStatusException {
 

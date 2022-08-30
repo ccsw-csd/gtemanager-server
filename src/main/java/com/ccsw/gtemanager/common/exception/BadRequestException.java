@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * InvalidReportDatesException: error con código 400 BAD REQUEST, para envíos
+ * BadRequestException: error con código 400 BAD REQUEST, para envíos
  * incorrectos.
  */
 public class BadRequestException extends ResponseStatusException {

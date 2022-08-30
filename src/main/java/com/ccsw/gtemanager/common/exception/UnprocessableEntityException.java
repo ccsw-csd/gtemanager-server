@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * InvalidFileFormatException: error con código 422 UNPROCESSABLE ENTITY, para
+ * UnprocessableEntityException: error con código 422 UNPROCESSABLE ENTITY, para
  * envíos que contienen ficheros válidos, pero con formato o contenido
  * incorrecto.
  */

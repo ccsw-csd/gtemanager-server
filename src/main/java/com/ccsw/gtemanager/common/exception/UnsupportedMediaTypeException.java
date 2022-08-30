@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * InvalidUploadException: error con código 415 UNSUPPORTED MEDIA TYPE, para
- * envíos que no contienen ficheros válidos o procesables.
+ * UnsupportedMediaTypeException: error con código 415 UNSUPPORTED MEDIA TYPE,
+ * para envíos que no contienen ficheros válidos o procesables.
  */
 public class UnsupportedMediaTypeException extends ResponseStatusException {
 
