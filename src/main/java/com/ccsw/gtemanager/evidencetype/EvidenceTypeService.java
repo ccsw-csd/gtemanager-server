@@ -16,13 +16,4 @@ public interface EvidenceTypeService {
      */
     List<EvidenceType> getAll();
 
-    /**
-     * Obtener tipo de evidencia dado código del tipo, ignorando mayúsculas y
-     * minúsculas.
-     * 
-     * @param code Código de EvidenceType a buscar
-     * @return EvidenceType encontrado
-     */
-    EvidenceType getByCode(String code);
-
 }

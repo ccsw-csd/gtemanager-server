@@ -24,10 +24,4 @@ public class EvidenceTypeServiceImpl implements EvidenceTypeService {
         return (List<EvidenceType>) evidenceTypeRepository.findAll();
     }
 
-    @Override
-    public EvidenceType getByCode(String code) {
-        List<EvidenceType> types = evidenceTypeRepository.findByCodeIgnoreCase(code);
-        return types.isEmpty() ? null : types.get(0);
-    }
-
 }

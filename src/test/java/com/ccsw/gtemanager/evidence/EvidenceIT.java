@@ -30,7 +30,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.ccsw.gtemanager.config.BaseITAbstract;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
-import com.ccsw.gtemanager.evidencetype.EvidenceTypeService;
+import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 
 /**
  * EvidenceTestIT: colección de tests integrados que prueban funcionalidad del
@@ -107,9 +107,6 @@ public class EvidenceIT extends BaseITAbstract {
 
     @Autowired
     private EvidenceErrorService evidenceErrorService;
-
-    @Autowired
-    private EvidenceTypeService evidenceTypeService;
 
     private static Workbook gteEvidences;
     private static Sheet sheet;
@@ -473,8 +470,8 @@ public class EvidenceIT extends BaseITAbstract {
         assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW2());
         assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW3());
         assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW4());
-        assertEquals(evidenceTypeService.getByCode(EXISTING_TYPE_1).getCode(),
-                evidenceService.getAll().get(0).getEvidenceTypeW5().getCode());
+        EvidenceType evidenceType = new EvidenceType(EXISTING_TYPE_1);
+        assertEquals(evidenceType.getCode(), evidenceService.getAll().get(0).getEvidenceTypeW5().getCode());
         assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW6());
     }
 }
