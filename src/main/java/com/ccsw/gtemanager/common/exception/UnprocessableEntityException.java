@@ -8,13 +8,13 @@ import org.springframework.web.server.ResponseStatusException;
  * envíos que contienen ficheros válidos, pero con formato o contenido
  * incorrecto.
  */
-public class InvalidFileFormatException extends ResponseStatusException {
+public class UnprocessableEntityException extends ResponseStatusException {
 
     /**
      * Constructor: crear ResponseStatusException con código 422 y mensaje de error.
      */
-    public InvalidFileFormatException() {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, "No se ha recibido un fichero con formato válido.");
+    public UnprocessableEntityException() {
+        super(HttpStatus.UNPROCESSABLE_ENTITY, "No se ha recibido un elemento con formato válido.");
     }
 
 }

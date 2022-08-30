@@ -5,16 +5,15 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * InvalidReportDatesException: error con código 400 BAD REQUEST, para envíos
- * que contienen ficheros de informe válidos, pero con fechas de periodo o
- * ejecución incorrectas.
+ * incorrectos.
  */
-public class InvalidReportDatesException extends ResponseStatusException {
+public class BadRequestException extends ResponseStatusException {
 
     /**
      * Constructor: crear ResponseStatusException con código 400 y mensaje de error.
      */
-    public InvalidReportDatesException() {
-        super(HttpStatus.BAD_REQUEST, "El informe no contiene fechas de periodo y/o ejecución válidas (B2, C2, B10).");
+    public BadRequestException(String reason) {
+        super(HttpStatus.BAD_REQUEST, reason);
     }
 
 }

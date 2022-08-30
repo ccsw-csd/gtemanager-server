@@ -26,10 +26,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.ccsw.gtemanager.common.exception.InvalidFileFormatException;
-import com.ccsw.gtemanager.common.exception.InvalidReportDatesException;
-import com.ccsw.gtemanager.common.exception.InvalidUploadException;
-import com.ccsw.gtemanager.common.exception.UnreadableReportException;
+import com.ccsw.gtemanager.common.exception.BadRequestException;
+import com.ccsw.gtemanager.common.exception.UnprocessableEntityException;
+import com.ccsw.gtemanager.common.exception.UnsupportedMediaTypeException;
 import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
@@ -135,9 +134,9 @@ public class EvidenceServiceImpl implements EvidenceService {
     @Override
     public boolean uploadEvidence(FormDataDto upload) throws ResponseStatusException {
         if (upload.getFile() == null)
-            throw new InvalidUploadException();
+            throw new UnsupportedMediaTypeException();
         else if (!ALLOWED_FORMATS.contains(upload.getFile().getContentType()))
-            throw new InvalidFileFormatException();
+            throw new UnprocessableEntityException();
 
         Sheet sheet = obtainSheet(upload.getFile());
 
@@ -148,13 +147,13 @@ public class EvidenceServiceImpl implements EvidenceService {
             fromDate = LocalDate.parse(sheet.getRow(ROW_2).getCell(COL_B).getStringCellValue(), formatDate);
             toDate = LocalDate.parse(sheet.getRow(ROW_3).getCell(COL_B).getStringCellValue(), formatDate);
             if (fromDate.compareTo(toDate) > 0)
-                throw new InvalidReportDatesException();
+                throw new BadRequestException("El informe no contiene fechas de periodo válidas (B2, C2).");
 
             runDate = LocalDateTime.parse(sheet.getRow(ROW_10).getCell(COL_B).getStringCellValue(), formatDateTimeFile);
             weeks = obtainWeeks(fromDate);
             parseProperties(runDate);
         } catch (NullPointerException | DateTimeException e) {
-            throw new InvalidReportDatesException();
+            throw new BadRequestException("El informe no contiene fecha de ejecución válida (B10).");
         }
 
         people = personService.getPeople();
@@ -216,11 +215,12 @@ public class EvidenceServiceImpl implements EvidenceService {
      * @return Hoja de cálculo elegida
      * @throws UnreadableReportException No es posible leer el fichero proporcionado
      */
-    private Sheet obtainSheet(MultipartFile file) throws UnreadableReportException {
+    private Sheet obtainSheet(MultipartFile file) throws BadRequestException {
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
             return workbook.getSheetAt(SHEET_0);
         } catch (Exception e) {
-            throw new UnreadableReportException();
+            throw new BadRequestException(
+                    "Se ha producido un error leyendo el archivo. Compruebe la validez de los datos y que no se encuentra encriptado.");
         }
     }
 

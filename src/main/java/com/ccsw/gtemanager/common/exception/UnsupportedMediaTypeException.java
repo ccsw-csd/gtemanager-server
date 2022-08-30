@@ -7,13 +7,13 @@ import org.springframework.web.server.ResponseStatusException;
  * InvalidUploadException: error con código 415 UNSUPPORTED MEDIA TYPE, para
  * envíos que no contienen ficheros válidos o procesables.
  */
-public class InvalidUploadException extends ResponseStatusException {
+public class UnsupportedMediaTypeException extends ResponseStatusException {
 
     /**
      * Constructor: crear ResponseStatusException con código 415 y mensaje de error.
      */
-    public InvalidUploadException() {
-        super(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "No se ha recibido un fichero válido.");
+    public UnsupportedMediaTypeException() {
+        super(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "No se ha recibido un elemento válido.");
     }
 
 }
