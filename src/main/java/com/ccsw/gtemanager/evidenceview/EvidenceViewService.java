@@ -8,6 +8,4 @@ import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 public interface EvidenceViewService {
 	
 	List<EvidenceView> findOrderedByGeography(Long idGeography);
-	
-	List<EvidenceComment> findCommentsByEvidence(Long idEvidence);
 }

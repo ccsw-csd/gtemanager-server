@@ -6,28 +6,28 @@ import com.ccsw.gtemanager.person.model.PersonDto;
 
 public class EvidenceViewDto {
 	
-	private EvidenceViewIdDto evidence;
+	private PersonDto person;
 	
 	private EvidenceCommentDto comment;
 	
-	private EvidenceTypeDto evidenteTypeW1; 
+	private EvidenceTypeDto evidenceTypeW1; 
 	
-	private EvidenceTypeDto evidenteTypeW2;
+	private EvidenceTypeDto evidenceTypeW2;
 	
-	private EvidenceTypeDto evidenteTypeW3; 
+	private EvidenceTypeDto evidenceTypeW3; 
 	
-	private EvidenceTypeDto evidenteTypeW4; 
+	private EvidenceTypeDto evidenceTypeW4; 
 	
-	private EvidenceTypeDto evidenteTypeW5; 
+	private EvidenceTypeDto evidenceTypeW5; 
 	
-	private EvidenceTypeDto evidenteTypeW6;
+	private EvidenceTypeDto evidenceTypeW6;
 
-	public EvidenceViewIdDto getEvidence() {
-		return evidence;
+	public PersonDto getPerson() {
+		return person;
 	}
 
-	public void setEvidence(EvidenceViewIdDto evidence) {
-		this.evidence = evidence;
+	public void setPerson(PersonDto person) {
+		this.person = person;
 	}
 
 	public EvidenceCommentDto getComment() {
@@ -38,51 +38,51 @@ public class EvidenceViewDto {
 		this.comment = comment;
 	}
 
-	public EvidenceTypeDto getEvidenteTypeW1() {
-		return evidenteTypeW1;
+	public EvidenceTypeDto getEvidenceTypeW1() {
+		return evidenceTypeW1;
 	}
 
-	public void setEvidenteTypeW1(EvidenceTypeDto evidenteTypeW1) {
-		this.evidenteTypeW1 = evidenteTypeW1;
+	public void setEvidenceTypeW1(EvidenceTypeDto evidenceTypeW1) {
+		this.evidenceTypeW1 = evidenceTypeW1;
 	}
 
-	public EvidenceTypeDto getEvidenteTypeW2() {
-		return evidenteTypeW2;
+	public EvidenceTypeDto getEvidenceTypeW2() {
+		return evidenceTypeW2;
 	}
 
-	public void setEvidenteW2(EvidenceTypeDto evidenteTypeW2) {
-		this.evidenteTypeW2 = evidenteTypeW2;
+	public void setEvidenceTypeW2(EvidenceTypeDto evidenceTypeW2) {
+		this.evidenceTypeW2 = evidenceTypeW2;
 	}
 
-	public EvidenceTypeDto getEvidenteTypeW3() {
-		return evidenteTypeW3;
+	public EvidenceTypeDto getEvidenceTypeW3() {
+		return evidenceTypeW3;
 	}
 
-	public void setEvidenteTypeW3(EvidenceTypeDto evidenteTypeW3) {
-		this.evidenteTypeW3 = evidenteTypeW3;
+	public void setEvidenceTypeW3(EvidenceTypeDto evidenceTypeW3) {
+		this.evidenceTypeW3 = evidenceTypeW3;
 	}
 
-	public EvidenceTypeDto getEvidenteTypeW4() {
-		return evidenteTypeW4;
+	public EvidenceTypeDto getEvidenceTypeW4() {
+		return evidenceTypeW4;
 	}
 
-	public void setEvidenteTypeW4(EvidenceTypeDto evidenteTypeW4) {
-		this.evidenteTypeW4 = evidenteTypeW4;
+	public void setEvidenceTypeW4(EvidenceTypeDto evidenceTypeW4) {
+		this.evidenceTypeW4 = evidenceTypeW4;
 	}
 
-	public EvidenceTypeDto getEvidenteTypeW5() {
-		return evidenteTypeW5;
+	public EvidenceTypeDto getEvidenceTypeW5() {
+		return evidenceTypeW5;
 	}
 
-	public void setEvidenteW5(EvidenceTypeDto evidenteTypeW5) {
-		this.evidenteTypeW5 = evidenteTypeW5;
+	public void setEvidenceTypeW5(EvidenceTypeDto evidenceTypeW5) {
+		this.evidenceTypeW5 = evidenceTypeW5;
 	}
 
-	public EvidenceTypeDto getEvidenteTypeW6() {
-		return evidenteTypeW6;
+	public EvidenceTypeDto getEvidenceTypeW6() {
+		return evidenceTypeW6;
 	}
 
-	public void setEvidenteW6(EvidenceTypeDto evidenteTypeW6) {
-		this.evidenteTypeW6 = evidenteTypeW6;
+	public void setEvidenceTypeW6(EvidenceTypeDto evidenceTypeW6) {
+		this.evidenceTypeW6 = evidenceTypeW6;
 	}
 }

@@ -33,13 +33,4 @@ public class EvidenceViewController {
 		
 		return beanMapper.mapList(evidences, EvidenceViewDto.class);
 	}
-	
-	/**
-	 * GET: Devuelve el listado de comentarios de una evidencia
-	@RequestMapping(path = "", method = RequestMethod.GET)
-	public List<EvidenceCommentDto> findCommentsByEvidence(@RequestParam(value = "id", required = true) Long idEvidence) {
-		List<EvidenceComment> comments = evidenceViewService.findCommentsByEvidence(idEvidence);
-		
-		return this.beanMapper.mapList(comments, EvidenceCommentDto.class);
-	}*/
 }

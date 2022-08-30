@@ -12,9 +12,6 @@ import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 public interface EvidenceViewRepository extends CrudRepository<EvidenceView, EvidenceComment> {
 	
-	//@EntityGraph(attributePaths = { "evidence", "comment", "evidenteTypeW1", "evidenteTypeW2", "evidenteTypeW3", "evidenteTypeW4", "evidenteTypeW5", "evidenteTypeW6" })
-	@EntityGraph(value = "evidence-view-graph")
+	@EntityGraph(value = "evidence-view-graph", type = EntityGraph.EntityGraphType.LOAD)
 	List<EvidenceView> findAll(Specification<EvidenceView> specification, Sort by);
-	
-	List<EvidenceComment> findCommentsByEvidence(Long idEvidence);
 }

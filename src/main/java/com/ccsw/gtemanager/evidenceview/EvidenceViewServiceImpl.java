@@ -24,13 +24,8 @@ public class EvidenceViewServiceImpl implements EvidenceViewService {
 		
 		EvidenceViewSpecification geography = new EvidenceViewSpecification(new SearchCriteria("center", ":", idGeography));
 		Specification<EvidenceView> specification = Specification.where(geography);
-		List<EvidenceView> list = this.evidenceViewRepository.findAll(specification, Sort.by(Sort.Direction.ASC, "evidence.id"));
-		System.out.println("AQUI ESTÁ: " + list);
+		List<EvidenceView> list = this.evidenceViewRepository.findAll(specification, Sort.by(Sort.Direction.ASC, "person.center.name"));
+		
 		return list;
-	}	
-	
-	@Override
-	public List<EvidenceComment> findCommentsByEvidence(Long idEvidence) {
-		return this.evidenceViewRepository.findCommentsByEvidence(idEvidence);
 	}
 }

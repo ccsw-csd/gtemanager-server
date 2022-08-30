@@ -23,8 +23,8 @@ public class EvidenceViewSpecification implements Specification<EvidenceView> {
 	public Predicate toPredicate(Root<EvidenceView> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 		
 		if (criteria.getValue() == null) {
-			return builder.like(root.join("evidence").join("person").get("name"), "%");
+			return builder.like(root.join("person").get("name"), "%");
 		}
-		return builder.equal(root.join("evidence").join("person").get(criteria.getKey()), criteria.getValue());
+		return builder.equal(root.join("person").get(criteria.getKey()), criteria.getValue());
 	}
 }
