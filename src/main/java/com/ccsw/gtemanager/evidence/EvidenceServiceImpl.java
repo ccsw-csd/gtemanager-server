@@ -63,8 +63,8 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     private static final int MONTH_START = 1;
     private static final int WEEK_OFFSET = 7;
-    private static final int MIN_WEEKS = 1;
-    private static final int MAX_WEEKS = 6;
+    private static final int WEEK_PROPERTIES_START = 1;
+    private static final int MAX_WEEKS_IN_MONTH = 6;
 
     private static final int FIRST_SHEET = 0;
 
@@ -268,7 +268,7 @@ public class EvidenceServiceImpl implements EvidenceService {
         propertiesList.add(new Properties(PROPERTY_LOAD_USERNAME, UserUtils.getUserDetails().getUsername()));
 
         weekProperties = new ArrayList<>();
-        for (int i = MIN_WEEKS; i <= MAX_WEEKS; i++) {
+        for (int i = WEEK_PROPERTIES_START; i <= MAX_WEEKS_IN_MONTH; i++) {
             Properties weekProperty = new Properties(PROPERTY_WEEK + i, null);
             try {
                 weekProperty.setValue(weeks.get(i - 1));
