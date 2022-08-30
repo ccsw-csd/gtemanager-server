@@ -18,6 +18,8 @@ import com.ccsw.gtemanager.personsagatranscode.model.PersonSagaTranscode;
 @Transactional
 public class PersonServiceImpl implements PersonService {
 
+    private static final String SAGA_SEPARATOR = "_";
+
     @Autowired
     private PersonSagaTranscodeService personSagaTranscodeService;
 
@@ -48,13 +50,10 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public String parseSaga(String saga) throws IllegalArgumentException {
         try {
-            saga = saga.split("_")[1];
+            return String.valueOf(Long.parseLong(saga.split(SAGA_SEPARATOR)[1]));
         } catch (IndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Código Saga introducido no es válido.");
-        }
-        try {
-            return String.valueOf(Long.parseLong(saga));
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException e) {
             return saga.substring(saga.length() - 4);
         }
     }
