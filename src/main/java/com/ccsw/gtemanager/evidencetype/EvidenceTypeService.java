@@ -14,6 +14,6 @@ public interface EvidenceTypeService {
      * 
      * @return Listado de EvidenceType
      */
-    List<EvidenceType> getAll();
+    List<EvidenceType> getEvidenceTypes();
 
 }

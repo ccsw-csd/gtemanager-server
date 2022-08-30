@@ -119,7 +119,7 @@ public class EvidenceServiceImpl implements EvidenceService {
             .appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
 
     @Override
-    public List<Evidence> getAll() {
+    public List<Evidence> getEvidences() {
         return evidenceRepository.findAll();
     }
 
@@ -166,7 +166,7 @@ public class EvidenceServiceImpl implements EvidenceService {
 
         people = personService.getPeople();
 
-        types = evidenceTypeService.getAll();
+        types = evidenceTypeService.getEvidenceTypes();
 
         evidences = new LinkedHashMap<>();
 

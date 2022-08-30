@@ -21,7 +21,7 @@ public class PersonSagaTranscodeServiceImpl implements PersonSagaTranscodeServic
     private PersonSagaTranscodeRepository personSagaTranscodeRepository;
 
     @Override
-    public List<PersonSagaTranscode> getAll() {
+    public List<PersonSagaTranscode> getPersonSagaTranscodes() {
         return personSagaTranscodeRepository.findAll();
     }
 

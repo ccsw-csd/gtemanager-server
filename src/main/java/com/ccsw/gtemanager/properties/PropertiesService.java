@@ -14,7 +14,7 @@ public interface PropertiesService {
      * 
      * @return Listado de Properties
      */
-    List<Properties> getAll();
+    List<Properties> getProperties();
 
     /**
      * Guardar todos los registros de Properties porporcionados.

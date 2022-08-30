@@ -21,7 +21,7 @@ public class EvidenceCommentServiceImpl implements EvidenceCommentService {
     private EvidenceCommentRepository evidenceCommentRepository;
 
     @Override
-    public List<EvidenceComment> getAll() {
+    public List<EvidenceComment> getEvidenceComments() {
         return evidenceCommentRepository.findAll();
     }
 

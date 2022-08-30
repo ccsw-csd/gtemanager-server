@@ -14,7 +14,7 @@ public interface EvidenceCommentService {
      * 
      * @return Listado de EvidenceComments
      */
-    List<EvidenceComment> getAll();
+    List<EvidenceComment> getEvidenceComments();
 
     /**
      * Eliminar todos los registros de EvidenceComment.

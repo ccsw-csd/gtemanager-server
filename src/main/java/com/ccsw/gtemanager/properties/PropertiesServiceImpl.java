@@ -20,7 +20,7 @@ public class PropertiesServiceImpl implements PropertiesService {
     private PropertiesRepository propertiesRepository;
 
     @Override
-    public List<Properties> getAll() {
+    public List<Properties> getProperties() {
         return propertiesRepository.findAll();
     }
 

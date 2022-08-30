@@ -16,6 +16,6 @@ public interface PersonSagaTranscodeService {
      * 
      * @return Listado de PersonSagaTranscode
      */
-    List<PersonSagaTranscode> getAll();
+    List<PersonSagaTranscode> getPersonSagaTranscodes();
 
 }

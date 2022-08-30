@@ -20,7 +20,7 @@ public class EvidenceTypeServiceImpl implements EvidenceTypeService {
     private EvidenceTypeRepository evidenceTypeRepository;
 
     @Override
-    public List<EvidenceType> getAll() {
+    public List<EvidenceType> getEvidenceTypes() {
         return (List<EvidenceType>) evidenceTypeRepository.findAll();
     }
 

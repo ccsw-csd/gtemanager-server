@@ -266,7 +266,7 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(null, response.getBody());
-        assertEquals(2, evidenceService.getAll().size());
+        assertEquals(2, evidenceService.getEvidences().size());
     }
 
     /**
@@ -299,7 +299,7 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(0, evidenceService.getAll().size());
+        assertEquals(0, evidenceService.getEvidences().size());
 
         cellFromDate.setCellValue(NONEXISTING_FROMDATE);
         cellToDate.setCellValue(EXISTING_TODATE);
@@ -319,7 +319,7 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(0, evidenceService.getAll().size());
+        assertEquals(0, evidenceService.getEvidences().size());
 
         cellFromDate.setCellValue(EXISTING_FROMDATE);
         cellToDate.setCellValue(NONEXISTING_TODATE);
@@ -339,7 +339,7 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(0, evidenceService.getAll().size());
+        assertEquals(0, evidenceService.getEvidences().size());
     }
 
     /**
@@ -385,7 +385,7 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(2, evidenceService.getAll().size());
+        assertEquals(2, evidenceService.getEvidences().size());
 
         cellsRowFirstEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
         cellsRowFirstEvidence[1].setCellValue(EXISTING_SAGA_P1);
@@ -407,8 +407,8 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(2, evidenceService.getAll().size());
-        assertEquals(1, evidenceErrorService.getAll().size());
+        assertEquals(2, evidenceService.getEvidences().size());
+        assertEquals(1, evidenceErrorService.getEvidenceErrors().size());
 
         cellsRowFirstEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
         cellsRowFirstEvidence[1].setCellValue(EXISTING_SAGA_P1);
@@ -430,8 +430,8 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(2, evidenceService.getAll().size());
-        assertEquals(1, evidenceErrorService.getAll().size());
+        assertEquals(2, evidenceService.getEvidences().size());
+        assertEquals(1, evidenceErrorService.getEvidenceErrors().size());
     }
 
     /**
@@ -464,14 +464,14 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(null, response.getBody());
-        assertEquals(1, evidenceService.getAll().size());
+        assertEquals(1, evidenceService.getEvidences().size());
 
-        assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW1());
-        assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW2());
-        assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW3());
-        assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW4());
+        assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW1());
+        assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW2());
+        assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW3());
+        assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW4());
         EvidenceType evidenceType = new EvidenceType(EXISTING_TYPE_1);
-        assertEquals(evidenceType.getCode(), evidenceService.getAll().get(0).getEvidenceTypeW5().getCode());
-        assertEquals(null, evidenceService.getAll().get(0).getEvidenceTypeW6());
+        assertEquals(evidenceType.getCode(), evidenceService.getEvidences().get(0).getEvidenceTypeW5().getCode());
+        assertEquals(null, evidenceService.getEvidences().get(0).getEvidenceTypeW6());
     }
 }

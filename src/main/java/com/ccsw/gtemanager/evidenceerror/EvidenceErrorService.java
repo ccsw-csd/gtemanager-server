@@ -14,7 +14,7 @@ public interface EvidenceErrorService {
      * 
      * @return Listado de EvidenceErrorDto
      */
-    List<EvidenceErrorDto> getAll();
+    List<EvidenceErrorDto> getEvidenceErrors();
 
     /**
      * Guardar todos los registros de EvidenceErrorDto proporcionados.

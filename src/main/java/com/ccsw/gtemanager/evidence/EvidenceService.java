@@ -17,7 +17,7 @@ public interface EvidenceService {
      * 
      * @return Listado de Evidences
      */
-    List<Evidence> getAll();
+    List<Evidence> getEvidences();
 
     /**
      * Leer y procesar un archivo de hoja de cálculo para obtener y almacenar

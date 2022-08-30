@@ -28,7 +28,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public List<Person> getPeople() {
-        List<PersonSagaTranscode> personTranscodes = personSagaTranscodeService.getAll();
+        List<PersonSagaTranscode> personTranscodes = personSagaTranscodeService.getPersonSagaTranscodes();
         List<Person> people = personRepository.findAll();
         for (PersonSagaTranscode personSagaTranscode : personTranscodes) {
             Person person = personSagaTranscode.getPersonId();
@@ -40,11 +40,6 @@ public class PersonServiceImpl implements PersonService {
             }
         }
         return people;
-    }
-
-    @Override
-    public Person getById(Long id) {
-        return personRepository.getById(id);
     }
 
     @Override

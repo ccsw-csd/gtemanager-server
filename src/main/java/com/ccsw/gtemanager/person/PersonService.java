@@ -20,14 +20,6 @@ public interface PersonService {
     List<Person> getPeople();
 
     /**
-     * Obtener Person dado un ID.
-     * 
-     * @param id ID por el que buscar persona
-     * @return Person encontrado
-     */
-    Person getById(Long id);
-
-    /**
      * Leer y deducir código saga de la persona implicada.
      * 
      * @param saga Código a procesar
