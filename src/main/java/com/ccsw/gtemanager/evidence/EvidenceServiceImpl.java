@@ -287,11 +287,7 @@ public class EvidenceServiceImpl implements EvidenceService {
         try {
             return people.get(people.indexOf(new Person(saga)));
         } catch (IndexOutOfBoundsException e) {
-            Person person = personService.getBySaga(saga);
-            if (person == null)
-                throw new IllegalArgumentException("No existe persona con el código saga especificado.");
-            else
-                return person;
+            throw new IllegalArgumentException("No existe persona con el código saga especificado.");
         }
     }
 

@@ -12,6 +12,9 @@ public interface PersonService {
     /**
      * Obtener listado de todas las personas en la base de datos.
      * 
+     * Se hace comparación con PersonSagaTranscode para reemplazar los códigos saga
+     * desactualizados en el registro de personas.
+     * 
      * @return Listado de Person
      */
     List<Person> getPeople();
@@ -23,14 +26,6 @@ public interface PersonService {
      * @return Person encontrado
      */
     Person getById(Long id);
-
-    /**
-     * Obtener persona dado un código de saga.
-     * 
-     * @param saga Código saga por el que buscar
-     * @return Person encontrado
-     */
-    Person getBySaga(String saga);
 
     /**
      * Leer y deducir código saga de la persona implicada.

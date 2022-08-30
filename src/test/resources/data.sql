@@ -66,6 +66,8 @@ CREATE TABLE person_saga_transcode (
   CONSTRAINT person_saga_person_fk FOREIGN KEY (person_id) REFERENCES person (id)
 );
 
+INSERT INTO person_saga_transcode (person_id, saga) VALUES ('3', 'B2');
+
 CREATE TABLE evidence (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   person_id int(11) NOT NULL,

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ccsw.gtemanager.person.model.Person;
+import com.ccsw.gtemanager.personsagatranscode.PersonSagaTranscodeService;
+import com.ccsw.gtemanager.personsagatranscode.model.PersonSagaTranscode;
 
 /**
  * PersonServiceImpl: clase de implementación de PersonService.
@@ -17,22 +19,30 @@ import com.ccsw.gtemanager.person.model.Person;
 public class PersonServiceImpl implements PersonService {
 
     @Autowired
+    private PersonSagaTranscodeService personSagaTranscodeService;
+
+    @Autowired
     private PersonRepository personRepository;
 
     @Override
     public List<Person> getPeople() {
-        return personRepository.findAll();
+        List<PersonSagaTranscode> personTranscodes = personSagaTranscodeService.getAll();
+        List<Person> people = personRepository.findAll();
+        for (PersonSagaTranscode personSagaTranscode : personTranscodes) {
+            Person person = personSagaTranscode.getPersonId();
+            person.setSaga(personSagaTranscode.getSaga());
+            try {
+                people.set(people.indexOf(person), person);
+            } catch (IndexOutOfBoundsException e) {
+                people.add(person);
+            }
+        }
+        return people;
     }
 
     @Override
     public Person getById(Long id) {
         return personRepository.getById(id);
-    }
-
-    @Override
-    public Person getBySaga(String saga) {
-        List<Person> people = personRepository.findBySaga(saga);
-        return people.size() == 1 ? people.get(0) : null;
     }
 
     @Override

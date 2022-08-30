@@ -1,4 +1,4 @@
-package com.ccsw.gtemanager.person.model;
+package com.ccsw.gtemanager.personsagatranscode.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.ccsw.gtemanager.person.model.Person;
 
 /**
  * PersonSagaTranscode: clase de apoyo para resolución de códigos saga de Person
