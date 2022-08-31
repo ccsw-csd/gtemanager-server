@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ccsw.gtemanager.common.criteria.TernarySearchCriteria;
-import com.ccsw.gtemanager.common.exception.AlreadyExistException;
+import com.ccsw.gtemanager.common.exception.AlreadyExistsException;
 import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.user.model.UserDto;
 import com.ccsw.gtemanager.user.model.UserEntity;
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(UserDto userDto) throws AlreadyExistException {
+    public void createUser(UserDto userDto) throws AlreadyExistsException {
 
         this.checkIfValuesAreDuped(userDto);
 
@@ -72,14 +72,14 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private void checkIfValuesAreDuped(UserDto dto) throws AlreadyExistException {
+    private void checkIfValuesAreDuped(UserDto dto) throws AlreadyExistsException {
         Boolean dupeName, dupePriority;
 
         dupeName = this.userRepository.existsByUsername(dto.getUsername());
         dupePriority = this.userRepository.existsByEmail(dto.getEmail());
 
         if (dupeName || dupePriority)
-            throw new AlreadyExistException();
+            throw new AlreadyExistsException();
     }
 
 }

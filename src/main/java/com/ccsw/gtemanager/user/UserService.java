@@ -2,7 +2,7 @@ package com.ccsw.gtemanager.user;
 
 import org.springframework.data.domain.Page;
 
-import com.ccsw.gtemanager.common.exception.AlreadyExistException;
+import com.ccsw.gtemanager.common.exception.AlreadyExistsException;
 import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.user.model.UserDto;
 import com.ccsw.gtemanager.user.model.UserEntity;
@@ -22,6 +22,6 @@ public interface UserService {
 
     UserEntity getById(Long id) throws EntityNotFoundException;
 
-    void createUser(UserDto userDto) throws AlreadyExistException;
+    void createUser(UserDto userDto) throws AlreadyExistsException;
 
 }

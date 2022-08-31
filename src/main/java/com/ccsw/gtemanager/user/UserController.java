@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ccsw.gtemanager.common.exception.AlreadyExistException;
+import com.ccsw.gtemanager.common.exception.AlreadyExistsException;
 import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.config.mapper.BeanMapper;
 import com.ccsw.gtemanager.user.model.UserDto;
@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @RequestMapping(path = "", method = RequestMethod.PUT)
-    public void createUser(@RequestBody UserDto userDto) throws AlreadyExistException {
+    public void createUser(@RequestBody UserDto userDto) throws AlreadyExistsException {
         this.userService.createUser(userDto);
     }
 
