@@ -7,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.Table;
 
 import com.ccsw.gtemanager.person.model.Person;
@@ -14,8 +17,12 @@ import com.ccsw.gtemanager.person.model.Person;
 /**
  * PersonSagaTranscode: clase de apoyo para resolución de códigos saga de Person
  * en base de datos. Contiene atributos para la persona y código de saga, además
- * de getters y setters.
+ * de getters y setters. Se implementa EntityGraph para optimización de
+ * consultas.
  */
+@NamedEntityGraph(name = "person_saga_transcode-entity-graph", attributeNodes = {
+        @NamedAttributeNode(value = "personId", subgraph = "person-subgraph") }, subgraphs = {
+                @NamedSubgraph(name = "person-subgraph", attributeNodes = { @NamedAttributeNode("center") }) })
 @Entity
 @Table(name = "person_saga_transcode")
 public class PersonSagaTranscode {
