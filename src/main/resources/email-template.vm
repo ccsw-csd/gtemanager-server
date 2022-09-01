@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <style>
+            body {
+                text-align: justify;
+            }
+            
+            .evidence {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+            }
+
+            table {
+                width: 95%;
+                border-collapse: collapse;
+                text-align: left;
+            }
+
+            th {
+                background-color: #dce6f1;
+                text-align: left;
+            }
+
+            tr {
+                border-bottom: 1px solid blue;
+            }
+        </style>
+            #set($applicationName = '<a href="https://gfs.capgemini.com/" target="_blank">Global Time Entry (GTE)</a>')
+            #if ($pending == 1)
+                #set($pendingString = '1 ficha (timecard)')
+                #set($listString = 'adjuntamos el periodo que falta')
+            #else
+                #set($pendingString = $pending + ' fichas (timecards)')
+                #set($listString = 'adjuntamos un listado de los periodos que faltan')
+            #end
+            
+        <div class="message">
+            <p>Hola, $person:</p>
+            <p>
+                Te enviamos este mensaje para recordarte que tienes
+                <b>$pendingString</b>
+                sin completar, en proceso, o con errores, en la aplicación
+                <b>$applicationName</b>,
+                para el periodo de
+                <b>$period</b>.</p>
+            <p>
+                Por favor, revisa que has cumplimentado todas las fichas y que las has enviado para su validación.
+                Recuerda que <b>pulsando el botón de editar (lápiz) abrirás una ficha para edición</b>, aunque ya la
+                hayas enviado, y <b>deberás volver a enviarla (submit)</b> para su validación.
+            </p>
+            <p>
+                Este mensaje ha sido enviado automáticamente. Si tienes alguna duda o si crees que has recibido este
+                mensaje por error, por favor, ponte en contacto con tu responsable de proyecto o con la dirección de tu
+                departamento.
+            </p>
+            <p>
+                A continuación, te
+                $listString
+                por cumplimentar. Asegúrate de realizar el envío para que todas las fichas se encuentren en estado
+                <b>"enviado" (submitted)</b> lo antes posible.
+            </p>
+            <p>¡Gracias por tu colaboración!</p>
+        </div>
+
+        <div class="evidence">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Periodo</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    #set($size = ($pending - 1))
+                    #set($count = [0..$size])
+                    #foreach($elem in $count)
+
+                    <tr>
+                        <td>$weeks.get($elem)</td>
+                        <td>$evidenceTypes.get($elem).name</td>
+                    </tr>
+                    #end
+                    
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
