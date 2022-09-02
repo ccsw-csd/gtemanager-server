@@ -9,9 +9,9 @@ import javax.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.ccsw.gtemanager.common.criteria.TernarySearchCriteria;
-import com.ccsw.gtemanager.person.model.PersonEntity;
+import com.ccsw.gtemanager.person.model.Person;
 
-public class PersonSpecification implements Specification<PersonEntity> {
+public class PersonSpecification implements Specification<Person> {
 
     private static final long serialVersionUID = 1L;
     private final TernarySearchCriteria criteria;
@@ -21,7 +21,7 @@ public class PersonSpecification implements Specification<PersonEntity> {
     }
 
     @Override
-    public Predicate toPredicate(Root<PersonEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<Person> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 
         if (criteria.getOperation().equalsIgnoreCase(":") && criteria.getValue() != null) {
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
