@@ -1,6 +1,6 @@
 package com.ccsw.gtemanager.evidenceview.model;
 
-import com.ccsw.gtemanager.evidencecomment.model.EvidenceCommentDto;
+import com.ccsw.gtemanager.evidencecomment.model.CommentDto;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceTypeDto;
 import com.ccsw.gtemanager.person.model.PersonDto;
 
@@ -8,7 +8,7 @@ public class EvidenceViewDto {
 	
 	private PersonDto person;
 	
-	private EvidenceCommentDto comment;
+	private CommentDto comment;
 	
 	private EvidenceTypeDto evidenceTypeW1; 
 	
@@ -30,11 +30,11 @@ public class EvidenceViewDto {
 		this.person = person;
 	}
 
-	public EvidenceCommentDto getComment() {
+	public CommentDto getComment() {
 		return comment;
 	}
 
-	public void setComment(EvidenceCommentDto comment) {
+	public void setComment(CommentDto comment) {
 		this.comment = comment;
 	}
 

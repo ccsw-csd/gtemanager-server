@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import org.springframework.data.annotation.Immutable;
 
-import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
+import com.ccsw.gtemanager.evidencecomment.model.Comment;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 import com.ccsw.gtemanager.person.model.Person;
 
@@ -43,7 +43,7 @@ public class EvidenceView {
 	
 	@ManyToOne
 	@JoinColumn(name = "comment_id", nullable = true)
-	private EvidenceComment comment;
+	private Comment comment;
 	
 	@ManyToOne
 	@JoinColumn(name = "evidente_type_w1", nullable = true)
@@ -73,7 +73,7 @@ public class EvidenceView {
 		return person;
 	}
 	
-	public EvidenceComment getComment() {
+	public Comment getComment() {
 		return comment;
 	}
 

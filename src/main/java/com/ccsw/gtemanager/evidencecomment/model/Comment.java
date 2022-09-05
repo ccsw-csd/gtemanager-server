@@ -14,7 +14,7 @@ import com.ccsw.gtemanager.person.model.Person;
 
 @Entity
 @Table(name = "evidence_comment")
-public class EvidenceComment {
+public class Comment {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,24 +31,23 @@ public class EvidenceComment {
 		return id;
 	}
 
-	public Person getPerson() {
-		return person;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Person getPerson() {
+		return person;
 	}
 
 	public void setPerson(Person person) {
 		this.person = person;
 	}
 
+	public String getComment() {
+		return comment;
+	}
+
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-
 }

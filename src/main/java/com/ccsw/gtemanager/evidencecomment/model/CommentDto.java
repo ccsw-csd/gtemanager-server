@@ -2,7 +2,7 @@ package com.ccsw.gtemanager.evidencecomment.model;
 
 import com.ccsw.gtemanager.person.model.PersonDto;
 
-public class EvidenceCommentDto {
+public class CommentDto {
 	
 	private Long id;
 	

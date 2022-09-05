@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.ccsw.gtemanager.evidence.model.Center;
+import com.ccsw.gtemanager.center.model.Center;
 
 @Entity
 @Table(name = "person")

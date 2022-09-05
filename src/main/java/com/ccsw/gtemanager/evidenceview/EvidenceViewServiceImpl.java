@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 import com.ccsw.gtemanager.evidenceview.EvidenceViewSpecification;
 import com.ccsw.gtemanager.evidence.model.Evidence;
-import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
+import com.ccsw.gtemanager.evidencecomment.model.Comment;
 import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 @Service

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ccsw.gtemanager.config.mapper.BeanMapper;
 import com.ccsw.gtemanager.evidence.EvidenceService;
-import com.ccsw.gtemanager.evidencecomment.model.EvidenceComment;
-import com.ccsw.gtemanager.evidencecomment.model.EvidenceCommentDto;
+import com.ccsw.gtemanager.evidencecomment.model.Comment;
+import com.ccsw.gtemanager.evidencecomment.model.CommentDto;
 
 @RequestMapping(value = "/comment")
 @RestController
@@ -25,12 +25,10 @@ public class CommentController {
 	
 	/*
 	 * GET: Devuelve un comentario según su id
-	 * */
-	@RequestMapping(path = "/comment", method = RequestMethod.GET)
-	public List<EvidenceCommentDto> findWithComments(@RequestParam(value = "id", required = false) Long idEvidence) {
-		//List<EvidenceComment> comments = commentService.findCommentsByEvidence(idEvidence);
-		List<EvidenceComment> comments = commentService.findAll();
-		
-		return beanMapper.mapList(comments, EvidenceCommentDto.class);
+	 */	
+	@RequestMapping(path = "", method = RequestMethod.GET)
+	public CommentDto findCommentByPerson(@RequestParam(value = "id", required = true) Long person) {
+		Comment comment = commentService.findByPersonId(person);
+		return this.beanMapper.map(comment, CommentDto.class);
 	}
 }

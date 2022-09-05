@@ -1,6 +1,6 @@
 package com.ccsw.gtemanager.person.model;
 
-import com.ccsw.gtemanager.evidence.model.CenterDto;
+import com.ccsw.gtemanager.center.model.CenterDto;
 
 public class PersonDto {
 	private Long id;
