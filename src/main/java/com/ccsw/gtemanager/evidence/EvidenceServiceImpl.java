@@ -139,8 +139,19 @@ public class EvidenceServiceImpl implements EvidenceService {
     @Override
     public Map<String, String> getTypesForEvidence(Evidence evidence, List<String> weeks) {
         Map<String, String> typesMap = new LinkedHashMap<>();
+
+        typesMap.put(weeks.get(0), evidence.getEvidenceTypeW1().getName());
+        typesMap.put(weeks.get(1), evidence.getEvidenceTypeW2().getName());
+        typesMap.put(weeks.get(2), evidence.getEvidenceTypeW3().getName());
+        typesMap.put(weeks.get(3), evidence.getEvidenceTypeW4().getName());
+        if (weeks.size() >= 5)
+            typesMap.put(weeks.get(4), evidence.getEvidenceTypeW5().getName());
+        if (weeks.size() == 6)
+            typesMap.put(weeks.get(5), evidence.getEvidenceTypeW6().getName());
+
         return typesMap;
     }
+
     /**
      * Leer y procesar un archivo de hoja de cálculo para obtener y almacenar
      * evidencias.
