@@ -25,6 +25,11 @@ public class PropertiesServiceImpl implements PropertiesService {
     }
 
     @Override
+    public Properties getProperty(String key) {
+        return propertiesRepository.findByKey(key);
+    }
+
+    @Override
     public void saveAll(List<Properties> propertiesList) {
         propertiesRepository.saveAll(propertiesList);
     }

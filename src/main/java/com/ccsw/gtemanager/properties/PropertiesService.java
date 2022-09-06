@@ -17,6 +17,14 @@ public interface PropertiesService {
     List<Properties> getProperties();
 
     /**
+     * TODO DOCS
+     * 
+     * @param key
+     * @return
+     */
+    Properties getProperty(String key);
+
+    /**
      * Guardar todos los registros de Properties porporcionados.
      * 
      * @param propertiesList Listado de Properties a almacenar
