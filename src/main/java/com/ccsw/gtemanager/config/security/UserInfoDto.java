@@ -1,10 +1,12 @@
 package com.ccsw.gtemanager.config.security;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author pajimene
@@ -13,321 +15,177 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserInfoDto {
 
-  @JsonProperty("_id")
-  private Long id;
-
-  @JsonProperty("_rev")
-  private String rev;
-
-  private String realm;
-
-  private String username;
-
-  private List<String> mail;
-
-  private List<String> displayName;
-
-  @JsonProperty("sn")
-  private List<String> lastName;
-
-  @JsonProperty("givenName")
-  private List<String> firstName;
-
-  private List<String> employeeNumber;
-
-  @JsonProperty("capgemini-GlobalID")
-  private List<String> capgeminiGlobalID;
-
-  private List<String> physicalDeliveryOfficeName;
-
-  @JsonProperty("capgemini-Grade")
-  private List<String> grade;
-
-  /**
-   * @return id
-   */
-  public Long getId() {
-
-    return this.id;
-  }
-
-  /**
-   * @param id new value of {@link #getid}.
-   */
-  public void setId(Long id) {
-
-    this.id = id;
-  }
-
-  /**
-   * @return rev
-   */
-  public String getRev() {
-
-    return this.rev;
-  }
-
-  /**
-   * @param rev new value of {@link #getrev}.
-   */
-  public void setRev(String rev) {
-
-    this.rev = rev;
-  }
-
-  /**
-   * @return realm
-   */
-  public String getRealm() {
-
-    return this.realm;
-  }
-
-  /**
-   * @param realm new value of {@link #getrealm}.
-   */
-  public void setRealm(String realm) {
-
-    this.realm = realm;
-  }
-
-  /**
-   * @return username
-   */
-  public String getUsername() {
-
-    return this.username;
-  }
-
-  /**
-   * @param username new value of {@link #getusername}.
-   */
-  public void setUsername(String username) {
-
-    this.username = username;
-  }
-
-  private List<String> putFirstElement(List<String> list, String value) {
-
-    if (list == null)
-      list = new ArrayList<>();
-    if (list.size() > 0)
-      list.clear();
-
-    list.add(value);
-
-    return list;
-  }
-
-  private String getFirstElement(List<String> list) {
-
-    if (list == null)
-      return null;
-
-    if (list.size() == 0)
-      return null;
-
-    return list.get(0);
-  }
-
-  /**
-   * @return mail
-   */
-  public String getMail() {
-
-    return getFirstElement(this.mail);
-  }
-
-  /**
-   * @param mail new value of {@link #getmail}.
-   */
-  public void setMail(List<String> mail) {
-
-    this.mail = mail;
-  }
-
-  /**
-   * @return displayName
-   */
-  public String getDisplayName() {
-
-    return getFirstElement(this.displayName);
-  }
-
-  /**
-   * @param displayName new value of {@link #getdisplayName}.
-   */
-  public void setDisplayName(List<String> displayName) {
-
-    this.displayName = displayName;
-  }
-
-  /**
-   * @return lastName
-   */
-  public String getLastName() {
-
-    return getFirstElement(this.lastName);
-  }
-
-  /**
-   * @param lastName new value of {@link #getlastName}.
-   */
-  public void setLastName(List<String> lastName) {
-
-    this.lastName = lastName;
-  }
-
-  /**
-   * @return firstName
-   */
-  public String getFirstName() {
-
-    return getFirstElement(this.firstName);
-  }
-
-  /**
-   * @param firstName new value of {@link #getfirstName}.
-   */
-  public void setFirstName(List<String> firstName) {
-
-    this.firstName = firstName;
-  }
-
-  /**
-   * @return employeeNumber
-   */
-  public String getEmployeeNumber() {
-
-    return getFirstElement(this.employeeNumber);
-  }
-
-  /**
-   * @param employeeNumber new value of {@link #getemployeeNumber}.
-   */
-  public void setEmployeeNumber(List<String> employeeNumber) {
-
-    this.employeeNumber = employeeNumber;
-  }
-
-  /**
-   * @return capgeminiGlobalID
-   */
-  public String getCapgeminiGlobalID() {
-
-    return getFirstElement(this.capgeminiGlobalID);
-  }
-
-  /**
-   * @param capgeminiGlobalID new value of {@link #getcapgeminiGlobalID}.
-   */
-  public void setCapgeminiGlobalID(List<String> capgeminiGlobalID) {
-
-    this.capgeminiGlobalID = capgeminiGlobalID;
-  }
-
-  /**
-   * @return physicalDeliveryOfficeName
-   */
-  public String getPhysicalDeliveryOfficeName() {
-
-    return getFirstElement(this.physicalDeliveryOfficeName);
-  }
-
-  /**
-   * @param physicalDeliveryOfficeName new value of {@link #getphysicalDeliveryOfficeName}.
-   */
-  public void setPhysicalDeliveryOfficeName(List<String> physicalDeliveryOfficeName) {
-
-    this.physicalDeliveryOfficeName = physicalDeliveryOfficeName;
-  }
-
-  /**
-   * @return grade
-   */
-  public String getGrade() {
-
-    return getFirstElement(this.grade);
-  }
-
-  /**
-   * @param grade new value of {@link #getgrade}.
-   */
-  public void setGrade(List<String> grade) {
-
-    this.grade = grade;
-  }
-
-  /**
-   * @param value
-   */
-  public void setFirstNameValue(String value) {
-
-    this.firstName = putFirstElement(this.firstName, value);
-
-  }
-
-  /**
-   * @param value
-   */
-  public void setLastNameValue(String value) {
-
-    this.lastName = putFirstElement(this.lastName, value);
-
-  }
-
-  /**
-   * @param value
-   */
-  public void setDisplayNameValue(String value) {
-
-    this.displayName = putFirstElement(this.displayName, value);
-
-  }
-
-  /**
-   * @param value
-   */
-  public void setMailValue(String value) {
-
-    this.mail = putFirstElement(this.mail, value);
-
-  }
-
-  /**
-   * @param value
-   */
-  public void setEmployeeNumberValue(String value) {
-
-    this.employeeNumber = putFirstElement(this.employeeNumber, value);
-
-  }
-
-  /**
-   * @param value
-   */
-  public void setCapgeminiGlobalIDValue(String value) {
-
-    this.capgeminiGlobalID = putFirstElement(this.capgeminiGlobalID, value);
-
-  }
-
-  /**
-   * @param value
-   */
-  public void setGradeValue(String value) {
-
-    this.grade = putFirstElement(this.grade, value);
-
-  }
-
-  /**
-   * @param value
-   */
-  public void setPhysicalDeliveryOfficeNameValue(String value) {
-
-    this.physicalDeliveryOfficeName = putFirstElement(this.physicalDeliveryOfficeName, value);
-
-  }
+    private String username;
+
+    private String mail;
+
+    private String displayName;
+
+    private String lastName;
+
+    private String firstName;
+
+    private String saga;
+
+    private String officeName;
+
+    private String grade;
+
+    private Map<String, List<String>> roles;
+
+    private Date expiredDate;
+
+    /**
+     * @return the role
+     */
+    public Map<String, List<String>> getRoles() {
+        if (this.roles == null)
+            this.roles = new HashMap<>();
+
+        return this.roles;
+    }
+
+    /**
+     * Recupera los roles de una app
+     * @param appCode
+     * @return
+     */
+    public List<String> getAppRoles(String appCode) {
+
+        return getRoles().getOrDefault(appCode, new ArrayList<>());
+    }
+
+    /**
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * @return the mail
+     */
+    public String getMail() {
+        return mail;
+    }
+
+    /**
+     * @param mail the mail to set
+     */
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    /**
+     * @return the displayName
+     */
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
+     * @param displayName the displayName to set
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    /**
+     * @return the lastName
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * @param lastName the lastName to set
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * @return the firstName
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * @param firstName the firstName to set
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * @return the grade
+     */
+    public String getGrade() {
+        return grade;
+    }
+
+    /**
+     * @param grade the grade to set
+     */
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    /**
+     * @param role the role to set
+     */
+    public void setRoles(Map<String, List<String>> roles) {
+        this.roles = roles;
+    }
+
+    /**
+     * @return the saga
+     */
+    public String getSaga() {
+        return saga;
+    }
+
+    /**
+     * @param saga the saga to set
+     */
+    public void setSaga(String saga) {
+        this.saga = saga;
+    }
+
+    /**
+     * @return the officeName
+     */
+    public String getOfficeName() {
+        return officeName;
+    }
+
+    /**
+     * @param officeName the officeName to set
+     */
+    public void setOfficeName(String officeName) {
+        this.officeName = officeName;
+    }
+
+    /**
+     * @return the expiredDate
+     */
+    public Date getExpiredDate() {
+        return expiredDate;
+    }
+
+    /**
+     * @param expiredDate the expiredDate to set
+     */
+    public void setExpiredDate(Date expiredDate) {
+        this.expiredDate = expiredDate;
+    }
 
 }
