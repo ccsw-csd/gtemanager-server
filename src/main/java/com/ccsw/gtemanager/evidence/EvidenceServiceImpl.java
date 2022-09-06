@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -123,6 +124,23 @@ public class EvidenceServiceImpl implements EvidenceService {
         return evidenceRepository.findAll();
     }
 
+    @Override
+    public Evidence getEvidenceForPerson(Person person) {
+        Evidence evidence = evidences.get(person);
+        return evidence != null ? evidence : new Evidence(person);
+    }
+
+    @Override
+    public List<Evidence> getEvidencesByCenter(Long centerId) {
+        Specification<Evidence> specification = EvidenceSpecification.whereCenter(centerId);
+        return evidenceRepository.findAll(specification);
+    }
+
+    @Override
+    public Map<String, String> getTypesForEvidence(Evidence evidence, List<String> weeks) {
+        Map<String, String> typesMap = new LinkedHashMap<>();
+        return typesMap;
+    }
     /**
      * Leer y procesar un archivo de hoja de cálculo para obtener y almacenar
      * evidencias.
@@ -297,19 +315,6 @@ public class EvidenceServiceImpl implements EvidenceService {
         } catch (IndexOutOfBoundsException e) {
             throw new IllegalArgumentException("No existe persona con el código saga especificado.");
         }
-    }
-
-    /**
-     * Obtener evidencia para una persona determinada. Se busca en el mapa de
-     * evidencias en procesamiento, y se devuelve un Evidence vacío, con la persona
-     * asociada, en caso de no encontrarse.
-     * 
-     * @param person Person por el que buscar
-     * @return Evidence hallado o Evidence nuevo en caso de no hallarse
-     */
-    private Evidence getEvidenceForPerson(Person person) {
-        Evidence evidence = evidences.get(person);
-        return evidence != null ? evidence : new Evidence(person);
     }
 
     /**
