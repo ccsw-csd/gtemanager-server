@@ -1,9 +1,9 @@
 package com.ccsw.gtemanager.config.security;
 
+import java.util.Collection;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
 
 /**
  * An authentication object
@@ -11,49 +11,48 @@ import java.util.Collection;
  */
 public class JsonWebTokenAuthentication extends AbstractAuthenticationToken {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private String principal;
+    private String principal;
 
-  /**
-   * The constructor.
-   *
-   * @param details
-   * @param jsonWebToken the web token JSON as {@link String}
-   *
-   */
-  public JsonWebTokenAuthentication(UserInfoAppDto details, Collection<? extends GrantedAuthority> authorities,
-      String jsonWebToken) {
+    /**
+     * The constructor.
+     *
+     * @param details
+     * @param jsonWebToken the web token JSON as {@link String}
+     *
+     */
+    public JsonWebTokenAuthentication(UserInfoDto details, Collection<? extends GrantedAuthority> authorities, String jsonWebToken) {
 
-    super(authorities);
-    super.setDetails(details);
-    setPrincipal(jsonWebToken);
-  }
+        super(authorities);
+        super.setDetails(details);
+        setPrincipal(jsonWebToken);
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Object getCredentials() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object getCredentials() {
 
-    return "";
-  }
+        return "";
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Object getPrincipal() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object getPrincipal() {
 
-    return this.principal;
-  }
+        return this.principal;
+    }
 
-  /**
-   * @param principal new value of {@link #getPrincipal}.
-   */
-  public void setPrincipal(String principal) {
+    /**
+     * @param principal new value of {@link #getPrincipal}.
+     */
+    public void setPrincipal(String principal) {
 
-    this.principal = principal;
-  }
+        this.principal = principal;
+    }
 
 }

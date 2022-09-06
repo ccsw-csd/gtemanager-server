@@ -14,10 +14,12 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+@TestPropertySource(locations = { "classpath:application.properties", "classpath:application-test.properties" })
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public abstract class BaseITAbstract {
@@ -44,9 +46,7 @@ public abstract class BaseITAbstract {
         byte[] decodedKey = DatatypeConverter.parseBase64Binary(encodedKey);
         Key secretKey = new SecretKeySpec(decodedKey, SIGNATURE_ALGORITHM.getJcaName());
 
-        String token = Jwts.builder().setSubject(USER)
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SIGNATURE_ALGORITHM, secretKey).compact();
+        String token = Jwts.builder().setSubject(USER).setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).signWith(SIGNATURE_ALGORITHM, secretKey).compact();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

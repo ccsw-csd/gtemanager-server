@@ -4,7 +4,15 @@ import java.util.List;
 
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 
+/**
+ * EvidenceTypeService: servicio de datos de tipos de evidencia.
+ */
 public interface EvidenceTypeService {
-	
-	List<EvidenceType> findAll();
+    
+    /**
+     * Obtener un listado de tipos de evidencia.
+     * 
+     * @return Listado de EvidenceType
+     */
+    List<EvidenceType> getEvidenceTypes();
 }

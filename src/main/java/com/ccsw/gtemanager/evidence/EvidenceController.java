@@ -1,23 +1,23 @@
 package com.ccsw.gtemanager.evidence;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ccsw.gtemanager.config.mapper.BeanMapper;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.EvidenceDto;
+import com.ccsw.gtemanager.common.exception.GlobalExceptionHandler;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 
 /**
  * EvidenceController: Controlador REST para interacción con datos. Contiene
  * métodos de acceso a servicio de datos, asociados a Requests HTTP.
- *
  */
 @RequestMapping(value = "/evidence")
 @RestController
@@ -38,21 +38,22 @@ public class EvidenceController {
 		
 		return beanMapper.mapList(evidences, EvidenceDto.class);
 	}
-	
-	/**
-	 * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
-	 * booleano de borrado de comentarios.
-	 * 
-	 * @param upload Elemento FormDataDto recibido desde el frontend
-	 */
-	@RequestMapping(path = "", method = RequestMethod.POST)
-	public void upload(@ModelAttribute FormDataDto upload) {
 
-		System.out
-				.println("file: " + upload.getFile().getOriginalFilename() + " : " + upload.getFile().getContentType());
-		System.out.println("deleteComments: " + upload.isDeleteComments());
-
-		// TODO Implementar en GM-06
-
-	}
+    /**
+     * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y
+     * booleano de borrado de comentarios.
+     * 
+     * La gestión de errores y excepciones se realiza en
+     * {@link GlobalExceptionHandler}.
+     * 
+     * @param upload Elemento FormDataDto recibido desde el frontend
+     */
+    @RequestMapping(path = "", method = RequestMethod.POST)
+    public ResponseEntity<String> uploadEvidence(@ModelAttribute FormDataDto upload) {
+        if (evidenceService.uploadEvidence(upload))
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        else
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("\"Se ha guardado el informe correctamente con algunos errores de evidencias.\"");
+    }
 }
