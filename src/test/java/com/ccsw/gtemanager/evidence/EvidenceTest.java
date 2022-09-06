@@ -16,11 +16,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidencecomment.EvidenceCommentRepository;
 import com.ccsw.gtemanager.evidencecomment.EvidenceCommentServiceImpl;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorRepository;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorServiceImpl;
 import com.ccsw.gtemanager.person.PersonServiceImpl;
+import com.ccsw.gtemanager.person.model.Person;
 import com.ccsw.gtemanager.properties.PropertiesRepository;
 import com.ccsw.gtemanager.properties.PropertiesServiceImpl;
 
@@ -140,5 +142,47 @@ public class EvidenceTest {
         assertTrue(evidenceService.getEvidences().isEmpty());
         assertTrue(evidenceErrorService.getEvidenceErrors().isEmpty());
         assertTrue(propertiesService.getProperties().isEmpty());
+    }
+
+    /**
+     * TODO DOCS
+     * 
+     */
+    @Test
+    public void getTypesForEvidenceShouldReturnTypeList() {
+        assertEquals(1, evidenceService.getTypesForEvidence(evidenceService.getEvidenceForPerson(new Person("1")),
+                propertiesService.getWeeks()).size());
+        assertEquals(0, evidenceService.getTypesForEvidence(evidenceService.getEvidenceForPerson(new Person("00B1")),
+                propertiesService.getWeeks()).size());
+    }
+
+    /**
+     * TODO DOCS
+     * 
+     */
+    @Test
+    public void getTypesForNonexisingEvidenceShouldReturnError() {
+        Evidence evidence = evidenceService.getEvidenceForPerson(new Person("2"));
+        List<String> weeks = propertiesService.getWeeks();
+        assertEquals(null, evidence);
+        assertThrows(IllegalArgumentException.class, () -> evidenceService.getTypesForEvidence(evidence, weeks));
+    }
+
+    /**
+     * TODO DOCS
+     * 
+     */
+    @Test
+    public void getEvidencesByCenterShouldReturnEvidences() {
+        assertEquals(2, evidenceService.getEvidencesByCenter(3L).size());
+    }
+
+    /**
+     * TODO DOCS
+     * 
+     */
+    @Test
+    public void getEvidencesByNonexistingCenterShouldReturnError() {
+        assertEquals(0, evidenceService.getEvidencesByCenter(0L).size());
     }
 }
