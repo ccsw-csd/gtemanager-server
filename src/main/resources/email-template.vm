@@ -65,7 +65,7 @@
                 font-size: 12px;
             }
         </style>
-            #set($applicationName = '<a href="https://gfs.capgemini.com/" target="_blank">Global Time Entry (GTE)</a>')
+            #set($applicationName = 'Global Time Entry (GTE)')
             #if ($pending == 1)
                 #set($pendingString = '1 ficha (timecard)')
                 #set($listString = 'adjuntamos el periodo que falta')
@@ -116,14 +116,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    #set($size = ($pending - 1))
+                    #set($size = ($weeks.size() - 1))
                     #set($count = [0..$size])
-                    #foreach($elem in $count)
+                    #foreach ($i in $count)
+                    #if ($evidenceTypes.get($weeks.get($i)))
 
                     <tr>
-                        <td>$weeks.get($elem)</td>
-                        <td>$evidenceTypes.get($elem).name</td>
+                        <td>$weeks.get($i)</td>
+                        <td>$evidenceTypes.get($weeks.get($i))</td>
                     </tr>
+                    #end
                     #end
                     
                 </tbody>
@@ -132,8 +134,9 @@
 
         <div class="message">
             <p>
-                Por favor, asegúrate lo antes posible de que has cumplimentado todas las fichas y de
-                que las has enviado para su validación. Las fichas deben figurar como <b>"enviadas" (submitted)</b>.
+                Por favor, asegúrate de que has cumplimentado todas las fichas y de que las has enviado para su
+                validación. Las fichas deben figurar como <b>"enviadas" (submitted)</b>, como muy tarde, el día
+                <b>$closingDate</b>.
             </p>
             <p>
                 Recuerda que <b>pulsando el botón de editar (lápiz) abrirás una ficha para edición</b>, aunque ya la
