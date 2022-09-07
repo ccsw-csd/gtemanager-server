@@ -138,17 +138,24 @@ public class EvidenceServiceImpl implements EvidenceService {
     }
 
     @Override
-    public Map<String, String> getTypesForEvidence(Evidence evidence, List<String> weeks) {
-        Map<String, String> typesMap = new LinkedHashMap<>();
+    public Map<String, EvidenceType> getTypesForEvidence(Evidence evidence, List<String> weeks) {
+        Map<String, EvidenceType> typesMap = new LinkedHashMap<>();
 
-        typesMap.put(weeks.get(0), evidence.getEvidenceTypeW1().getName());
-        typesMap.put(weeks.get(1), evidence.getEvidenceTypeW2().getName());
-        typesMap.put(weeks.get(2), evidence.getEvidenceTypeW3().getName());
-        typesMap.put(weeks.get(3), evidence.getEvidenceTypeW4().getName());
-        if (weeks.size() >= 5)
-            typesMap.put(weeks.get(4), evidence.getEvidenceTypeW5().getName());
-        if (weeks.size() == 6)
-            typesMap.put(weeks.get(5), evidence.getEvidenceTypeW6().getName());
+        if (evidence == null)
+            throw new IllegalArgumentException();
+
+        if (evidence.getEvidenceTypeW1() != null)
+            typesMap.put(weeks.get(0), evidence.getEvidenceTypeW1());
+        if (evidence.getEvidenceTypeW2() != null)
+            typesMap.put(weeks.get(1), evidence.getEvidenceTypeW2());
+        if (evidence.getEvidenceTypeW3() != null)
+            typesMap.put(weeks.get(2), evidence.getEvidenceTypeW3());
+        if (evidence.getEvidenceTypeW4() != null)
+            typesMap.put(weeks.get(3), evidence.getEvidenceTypeW4());
+        if (weeks.size() >= 5 && evidence.getEvidenceTypeW5() != null)
+            typesMap.put(weeks.get(4), evidence.getEvidenceTypeW5());
+        if (weeks.size() == 6 && evidence.getEvidenceTypeW6() != null)
+            typesMap.put(weeks.get(5), evidence.getEvidenceTypeW6());
 
         return typesMap;
     }

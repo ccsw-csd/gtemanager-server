@@ -25,6 +25,13 @@ public interface PropertiesService {
     Properties getProperty(String key);
 
     /**
+     * TODO DOCS
+     * 
+     * @return
+     */
+    List<String> getWeeks();
+
+    /**
      * Guardar todos los registros de Properties porporcionados.
      * 
      * @param propertiesList Listado de Properties a almacenar

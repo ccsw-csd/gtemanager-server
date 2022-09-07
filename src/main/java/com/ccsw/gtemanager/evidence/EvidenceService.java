@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
+import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 import com.ccsw.gtemanager.person.model.Person;
 
 /**
@@ -38,7 +39,7 @@ public interface EvidenceService {
      * @return
      * @throws Exception
      */
-    Map<String, String> getTypesForEvidence(Evidence evidence, List<String> weeks);
+    Map<String, EvidenceType> getTypesForEvidence(Evidence evidence, List<String> weeks);
 
     /**
      * TODO DOCS

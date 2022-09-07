@@ -1,3 +1,12 @@
+package com.ccsw.gtemanager.properties;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,5 +44,20 @@ public class PropertiesTest {
         assertThrows(IllegalArgumentException.class, () -> propertiesService.getProperty("LOAD_DATES"));
     }
 
+    /**
+     * TODO DOCS
+     * 
+     */
+    @Test
+    public void getWeeksShouldReturnWeeksForPeriod() {
+        List<String> weeks = propertiesService.getWeeks();
+        assertEquals(5, weeks.size());
+        assertEquals("", weeks.get(0));
+        assertEquals("", weeks.get(1));
+        assertEquals("", weeks.get(2));
+        assertEquals("", weeks.get(3));
+        assertEquals("", weeks.get(4));
+        assertThrows(IndexOutOfBoundsException.class, () -> weeks.get(5));
+    }
 
 }
