@@ -3,9 +3,6 @@ package com.ccsw.gtemanager.email;
 import java.io.IOException;
 import java.time.LocalDate;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -27,18 +24,19 @@ public class EmailController {
     private EmailService emailService;
 
     /**
-     * TODO DOCS
+     * POST: procesar y enviar correos electrónicos de recordatorio a los empleados
+     * en el área geográfica seleccionada.
      * 
      * @return
      * @throws MessagingException
      * @throws IOException
      * @throws AddressException
      */
-    @RequestMapping(path = "/send", method = RequestMethod.POST)
-    public ResponseEntity<String> sendEmails(
+    @RequestMapping(path = "/sendReminders", method = RequestMethod.POST)
+    public ResponseEntity<String> sendReminders(
             @RequestParam(name = "closingDate", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate closingDate,
             @RequestParam(name = "centerId", required = true) Long centerId) {
-        if (emailService.sendEmails(closingDate, centerId))
+        if (emailService.sendReminderEmails(closingDate, centerId))
             return ResponseEntity.status(HttpStatus.OK).body(null);
         else
             return ResponseEntity.status(HttpStatus.OK)
