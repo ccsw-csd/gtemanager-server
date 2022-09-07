@@ -37,7 +37,7 @@ public class EmailController {
     @RequestMapping(path = "/send", method = RequestMethod.POST)
     public ResponseEntity<String> sendEmails(
             @RequestParam(name = "closingDate", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate closingDate,
-            @RequestParam(name = "centerId", required = true) Long centerId) throws IOException, MessagingException {
+            @RequestParam(name = "centerId", required = true) Long centerId) {
         if (emailService.sendEmails(closingDate, centerId))
             return ResponseEntity.status(HttpStatus.OK).body(null);
         else

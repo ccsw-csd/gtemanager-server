@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
+import org.springframework.web.server.ResponseStatusException;
+
 /**
  * TODO DOCS
  * 
@@ -20,6 +22,6 @@ public interface EmailService {
      * @throws MessagingException
      * @throws AddressException
      */
-    boolean sendEmails(LocalDate closingDate, Long centerId);
+    boolean sendEmails(LocalDate closingDate, Long centerId) throws ResponseStatusException;
 
 }

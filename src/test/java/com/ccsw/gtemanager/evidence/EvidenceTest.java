@@ -22,7 +22,6 @@ import com.ccsw.gtemanager.evidencecomment.EvidenceCommentServiceImpl;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorRepository;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorServiceImpl;
 import com.ccsw.gtemanager.person.PersonServiceImpl;
-import com.ccsw.gtemanager.person.model.Person;
 import com.ccsw.gtemanager.properties.PropertiesRepository;
 import com.ccsw.gtemanager.properties.PropertiesServiceImpl;
 
@@ -150,10 +149,8 @@ public class EvidenceTest {
      */
     @Test
     public void getTypesForEvidenceShouldReturnTypeList() {
-        assertEquals(1, evidenceService.getTypesForEvidence(evidenceService.getEvidenceForPerson(new Person("1")),
-                propertiesService.getWeeks()).size());
-        assertEquals(0, evidenceService.getTypesForEvidence(evidenceService.getEvidenceForPerson(new Person("00B1")),
-                propertiesService.getWeeks()).size());
+        List<Evidence> evidences = evidenceService.getEvidences();
+        assertEquals(1, evidenceService.getTypesForEvidence(evidences.get(0), propertiesService.getWeeks()).size());
     }
 
     /**
@@ -162,10 +159,8 @@ public class EvidenceTest {
      */
     @Test
     public void getTypesForNonexisingEvidenceShouldReturnError() {
-        Evidence evidence = evidenceService.getEvidenceForPerson(new Person("2"));
         List<String> weeks = propertiesService.getWeeks();
-        assertEquals(null, evidence);
-        assertThrows(IllegalArgumentException.class, () -> evidenceService.getTypesForEvidence(evidence, weeks));
+        assertThrows(IllegalArgumentException.class, () -> evidenceService.getTypesForEvidence(null, weeks));
     }
 
     /**
