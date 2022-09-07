@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 import com.ccsw.gtemanager.common.exception.BadRequestException;
 import com.ccsw.gtemanager.common.exception.UnprocessableEntityException;
 import com.ccsw.gtemanager.common.exception.UnsupportedMediaTypeException;
@@ -132,8 +133,8 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     @Override
     public List<Evidence> getEvidencesByCenter(Long centerId) {
-        Specification<Evidence> specification = EvidenceSpecification.whereCenter(centerId);
-        return evidenceRepository.findAll(specification);
+        EvidenceSpecification centerSpecification = new EvidenceSpecification(new SearchCriteria("center", ":", centerId));
+        return evidenceRepository.findAll(Specification.where(centerSpecification));
     }
 
     @Override
