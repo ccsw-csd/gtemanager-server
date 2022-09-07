@@ -53,6 +53,8 @@ CREATE TABLE evidence (
   CONSTRAINT evidence_person_fk FOREIGN KEY (person_id) REFERENCES person (id)
 );
 
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('1', null, null, null, '3', null, null);
+
 CREATE TABLE evidence_type (
 	id bigint(20) NOT NULL AUTO_INCREMENT,
 	code varchar(10) NOT NULL,
