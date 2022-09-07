@@ -27,7 +27,7 @@ public class PropertiesController {
 	 @RequestMapping(path = "", method = RequestMethod.GET)
 	 public List<PropertiesDto> findAll() {
 		 
-		 List<Properties> properties = propertiesService.findAll();
+		 List<Properties> properties = propertiesService.getProperties();
 		 
 		 return beanMapper.mapList(properties, PropertiesDto.class);
 	 }

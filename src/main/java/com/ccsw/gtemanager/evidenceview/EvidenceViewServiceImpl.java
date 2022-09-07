@@ -7,10 +7,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.ccsw.gtemanager.comment.model.Comment;
 import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 import com.ccsw.gtemanager.evidenceview.EvidenceViewSpecification;
 import com.ccsw.gtemanager.evidence.model.Evidence;
-import com.ccsw.gtemanager.evidencecomment.model.Comment;
 import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 @Service

@@ -11,7 +11,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -26,10 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
 
 import com.ccsw.gtemanager.common.exception.BadRequestException;
 import com.ccsw.gtemanager.common.exception.UnprocessableEntityException;
@@ -37,7 +34,6 @@ import com.ccsw.gtemanager.common.exception.UnsupportedMediaTypeException;
 import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
-import com.ccsw.gtemanager.evidencecomment.EvidenceCommentService;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceErrorDto;
 import com.ccsw.gtemanager.evidencetype.EvidenceTypeService;
@@ -46,8 +42,8 @@ import com.ccsw.gtemanager.person.PersonService;
 import com.ccsw.gtemanager.person.model.Person;
 import com.ccsw.gtemanager.properties.PropertiesService;
 import com.ccsw.gtemanager.properties.model.Properties;
+import com.ccsw.gtemanager.comment.CommentService;
 import com.ccsw.gtemanager.common.criteria.SearchCriteria;
-import com.ccsw.gtemanager.evidence.model.Evidence;
 
 /**
  * EvidenceServiceImpl: clase de implementación de EvidenceService. Contiene
@@ -96,7 +92,7 @@ public class EvidenceServiceImpl implements EvidenceService {
     private EvidenceErrorService evidenceErrorService;
 
     @Autowired
-    private EvidenceCommentService evidenceCommentService;
+    private CommentService evidenceCommentService;
 
     @Autowired
     private EvidenceTypeService evidenceTypeService;

@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ccsw.gtemanager.config.mapper.BeanMapper;
-import com.ccsw.gtemanager.evidencecomment.model.Comment;
-import com.ccsw.gtemanager.evidencecomment.model.CommentDto;
 import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 import com.ccsw.gtemanager.evidenceview.model.EvidenceViewDto;
 

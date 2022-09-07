@@ -7,7 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.CrudRepository;
 
-import com.ccsw.gtemanager.evidencecomment.model.Comment;
+import com.ccsw.gtemanager.comment.model.Comment;
 import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 public interface EvidenceViewRepository extends CrudRepository<EvidenceView, Comment> {

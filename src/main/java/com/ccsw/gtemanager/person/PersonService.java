@@ -10,6 +10,13 @@ import com.ccsw.gtemanager.person.model.Person;
  */
 public interface PersonService {
 	
+	/**
+	 * Obtener una persona según su id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
 	Person findById(Long id) throws EntityNotFoundException;
 
     /**

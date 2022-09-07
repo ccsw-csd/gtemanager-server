@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ccsw.gtemanager.evidence.model.Evidence;

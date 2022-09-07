@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import org.springframework.data.annotation.Immutable;
 
-import com.ccsw.gtemanager.evidencecomment.model.Comment;
+import com.ccsw.gtemanager.comment.model.Comment;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 import com.ccsw.gtemanager.person.model.Person;
 

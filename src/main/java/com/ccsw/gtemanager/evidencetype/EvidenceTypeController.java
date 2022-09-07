@@ -27,7 +27,7 @@ public class EvidenceTypeController {
 	 */
 	@RequestMapping(path = "", method = RequestMethod.GET)
 	public List<EvidenceTypeDto> findAll() {
-		List<EvidenceType> evidences = evidenceTypeService.findAll();
+		List<EvidenceType> evidences = evidenceTypeService.getEvidenceTypes();
 		
 		return beanMapper.mapList(evidences, EvidenceTypeDto.class);
 	}

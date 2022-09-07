@@ -1,4 +1,4 @@
-package com.ccsw.gtemanager.evidencecomment.model;
+package com.ccsw.gtemanager.comment.model;
 
 import com.ccsw.gtemanager.person.model.PersonDto;
 

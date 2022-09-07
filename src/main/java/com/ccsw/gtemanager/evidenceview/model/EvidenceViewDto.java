@@ -1,6 +1,6 @@
 package com.ccsw.gtemanager.evidenceview.model;
 
-import com.ccsw.gtemanager.evidencecomment.model.CommentDto;
+import com.ccsw.gtemanager.comment.model.CommentDto;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceTypeDto;
 import com.ccsw.gtemanager.person.model.PersonDto;
 
