@@ -69,11 +69,12 @@ public class EmailServiceImpl implements EmailService {
     }
 
     /**
-     * TODO DOCS
+     * Componer listado de mensajes de correo electrónico (EmailDto) según la fecha
+     * de cierre especificada y el centro asociado a las personas.
      * 
-     * @param closingDate
-     * @param centerId
-     * @return
+     * @param closingDate Fecha de cierre de periodo
+     * @param centerId    ID del centro asociado
+     * @return Listado de EmailDto con los mensajes procesados
      */
     private List<EmailDto> composeEmails(LocalDate closingDate, Long centerId) {
         VelocityEngine velocityEngine = new VelocityEngine();
@@ -114,11 +115,13 @@ public class EmailServiceImpl implements EmailService {
     }
 
     /**
-     * TODO DOCS
+     * Realizar el envío de mensajes a API en la url especificada con un método
+     * POST.
      * 
-     * @param emailApiUrl
-     * @param emails
-     * @return
+     * @param emailApiUrl URL a la que derivar los mensajes
+     * @param emails      Listado de mensajes a enviar
+     * @return true si todos los mensajes se han enviado correctamente, false si han
+     *         habido errores
      */
     private boolean sendAllMessages(String emailApiUrl, List<EmailDto> emails) {
         boolean ok = true;

@@ -30,6 +30,8 @@ public class EvidenceController {
      * {@link GlobalExceptionHandler}.
      * 
      * @param upload Elemento FormDataDto recibido desde el frontend
+     * @return NULL si se ha procesado correctamente, mensaje si se ha procesado
+     *         correctamente, pero con errores.
      */
     @RequestMapping(path = "", method = RequestMethod.POST)
     public ResponseEntity<String> uploadEvidence(@ModelAttribute FormDataDto upload) {

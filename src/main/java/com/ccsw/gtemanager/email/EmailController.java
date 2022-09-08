@@ -1,6 +1,5 @@
 package com.ccsw.gtemanager.email;
 
-import java.io.IOException;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * TODO DOCS
- *
+ * EmailController: Controlador REST para interacción con datos. Contiene
+ * métodos de acceso a servicio de datos, asociados a Requests HTTP.
  */
 @RequestMapping(value = "/email")
 @RestController
@@ -27,10 +26,10 @@ public class EmailController {
      * POST: procesar y enviar correos electrónicos de recordatorio a los empleados
      * en el área geográfica seleccionada.
      * 
-     * @return
-     * @throws MessagingException
-     * @throws IOException
-     * @throws AddressException
+     * @param closingDate Fecha de cierre de periodo
+     * @param centerId    ID del centro asociado
+     * @return NULL si se ha procesado correctamente, mensaje si se ha procesado
+     *         correctamente, pero con errores.
      */
     @RequestMapping(path = "/sendReminders", method = RequestMethod.POST)
     public ResponseEntity<String> sendReminders(

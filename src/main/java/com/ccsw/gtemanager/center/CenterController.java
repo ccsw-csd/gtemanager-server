@@ -11,8 +11,8 @@ import com.ccsw.gtemanager.center.model.CenterDto;
 import com.ccsw.gtemanager.config.mapper.BeanMapper;
 
 /**
- * TODO DOCS
- *
+ * CenterController: Controlador REST para interacción con datos. Contiene
+ * métodos de acceso a servicio de datos, asociados a Requests HTTP.
  */
 @RequestMapping(value = "/center")
 @RestController
@@ -25,8 +25,7 @@ public class CenterController {
     BeanMapper beanMapper;
 
     /**
-     * TODO DOCS
-     * 
+     * GET: Devuelve un listado con todos los centros almacenados en base de datos.
      */
     @RequestMapping(path = "", method = RequestMethod.GET)
     public List<CenterDto> findAll() {

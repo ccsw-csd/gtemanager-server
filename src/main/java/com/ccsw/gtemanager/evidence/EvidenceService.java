@@ -33,19 +33,21 @@ public interface EvidenceService {
     Evidence getEvidenceForPerson(Person person);
 
     /**
-     * TODO DOCS
+     * Obtener tipo de evidencia registrado en cada semana, en un mapa asociado a
+     * dicha semana.
      * 
-     * @param evidence
-     * @return
-     * @throws Exception
+     * @param evidence Evidencia en la que buscar
+     * @param weeks    Listado de semanas a comparar
+     * @return Map con tipos asociados a las semanas registradas
      */
     Map<String, EvidenceType> getTypesForEvidence(Evidence evidence, List<String> weeks);
 
     /**
-     * TODO DOCS
+     * Obtener listado de evidencias según el centro referenciado por la persona
+     * asociada a la evidencia.
      * 
-     * @param centerId
-     * @return
+     * @param centerId ID del centro por la que filtrar
+     * @return List de evidencias filtradas por centro
      */
     List<Evidence> getEvidencesByCenter(Long centerId);
 

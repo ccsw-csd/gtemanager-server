@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ccsw.gtemanager.center.model.Center;
 
 /**
- * TODO DOCS
- *
+ * CenterServiceImpl: clase de implementación de CenterService.
  */
 @Service
 @Transactional

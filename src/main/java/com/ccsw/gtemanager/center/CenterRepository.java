@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.ccsw.gtemanager.center.model.Center;
 
 /**
- * TODO DOCS
+ * CenterRepository: repositorio de datos de centros.
  *
  */
 @Repository

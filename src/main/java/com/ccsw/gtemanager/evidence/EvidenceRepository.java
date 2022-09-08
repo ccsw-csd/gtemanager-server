@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 
 /**
- * EvidenceRepository: repositorio de datos de evidencias. TODO DOCS
+ * EvidenceRepository: repositorio de datos de evidencias.
  */
 @Repository
 public interface EvidenceRepository extends JpaRepository<Evidence, Long>, JpaSpecificationExecutor<Evidence> {
@@ -26,8 +26,9 @@ public interface EvidenceRepository extends JpaRepository<Evidence, Long>, JpaSp
     List<Evidence> findAll();
 
     /**
-     * TODO DOCS
+     * Obtener todas las evidencias de la base de datos según una especificación.
      * 
+     * Se hace uso de EntityGraph para optimización de la consulta.
      */
     @EntityGraph(value = "evidence-entity-graph", type = EntityGraphType.LOAD)
     List<Evidence> findAll(Specification<Evidence> specification);

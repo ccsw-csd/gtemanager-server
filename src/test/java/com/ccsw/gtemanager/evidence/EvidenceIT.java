@@ -33,7 +33,7 @@ import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 
 /**
- * EvidenceTestIT: colección de tests integrados que prueban funcionalidad del
+ * EvidenceIT: colección de tests integrados que prueban funcionalidad del
  * programa y API.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

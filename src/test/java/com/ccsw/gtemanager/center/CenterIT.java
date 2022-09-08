@@ -18,7 +18,8 @@ import com.ccsw.gtemanager.center.model.CenterDto;
 import com.ccsw.gtemanager.config.BaseITAbstract;
 
 /**
- * TODO DOCS, TEST
+ * CenterIT: colección de tests integrados que prueban funcionalidad del
+ * programa y API.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -33,6 +34,9 @@ public class CenterIT extends BaseITAbstract {
     ParameterizedTypeReference<List<CenterDto>> responseType = new ParameterizedTypeReference<List<CenterDto>>() {
     };
 
+    /**
+     * TODO DOCS
+     */
     @Test
     public void getCentersShouldReturnAllCenters() {
         ResponseEntity<List<CenterDto>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH,

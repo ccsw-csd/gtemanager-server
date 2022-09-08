@@ -74,10 +74,6 @@ public class EmailIT extends BaseITAbstract {
         assertEquals(null, response.getBody());
     }
 
-    /**
-     * TODO DOCS
-     *
-     */
 //    @Test
 //    public void requestWithValidDataAndSendErrorsShouldSendEmailsAndReturnMessage() {
 //        Evidence evidence = evidenceService.getEvidenceForPerson(new Person("1"));

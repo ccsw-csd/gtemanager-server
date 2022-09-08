@@ -10,8 +10,13 @@ import org.springframework.web.server.ResponseStatusException;
 public interface EmailService {
 
     /**
-     * TODO DOCS
+     * Enviar mensajes de recordatorio a las personas asociadas a un centro
+     * determinado, anotando la fecha de cierre.
      * 
+     * @param closingDate Fecha de cierre de periodo
+     * @param centerId    ID del centro asociado
+     * @throws ResponseStatusException Hay errores a la hora de procesar los
+     *                                 mensajes
      */
     boolean sendReminderEmails(LocalDate closingDate, Long centerId) throws ResponseStatusException;
 
