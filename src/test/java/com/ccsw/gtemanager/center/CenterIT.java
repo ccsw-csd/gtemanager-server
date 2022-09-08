@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,23 +29,25 @@ public class CenterIT extends BaseITAbstract {
     private static final String LOCALHOST = "http://localhost:";
     private static final String SERVICE_PATH = "/center";
 
+    private static final int TOTAL_CENTERS = 3;
+
     @LocalServerPort
     private int port;
 
-    ParameterizedTypeReference<List<CenterDto>> responseType = new ParameterizedTypeReference<List<CenterDto>>() {
+    ParameterizedTypeReference<List<CenterDto>> responseTypeList = new ParameterizedTypeReference<List<CenterDto>>() {
     };
 
     /**
-     * TODO DOCS
+     * Obtener centros con GET debería devolver listado de centros.
      */
     @Test
     public void getCentersShouldReturnAllCenters() {
         ResponseEntity<List<CenterDto>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH,
-                HttpMethod.GET, null, responseType);
+                HttpMethod.GET, new HttpEntity<>(getHeaders()), responseTypeList);
 
         assertNotNull(response);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(4, response.getBody().size());
+        assertEquals(TOTAL_CENTERS, response.getBody().size());
     }
 }

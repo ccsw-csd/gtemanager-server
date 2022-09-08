@@ -19,31 +19,28 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.ccsw.gtemanager.config.BaseITAbstract;
 
 /**
- * TODO DOCS
- *
+ * EmailIT: colección de tests integrados que prueban funcionalidad del programa
+ * y API.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class EmailIT extends BaseITAbstract {
 
     private static final String LOCALHOST = "http://localhost:";
-    private static final String SERVICE_PATH = "/email/send";
+    private static final String SERVICE_PATH = "/email/sendReminders";
 
     private static final String TEST_STRING = "test";
 
     private static final String CLOSING_DATE_PARAM = "closingDate";
     private static final String CENTER_ID_PARAM = "centerId";
 
-    private static final LocalDate EXISTING_CLOSING_DATE = LocalDate.parse("2022-09-09");
+    private static final LocalDate EXISTING_CLOSING_DATE = LocalDate.parse("2022-12-09");
+    private static final LocalDate NONEXISTING_CLOSING_DATE = LocalDate.parse("2020-12-09");
     private static final Long EXISTING_CENTER_ID = 3L;
-    private static final LocalDate NONEXISTING_CLOSING_DATE = LocalDate.parse("2022-19-09");
     private static final Long NONEXISTING_CENTER_ID = 0L;
 
     @LocalServerPort
     private int port;
-
-//    @Autowired
-//    private EvidenceService evidenceService;
 
     /**
      * Obtener URL con parámetros concatenados.
@@ -57,8 +54,7 @@ public class EmailIT extends BaseITAbstract {
     }
 
     /**
-     * TODO DOCS
-     *
+     * Petición POST con fecha de cierre y centro existentes debería envíar emails.
      */
     @Test
     public void requestWithValidDateAndCenterShouldSendEmails() {
@@ -67,47 +63,27 @@ public class EmailIT extends BaseITAbstract {
         params.put(CLOSING_DATE_PARAM, EXISTING_CLOSING_DATE);
         params.put(CENTER_ID_PARAM, EXISTING_CENTER_ID);
 
-        ResponseEntity<?> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, null, String.class,
-                params);
+        ResponseEntity<?> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST,
+                new HttpEntity<>(getHeaders()), String.class, params);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(null, response.getBody());
     }
 
-//    @Test
-//    public void requestWithValidDataAndSendErrorsShouldSendEmailsAndReturnMessage() {
-//        Evidence evidence = evidenceService.getEvidenceForPerson(new Person("1"));
-//// TODO modificar email para que devuelva petición incorrecta (algunos emails no se han podido enviar)
-//        Map<String, Object> params = new LinkedHashMap<>();
-//
-//        params.put(CLOSING_DATE_PARAM, EXISTING_CLOSING_DATE);
-//        params.put(CENTER_ID_PARAM, EXISTING_CENTER_ID);
-//
-//        ResponseEntity<?> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, null, String.class,
-//                params);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertNotEquals(null, response.getBody());
-//    }
-
     /**
-     * TODO DOCS
-     *
+     * Petición POST con fecha de cierre y/o centro incorrectos debería devolver
+     * error.
      */
     @Test
     public void requestWithInvalidDataShouldReturnError() {
-        String test = TEST_STRING;
-
-        ResponseEntity<?> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(test),
-                String.class);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         Map<String, Object> params = new LinkedHashMap<>();
 
         params.put(CLOSING_DATE_PARAM, NONEXISTING_CLOSING_DATE);
         params.put(CENTER_ID_PARAM, EXISTING_CENTER_ID);
 
-        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, null, String.class, params);
+        ResponseEntity<?> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST,
+                new HttpEntity<>(getHeaders()), String.class, params);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
@@ -117,7 +93,8 @@ public class EmailIT extends BaseITAbstract {
         params.put(CLOSING_DATE_PARAM, EXISTING_CLOSING_DATE);
         params.put(CENTER_ID_PARAM, NONEXISTING_CENTER_ID);
 
-        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, null, String.class, params);
+        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(getHeaders()),
+                String.class, params);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
@@ -127,7 +104,8 @@ public class EmailIT extends BaseITAbstract {
         params.put(CLOSING_DATE_PARAM, NONEXISTING_CLOSING_DATE);
         params.put(CENTER_ID_PARAM, NONEXISTING_CENTER_ID);
 
-        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, null, String.class, params);
+        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(getHeaders()),
+                String.class, params);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }

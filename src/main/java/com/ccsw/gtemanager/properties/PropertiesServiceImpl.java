@@ -21,6 +21,9 @@ import com.ccsw.gtemanager.properties.model.Properties;
 @Transactional
 public class PropertiesServiceImpl implements PropertiesService {
 
+    private static final int WEEK_PROPERTIES_START = 1;
+    private static final int MAX_WEEKS_IN_MONTH = 6;
+
     private static final String PERIOD_SEPARATOR = " - ";
 
     @Autowired
@@ -40,10 +43,11 @@ public class PropertiesServiceImpl implements PropertiesService {
     @Override
     public List<String> getWeeks() {
         List<String> weeks = new ArrayList<>();
-        for (int i = 1; i <= 6; i++) {
+        for (int i = WEEK_PROPERTIES_START; i <= MAX_WEEKS_IN_MONTH; i++) {
             Properties p = getProperty("WEEK_" + i);
             if (p.getValue() != null)
-                weeks.add(LocalDate.parse(p.getValue().split(PERIOD_SEPARATOR)[0], formatDate).format(formatDateDB) + PERIOD_SEPARATOR
+                weeks.add(LocalDate.parse(p.getValue().split(PERIOD_SEPARATOR)[0], formatDate).format(formatDateDB)
+                        + PERIOD_SEPARATOR
                         + LocalDate.parse(p.getValue().split(PERIOD_SEPARATOR)[1], formatDate).format(formatDateDB));
         }
         return weeks;

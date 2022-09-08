@@ -25,10 +25,10 @@ CREATE TABLE person (
 
 INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('1','anacardo','anacardo@example.com','Ana','Cardo','3', 'XXX', 'E', true);
 INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('00B1','aitortilla','aitortilla@example.com','Aitor','Tilla','3', 'XXX', 'E', true);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A1','aelmouss','aelmouss@bidoffice.com','Ayoub','El Moussaoui','3', 'XXX', 'A', true);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A2','jopepe','jopepe@bidoffice.com','Jopepe','Jopepe','3', 'XXX', 'B', false);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A3','amirzoya','amirzoya@bidoffice.com','Armen','Mirzoyan Denisov','3', 'XXX', 'C', true);
-INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A4','pajimene','amirzoya@bidoffice.com','Pablo','Jimenez Martinez','3', 'XXX', 'D', true);
+INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A1','aelmouss','aelmouss@example.com','Ayoub','El Moussaoui','3', 'XXX', 'A', true);
+INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A2','jopepe','jopepe@example.com','Jopepe','Jopepe','3', 'XXX', 'B', false);
+INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A3','amirzoya','amirzoya@example.com','Armen','Mirzoyan Denisov','3', 'XXX', 'C', true);
+INSERT INTO person (saga,username,email,name,lastname,center,businesscode,grade,active) VALUES ('A4','pajimene','pajimene@example.com','Pablo','Jimenez Martinez','3', 'XXX', 'D', true);
 
 CREATE TABLE person_saga_transcode (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -54,6 +54,11 @@ CREATE TABLE evidence (
 );
 
 INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('1', null, null, null, '3', null, null);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('2', null, null, null, '3', null, null);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('3', null, null, '2', '3', null, null);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('4', null, null, '2', '3', null, null);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('5', null, '3', null, '3', null, null);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('6', '1', null, '2', '3', '2', null);
 
 CREATE TABLE evidence_type (
 	id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -83,3 +88,14 @@ CREATE TABLE properties (
 	value varchar(400),
 	PRIMARY KEY (id)
 );
+
+
+INSERT INTO properties (key, value) VALUES ('LOAD_DATE', '27/07/2022 08:30');
+INSERT INTO properties (key, value) VALUES ('LOAD_USERNAME', 'user');
+INSERT INTO properties (key, value) VALUES ('LOAD_WEEKS', '5');
+INSERT INTO properties (key, value) VALUES ('WEEK_1', '01-AUG-2022 - 07-AUG-2022');
+INSERT INTO properties (key, value) VALUES ('WEEK_2', '08-AUG-2022 - 14-AUG-2022');
+INSERT INTO properties (key, value) VALUES ('WEEK_3', '15-AUG-2022 - 21-AUG-2022');
+INSERT INTO properties (key, value) VALUES ('WEEK_4', '22-AUG-2022 - 28-AUG-2022');
+INSERT INTO properties (key, value) VALUES ('WEEK_5', '29-AUG-2022 - 04-SEP-2022');
+INSERT INTO properties (key, value) VALUES ('WEEK_6' , null);

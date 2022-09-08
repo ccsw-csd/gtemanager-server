@@ -17,11 +17,11 @@ import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.ccsw.gtemanager.common.exception.BadRequestException;
 import com.ccsw.gtemanager.email.model.EmailDto;
 import com.ccsw.gtemanager.evidence.EvidenceService;
 import com.ccsw.gtemanager.evidence.model.Evidence;
@@ -36,7 +36,7 @@ import com.ccsw.gtemanager.properties.PropertiesService;
 @Transactional
 public class EmailServiceImpl implements EmailService {
 
-    private static final String REMINDER_EMAIL_API_URL1 = "https://ccsw.cap";
+    private static final String REMINDER_EMAIL_API_URL1 = "http://ccsw.cap";
     private static final String REMINDER_EMAIL_API_URL2 = "gemini.com";
     private static final String REMINDER_EMAIL_API_SERVICE_PATH = "/email/send";
     private static final String REMINDER_EMAIL_SUBJECT = "GTE: Recordatorio ";
@@ -64,8 +64,15 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public boolean sendReminderEmails(LocalDate closingDate, Long centerId) throws ResponseStatusException {
+        if (closingDate.isBefore(LocalDate.now()))
+            throw new BadRequestException("La fecha de cierre no puede ser anterior a la actual.");
+
+        List<Evidence> evidences = evidenceService.getEvidencesByCenter(centerId);
+        if (evidences.isEmpty())
+            throw new BadRequestException("No hay evidencias para el centro seleccionado.");
+
         return sendAllMessages(REMINDER_EMAIL_API_URL1 + REMINDER_EMAIL_API_URL2 + REMINDER_EMAIL_API_SERVICE_PATH,
-                composeEmails(closingDate, centerId));
+                composeEmails(closingDate, evidences));
     }
 
     /**
@@ -73,10 +80,10 @@ public class EmailServiceImpl implements EmailService {
      * de cierre especificada y el centro asociado a las personas.
      * 
      * @param closingDate Fecha de cierre de periodo
-     * @param centerId    ID del centro asociado
+     * @param evidences   Listado de evidencias asociadas al centro
      * @return Listado de EmailDto con los mensajes procesados
      */
-    private List<EmailDto> composeEmails(LocalDate closingDate, Long centerId) {
+    private List<EmailDto> composeEmails(LocalDate closingDate, List<Evidence> evidences) {
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.init();
 
@@ -92,8 +99,6 @@ public class EmailServiceImpl implements EmailService {
         context.put(REMINDER_TEMPLATE_PERIOD_PARAM, period);
         context.put(REMINDER_TEMPLATE_CLOSING_DATE_PARAM, closingDate.format(formatDateDB));
         context.put(REMINDER_TEMPLATE_WEEKLIST_PARAM, weeks);
-
-        List<Evidence> evidences = evidenceService.getEvidencesByCenter(centerId);
 
         List<EmailDto> messages = new ArrayList<>();
 
@@ -126,17 +131,13 @@ public class EmailServiceImpl implements EmailService {
     private boolean sendAllMessages(String emailApiUrl, List<EmailDto> emails) {
         boolean ok = true;
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<?> response;
         for (EmailDto message : emails) {
             try {
-                response = restTemplate.exchange(emailApiUrl, HttpMethod.POST,
+                restTemplate.exchange(emailApiUrl, HttpMethod.POST,
                         new HttpEntity<EmailDto>(
                                 new EmailDto(message.getTo(), message.getSubject(), message.getBody(), null)),
                         String.class);
-
-                System.out.println(response.getStatusCodeValue());
             } catch (Exception e) {
-                e.printStackTrace();
                 ok = false;
             }
         }

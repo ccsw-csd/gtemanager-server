@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidencecomment.EvidenceCommentRepository;
 import com.ccsw.gtemanager.evidencecomment.EvidenceCommentServiceImpl;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorRepository;
@@ -143,41 +142,4 @@ public class EvidenceTest {
         assertTrue(propertiesService.getProperties().isEmpty());
     }
 
-    /**
-     * TODO DOCS
-     * 
-     */
-    @Test
-    public void getTypesForEvidenceShouldReturnTypeList() {
-        List<Evidence> evidences = evidenceService.getEvidences();
-        assertEquals(1, evidenceService.getTypesForEvidence(evidences.get(0), propertiesService.getWeeks()).size());
-    }
-
-    /**
-     * TODO DOCS
-     * 
-     */
-    @Test
-    public void getTypesForNonexisingEvidenceShouldReturnError() {
-        List<String> weeks = propertiesService.getWeeks();
-        assertThrows(IllegalArgumentException.class, () -> evidenceService.getTypesForEvidence(null, weeks));
-    }
-
-    /**
-     * TODO DOCS
-     * 
-     */
-    @Test
-    public void getEvidencesByCenterShouldReturnEvidences() {
-        assertEquals(2, evidenceService.getEvidencesByCenter(3L).size());
-    }
-
-    /**
-     * TODO DOCS
-     * 
-     */
-    @Test
-    public void getEvidencesByNonexistingCenterShouldReturnError() {
-        assertEquals(0, evidenceService.getEvidencesByCenter(0L).size());
-    }
 }

@@ -9,24 +9,24 @@ package com.ccsw.gtemanager.email.model;
 public class EmailDto {
 
     private String to;
+    private String cc;
     private String subject;
     private String body;
-    private String cc;
 
     /**
      * Constructor con parámetros para la creación de un mensaje de correo
      * electrónico.
      * 
      * @param to      Dirección del destinatario
+     * @param cc      Dirección de copia carbón
      * @param subject Asunto del mensaje
      * @param body    Cuerpo del mensaje
-     * @param cc      Dirección de copia carbón
      */
-    public EmailDto(String to, String subject, String body, String cc) {
+    public EmailDto(String to, String cc, String subject, String body) {
         this.to = to;
+        this.cc = cc;
         this.subject = subject;
         this.body = body;
-        this.cc = cc;
     }
 
     /**
@@ -36,6 +36,15 @@ public class EmailDto {
      */
     public String getTo() {
         return to;
+    }
+
+    /**
+     * Obtener dirección de copia carbón
+     * 
+     * @return Dirección en formato String
+     */
+    public String getCc() {
+        return cc;
     }
 
     /**
@@ -57,21 +66,21 @@ public class EmailDto {
     }
 
     /**
-     * Obtener dirección de copia carbón
-     * 
-     * @return Dirección en formato String
-     */
-    public String getCc() {
-        return cc;
-    }
-
-    /**
      * Almacenar dirección del destinatario
      * 
      * @param to Dirección (String)
      */
     public void setTo(String to) {
         this.to = to;
+    }
+
+    /**
+     * Almacenar dirección de copia carbón
+     * 
+     * @param cc Dirección (String)
+     */
+    public void setCc(String cc) {
+        this.cc = cc;
     }
 
     /**
@@ -90,15 +99,6 @@ public class EmailDto {
      */
     public void setBody(String body) {
         this.body = body;
-    }
-
-    /**
-     * Almacenar dirección de copia carbón
-     * 
-     * @param cc Dirección (String)
-     */
-    public void setCc(String cc) {
-        this.cc = cc;
     }
 
 }

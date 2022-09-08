@@ -22,13 +22,13 @@ public class CenterController {
     private CenterService centerService;
 
     @Autowired
-    BeanMapper beanMapper;
+    private BeanMapper beanMapper;
 
     /**
      * GET: Devuelve un listado con todos los centros almacenados en base de datos.
      */
     @RequestMapping(path = "", method = RequestMethod.GET)
     public List<CenterDto> findAll() {
-        return this.beanMapper.mapList(this.centerService.findAll(), CenterDto.class);
+        return beanMapper.mapList(centerService.findAll(), CenterDto.class);
     }
 }

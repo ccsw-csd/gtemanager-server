@@ -133,7 +133,8 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     @Override
     public List<Evidence> getEvidencesByCenter(Long centerId) {
-        EvidenceSpecification centerSpecification = new EvidenceSpecification(new SearchCriteria("center", ":", centerId));
+        EvidenceSpecification centerSpecification = new EvidenceSpecification(
+                new SearchCriteria("center", ":", centerId));
         return evidenceRepository.findAll(Specification.where(centerSpecification));
     }
 
@@ -189,7 +190,7 @@ public class EvidenceServiceImpl implements EvidenceService {
                     sheet.getRow(ROW_PROPERTY_FROM_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
             toDate = LocalDate.parse(
                     sheet.getRow(ROW_PROPERTY_TO_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
-            if (fromDate.compareTo(toDate) > 0)
+            if (fromDate.isAfter(toDate))
                 throw new BadRequestException("El informe no contiene fechas de periodo válidas (B2, C2).");
 
             runDate = LocalDateTime.parse(
