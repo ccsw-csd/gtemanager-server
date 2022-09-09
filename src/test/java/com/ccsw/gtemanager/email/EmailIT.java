@@ -31,8 +31,8 @@ public class EmailIT extends BaseITAbstract {
 
     private static final String TEST_STRING = "test";
 
-    private static final String CLOSING_DATE_PARAM = "closingDate";
-    private static final String CENTER_ID_PARAM = "centerId";
+    private static final String CLOSING_DATE_VARIABLE = "closingDate";
+    private static final String CENTER_ID_VARIABLE = "centerId";
 
     private static final LocalDate EXISTING_CLOSING_DATE = LocalDate.parse("2022-12-09");
     private static final LocalDate NONEXISTING_CLOSING_DATE = LocalDate.parse("2020-12-09");
@@ -49,8 +49,8 @@ public class EmailIT extends BaseITAbstract {
      */
     private String getUrlWithParams() {
         return UriComponentsBuilder.fromHttpUrl(LOCALHOST + port + SERVICE_PATH)
-                .queryParam(CLOSING_DATE_PARAM, "{" + CLOSING_DATE_PARAM + "}")
-                .queryParam(CENTER_ID_PARAM, "{" + CENTER_ID_PARAM + "}").encode().toUriString();
+                .queryParam(CLOSING_DATE_VARIABLE, "{" + CLOSING_DATE_VARIABLE + "}")
+                .queryParam(CENTER_ID_VARIABLE, "{" + CENTER_ID_VARIABLE + "}").encode().toUriString();
     }
 
     /**
@@ -60,8 +60,8 @@ public class EmailIT extends BaseITAbstract {
     public void requestWithValidDateAndCenterShouldSendEmails() {
         Map<String, Object> params = new LinkedHashMap<>();
 
-        params.put(CLOSING_DATE_PARAM, EXISTING_CLOSING_DATE);
-        params.put(CENTER_ID_PARAM, EXISTING_CENTER_ID);
+        params.put(CLOSING_DATE_VARIABLE, EXISTING_CLOSING_DATE);
+        params.put(CENTER_ID_VARIABLE, EXISTING_CENTER_ID);
 
         ResponseEntity<?> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST,
                 new HttpEntity<>(getHeaders()), String.class, params);
@@ -79,8 +79,8 @@ public class EmailIT extends BaseITAbstract {
 
         Map<String, Object> params = new LinkedHashMap<>();
 
-        params.put(CLOSING_DATE_PARAM, NONEXISTING_CLOSING_DATE);
-        params.put(CENTER_ID_PARAM, EXISTING_CENTER_ID);
+        params.put(CLOSING_DATE_VARIABLE, NONEXISTING_CLOSING_DATE);
+        params.put(CENTER_ID_VARIABLE, EXISTING_CENTER_ID);
 
         ResponseEntity<?> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST,
                 new HttpEntity<>(getHeaders()), String.class, params);
@@ -90,8 +90,8 @@ public class EmailIT extends BaseITAbstract {
         params.clear();
         params = new LinkedHashMap<>();
 
-        params.put(CLOSING_DATE_PARAM, EXISTING_CLOSING_DATE);
-        params.put(CENTER_ID_PARAM, NONEXISTING_CENTER_ID);
+        params.put(CLOSING_DATE_VARIABLE, EXISTING_CLOSING_DATE);
+        params.put(CENTER_ID_VARIABLE, NONEXISTING_CENTER_ID);
 
         response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(getHeaders()),
                 String.class, params);
@@ -101,8 +101,8 @@ public class EmailIT extends BaseITAbstract {
         params.clear();
         params = new LinkedHashMap<>();
 
-        params.put(CLOSING_DATE_PARAM, NONEXISTING_CLOSING_DATE);
-        params.put(CENTER_ID_PARAM, NONEXISTING_CENTER_ID);
+        params.put(CLOSING_DATE_VARIABLE, NONEXISTING_CLOSING_DATE);
+        params.put(CENTER_ID_VARIABLE, NONEXISTING_CENTER_ID);
 
         response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(getHeaders()),
                 String.class, params);

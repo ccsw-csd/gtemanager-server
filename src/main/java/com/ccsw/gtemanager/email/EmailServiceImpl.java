@@ -112,8 +112,8 @@ public class EmailServiceImpl implements EmailService {
 
             template.merge(context, writer);
 
-            messages.add(new EmailDto(evidence.getPersonId().getEmail(), REMINDER_EMAIL_SUBJECT + period,
-                    writer.toString(), null));
+            messages.add(new EmailDto(evidence.getPersonId().getEmail(), null, REMINDER_EMAIL_SUBJECT + period,
+                    writer.toString()));
         }
 
         return messages;
@@ -133,10 +133,7 @@ public class EmailServiceImpl implements EmailService {
         RestTemplate restTemplate = new RestTemplate();
         for (EmailDto message : emails) {
             try {
-                restTemplate.exchange(emailApiUrl, HttpMethod.POST,
-                        new HttpEntity<EmailDto>(
-                                new EmailDto(message.getTo(), message.getSubject(), message.getBody(), null)),
-                        String.class);
+                restTemplate.exchange(emailApiUrl, HttpMethod.POST, new HttpEntity<EmailDto>(message), String.class);
             } catch (Exception e) {
                 ok = false;
             }
