@@ -4,7 +4,6 @@ package com.ccsw.gtemanager.email.model;
  * EmailDto: DTO para datos de correos electrónicos a procesar y enviar.
  * Contiene atributos para destinatarios, asunto, y cuerpo del mensaje, además
  * de getters y setters.
- *
  */
 public class EmailDto {
 

@@ -140,10 +140,10 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     @Override
     public Map<String, EvidenceType> getTypesForEvidence(Evidence evidence, List<String> weeks) {
-        Map<String, EvidenceType> typesMap = new LinkedHashMap<>();
-
         if (evidence == null)
             throw new IllegalArgumentException();
+
+        Map<String, EvidenceType> typesMap = new LinkedHashMap<>();
 
         if (evidence.getEvidenceTypeW1() != null)
             typesMap.put(weeks.get(0), evidence.getEvidenceTypeW1());

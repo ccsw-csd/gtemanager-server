@@ -10,6 +10,13 @@ public class SearchCriteria {
     private String operation;
     private Object value;
 
+    /**
+     * Constructor para criterios de búsqueda con parámetros.
+     * 
+     * @param key       Clave del criterio
+     * @param operation Operación
+     * @param value     Valor del criterio
+     */
     public SearchCriteria(String key, String operation, Object value) {
         this.key = key;
         this.operation = operation;

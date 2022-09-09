@@ -13,7 +13,6 @@ import com.ccsw.gtemanager.evidence.model.Evidence;
 /**
  * EvidenceSpecification: clase de especificación para filtrado de datos de
  * Evidence.
- *
  */
 public class EvidenceSpecification implements Specification<Evidence> {
 

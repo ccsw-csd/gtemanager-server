@@ -45,10 +45,12 @@ public class PropertiesServiceImpl implements PropertiesService {
         List<String> weeks = new ArrayList<>();
         for (int i = WEEK_PROPERTIES_START; i <= MAX_WEEKS_IN_MONTH; i++) {
             Properties p = getProperty("WEEK_" + i);
-            if (p.getValue() != null)
-                weeks.add(LocalDate.parse(p.getValue().split(PERIOD_SEPARATOR)[0], formatDate).format(formatDateDB)
-                        + PERIOD_SEPARATOR
-                        + LocalDate.parse(p.getValue().split(PERIOD_SEPARATOR)[1], formatDate).format(formatDateDB));
+            if (p.getValue() != null) {
+                String[] week = p.getValue().split(PERIOD_SEPARATOR);
+                LocalDate firstDay = LocalDate.parse(week[0], formatDate);
+                LocalDate lastDay = LocalDate.parse(week[1], formatDate);
+                weeks.add(firstDay.format(formatDateDB) + PERIOD_SEPARATOR + lastDay.format(formatDateDB));
+            }
         }
         return weeks;
     }

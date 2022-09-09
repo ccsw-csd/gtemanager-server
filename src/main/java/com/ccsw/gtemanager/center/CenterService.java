@@ -6,7 +6,6 @@ import com.ccsw.gtemanager.center.model.Center;
 
 /**
  * CenterService: servicio de datos de centros.
- *
  */
 public interface CenterService {
 
