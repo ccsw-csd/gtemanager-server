@@ -6,6 +6,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -15,8 +18,15 @@ import com.ccsw.gtemanager.person.model.Person;
 /**
  * Evidence: clase para la gestión de datos de evidencia. Contiene atributos
  * para la persona implicada, además de los tipos de evidencia registrados en
- * las semanas de un periodo, y getters y setters.
+ * las semanas de un periodo, y getters y setters. Se implementa EntityGraph
+ * para optimización de consultas.
  */
+@NamedEntityGraph(name = "evidence-entity-graph", attributeNodes = {
+        @NamedAttributeNode(value = "personId", subgraph = "person-subgraph"), @NamedAttributeNode("evidenceTypeW1"),
+        @NamedAttributeNode("evidenceTypeW2"), @NamedAttributeNode("evidenceTypeW3"),
+        @NamedAttributeNode("evidenceTypeW4"), @NamedAttributeNode("evidenceTypeW5"),
+        @NamedAttributeNode("evidenceTypeW6") }, subgraphs = {
+                @NamedSubgraph(name = "person-subgraph", attributeNodes = { @NamedAttributeNode("center") }) })
 @Entity
 @Table(name = "evidence")
 public class Evidence {

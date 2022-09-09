@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <style>
+            body {
+                text-align: justify;
+            }
+
+            a {
+                color: #29abe2;
+            }
+
+            .evidence {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                padding-top: 20px;
+                padding-bottom: 20px;
+            }
+
+            .evidence table {
+                width: 75%;
+                border-collapse: collapse;
+                text-align: left;
+            }
+
+            .evidence table th {
+                background-color: #29abe2;
+                color: white;
+                text-align: left;
+                padding: 5px;
+            }
+
+            .evidence table tr {
+                border-bottom: 1px solid #29abe2;
+            }
+
+            .evidence table td {
+                padding: 1%;
+            }
+
+            .evidence caption {
+                background-color: #29abe2;
+                color: white;
+                caption-side: bottom;
+                font-size: 12px;
+            }
+
+            .caption {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .caption p {
+                padding-left: 2%;
+                padding-right: 2%;
+                flex: 1;
+            }
+
+            .footer {
+                font-size: 12px;
+            }
+        </style>
+            #set($applicationName = 'Global Time Entry (GTE)')
+            #if ($pending == 1)
+                #set($pendingString = '1 ficha (timecard)')
+                #set($listString = 'adjuntamos el periodo que falta')
+            #else
+                #set($pendingString = $pending + ' fichas (timecards)')
+                #set($listString = 'adjuntamos un listado de los periodos que faltan')
+            #end
+            
+        <div class="message">
+            <p>Hola, $person:</p>
+            <p>
+                Te enviamos este mensaje para recordarte que tienes
+                <b>$pendingString</b>
+                sin completar, en proceso, o con errores, en la aplicación
+                <b>$applicationName</b>,
+                para el periodo de
+                <b>$period</b>.
+            </p>
+            <p>
+                A continuación, te
+                $listString
+                por cumplimentar.
+            </p>
+        </div>
+
+        <div class="evidence">
+            <table>
+            <caption>
+                <div class="caption">
+                    <p>
+                        <b>Error</b>: hay un error en la ficha
+                    </p>
+                    <p>
+                        <b>Missing</b>: no se ha registrado la ficha
+                    </p>
+                    <p>
+                        <b>Working</b>: no se ha enviado la ficha
+                    </p>
+                    <p>
+                        <b>Rejected</b>: se ha rechazado el envío de la ficha
+                    </p>
+                </div>
+            </caption>
+                <thead>
+                    <tr>
+                        <th>Periodo</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    #set($size = ($weeks.size() - 1))
+                    #set($count = [0..$size])
+                    #foreach ($i in $count)
+                    #if ($evidenceTypes.get($weeks.get($i)))
+
+                    <tr>
+                        <td>$weeks.get($i)</td>
+                        <td>$evidenceTypes.get($weeks.get($i)).name</td>
+                    </tr>
+                    #end
+                    #end
+                    
+                </tbody>
+            </table>
+        </div>
+
+        <div class="message">
+            <p>
+                Por favor, asegúrate de que has cumplimentado todas las fichas y de que las has enviado para su
+                validación. Las fichas deben figurar como <b>"enviadas" (submitted)</b>, como muy tarde, el día
+                <b>$closingDate</b>.
+            </p>
+            <p>
+                Recuerda que <b>pulsando el botón de editar (lápiz) abrirás una ficha para edición</b>, aunque ya la
+                hayas enviado, y <b>deberás volver a enviarla (submit)</b> para su validación. Si una o más fichas han
+                sido <b>rechazadas (rejected)</b>, te pedimos que las revises y vuelvas a enviar, por favor.
+            </p>
+            <p>¡Gracias por tu colaboración!</p>
+        </div>
+
+        <div class="footer">
+            <hr />
+            <p>
+                Este mensaje ha sido enviado automáticamente. Si tienes alguna duda o si crees que has recibido este
+                mensaje por error, por favor, ponte en contacto con tu responsable de proyecto o con la dirección de tu
+                departamento.
+            </p>
+        </div>
+    </body>
+</html>

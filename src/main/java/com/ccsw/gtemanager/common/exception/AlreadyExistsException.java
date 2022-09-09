@@ -13,7 +13,7 @@ public class AlreadyExistsException extends ResponseStatusException {
      * Constructor: crear ResponseStatusException con código 409 y mensaje de error.
      */
     public AlreadyExistsException() {
-        super(HttpStatus.CONFLICT, "Already exists");
+        super(HttpStatus.CONFLICT, "El elemento ya existe.");
     }
 
 }
