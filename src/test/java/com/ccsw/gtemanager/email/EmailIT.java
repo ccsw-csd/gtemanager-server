@@ -3,8 +3,6 @@ package com.ccsw.gtemanager.email;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,9 +12,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ccsw.gtemanager.config.BaseITAbstract;
+import com.ccsw.gtemanager.email.model.ReminderDto;
 
 /**
  * EmailIT: colección de tests integrados que prueban funcionalidad del programa
@@ -31,9 +29,6 @@ public class EmailIT extends BaseITAbstract {
 
     private static final String TEST_STRING = "test";
 
-    private static final String CLOSING_DATE_VARIABLE = "closingDate";
-    private static final String CENTER_ID_VARIABLE = "centerId";
-
     private static final LocalDate EXISTING_CLOSING_DATE = LocalDate.parse("2022-12-09");
     private static final LocalDate NONEXISTING_CLOSING_DATE = LocalDate.parse("2020-12-09");
     private static final Long EXISTING_CENTER_ID = 3L;
@@ -43,28 +38,17 @@ public class EmailIT extends BaseITAbstract {
     private int port;
 
     /**
-     * Obtener URL con parámetros concatenados.
-     * 
-     * @return URL con parámetros
-     */
-    private String getUrlWithParams() {
-        return UriComponentsBuilder.fromHttpUrl(LOCALHOST + port + SERVICE_PATH)
-                .queryParam(CLOSING_DATE_VARIABLE, "{" + CLOSING_DATE_VARIABLE + "}")
-                .queryParam(CENTER_ID_VARIABLE, "{" + CENTER_ID_VARIABLE + "}").encode().toUriString();
-    }
-
-    /**
      * Petición POST con fecha de cierre y centro existentes debería envíar emails.
      */
     @Test
     public void requestWithValidDateAndCenterShouldSendEmails() {
-        Map<String, Object> params = new LinkedHashMap<>();
+        ReminderDto reminder = new ReminderDto();
 
-        params.put(CLOSING_DATE_VARIABLE, EXISTING_CLOSING_DATE);
-        params.put(CENTER_ID_VARIABLE, EXISTING_CENTER_ID);
+        reminder.setClosingDate(EXISTING_CLOSING_DATE);
+        reminder.setCenterId(EXISTING_CENTER_ID);
 
-        ResponseEntity<?> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST,
-                new HttpEntity<>(getHeaders()), String.class, params);
+        ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST,
+                new HttpEntity<>(reminder, getHeaders()), String.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(null, response.getBody());
@@ -76,36 +60,34 @@ public class EmailIT extends BaseITAbstract {
      */
     @Test
     public void requestWithInvalidDataShouldReturnError() {
-
-        Map<String, Object> params = new LinkedHashMap<>();
-
-        params.put(CLOSING_DATE_VARIABLE, NONEXISTING_CLOSING_DATE);
-        params.put(CENTER_ID_VARIABLE, EXISTING_CENTER_ID);
-
-        ResponseEntity<?> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST,
-                new HttpEntity<>(getHeaders()), String.class, params);
+        ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST,
+                new HttpEntity<>(TEST_STRING, getHeaders()), String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
-        params.clear();
-        params = new LinkedHashMap<>();
+        ReminderDto reminder = new ReminderDto();
 
-        params.put(CLOSING_DATE_VARIABLE, EXISTING_CLOSING_DATE);
-        params.put(CENTER_ID_VARIABLE, NONEXISTING_CENTER_ID);
+        reminder.setClosingDate(NONEXISTING_CLOSING_DATE);
+        reminder.setCenterId(EXISTING_CENTER_ID);
 
-        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(getHeaders()),
-                String.class, params);
+        response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST,
+                new HttpEntity<>(reminder, getHeaders()), String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
-        params.clear();
-        params = new LinkedHashMap<>();
+        reminder.setClosingDate(EXISTING_CLOSING_DATE);
+        reminder.setCenterId(NONEXISTING_CENTER_ID);
 
-        params.put(CLOSING_DATE_VARIABLE, NONEXISTING_CLOSING_DATE);
-        params.put(CENTER_ID_VARIABLE, NONEXISTING_CENTER_ID);
+        response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST,
+                new HttpEntity<>(reminder, getHeaders()), String.class);
 
-        response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(getHeaders()),
-                String.class, params);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        reminder.setClosingDate(NONEXISTING_CLOSING_DATE);
+        reminder.setCenterId(NONEXISTING_CENTER_ID);
+
+        response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST,
+                new HttpEntity<>(reminder, getHeaders()), String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }

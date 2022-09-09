@@ -1,8 +1,8 @@
 package com.ccsw.gtemanager.email;
 
-import java.time.LocalDate;
-
 import org.springframework.web.server.ResponseStatusException;
+
+import com.ccsw.gtemanager.email.model.ReminderDto;
 
 /**
  * EmailService: servicio de procesamiento y envío de correos electrónicos.
@@ -13,11 +13,10 @@ public interface EmailService {
      * Enviar mensajes de recordatorio a las personas asociadas a un centro
      * determinado, anotando la fecha de cierre.
      * 
-     * @param closingDate Fecha de cierre de periodo
-     * @param centerId    ID del centro asociado
+     * @param reminder Objeto ReminderDto con fecha de cierre e ID de centro
      * @throws ResponseStatusException Hay errores a la hora de procesar los
      *                                 mensajes
      */
-    boolean sendReminderEmails(LocalDate closingDate, Long centerId) throws ResponseStatusException;
+    boolean sendReminderEmails(ReminderDto reminder) throws ResponseStatusException;
 
 }

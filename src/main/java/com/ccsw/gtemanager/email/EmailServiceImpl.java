@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.ccsw.gtemanager.common.exception.BadRequestException;
 import com.ccsw.gtemanager.email.model.EmailDto;
+import com.ccsw.gtemanager.email.model.ReminderDto;
 import com.ccsw.gtemanager.evidence.EvidenceService;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
@@ -64,15 +65,15 @@ public class EmailServiceImpl implements EmailService {
     private EvidenceService evidenceService;
 
     @Override
-    public boolean sendReminderEmails(LocalDate closingDate, Long centerId) throws ResponseStatusException {
-        if (closingDate.isBefore(LocalDate.now()))
+    public boolean sendReminderEmails(ReminderDto reminder) throws ResponseStatusException {
+        if (reminder.getClosingDate().isBefore(LocalDate.now()))
             throw new BadRequestException("La fecha de cierre no puede ser anterior a la actual.");
 
-        List<Evidence> evidences = evidenceService.getEvidencesByCenter(centerId);
+        List<Evidence> evidences = evidenceService.getEvidencesByCenter(reminder.getCenterId());
         if (evidences.isEmpty())
             throw new BadRequestException("No hay evidencias para el centro seleccionado.");
 
-        return sendAllMessages(REMINDER_EMAIL_API_URL, composeEmails(closingDate, evidences));
+        return sendAllMessages(REMINDER_EMAIL_API_URL, composeEmails(reminder.getClosingDate(), evidences));
     }
 
     /**
