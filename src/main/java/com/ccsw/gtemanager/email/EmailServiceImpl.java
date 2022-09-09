@@ -15,6 +15,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -36,9 +37,6 @@ import com.ccsw.gtemanager.properties.PropertiesService;
 @Transactional
 public class EmailServiceImpl implements EmailService {
 
-    private static final String REMINDER_EMAIL_API_URL1 = "http://ccsw.cap";
-    private static final String REMINDER_EMAIL_API_URL2 = "gemini.com";
-    private static final String REMINDER_EMAIL_API_SERVICE_PATH = "/email/send";
     private static final String REMINDER_EMAIL_SUBJECT = "GTE: Recordatorio ";
 
     private static final String REMINDER_TEMPLATE_PATH = "/src/main/resources/reminder-email-template.vm";
@@ -52,6 +50,9 @@ public class EmailServiceImpl implements EmailService {
 
     private static final String ENCODING = "UTF-8";
     private static final String PERIOD_SEPARATOR = " - ";
+
+    @Value("${app.email.url}")
+    private String REMINDER_EMAIL_API_URL;
 
     private static DateTimeFormatter formatDateDB = new DateTimeFormatterBuilder().parseCaseInsensitive()
             .appendPattern("dd/MM/yyyy").toFormatter(Locale.getDefault());
@@ -71,8 +72,7 @@ public class EmailServiceImpl implements EmailService {
         if (evidences.isEmpty())
             throw new BadRequestException("No hay evidencias para el centro seleccionado.");
 
-        return sendAllMessages(REMINDER_EMAIL_API_URL1 + REMINDER_EMAIL_API_URL2 + REMINDER_EMAIL_API_SERVICE_PATH,
-                composeEmails(closingDate, evidences));
+        return sendAllMessages(REMINDER_EMAIL_API_URL, composeEmails(closingDate, evidences));
     }
 
     /**
