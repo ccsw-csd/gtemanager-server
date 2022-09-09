@@ -40,6 +40,8 @@ import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class EvidenceIT extends BaseITAbstract {
 
+    private static final int INITIAL_EVIDENCES_SIZE = 6;
+
     private static final String SHEET_NAME = "Sheet1";
 
     private static final int ROW_PROPERTY_FROM_DATE = 1;
@@ -299,7 +301,7 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(0, evidenceService.getEvidences().size());
+        assertEquals(INITIAL_EVIDENCES_SIZE, evidenceService.getEvidences().size());
 
         cellFromDate.setCellValue(NONEXISTING_FROMDATE);
         cellToDate.setCellValue(EXISTING_TODATE);
@@ -319,7 +321,7 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(0, evidenceService.getEvidences().size());
+        assertEquals(INITIAL_EVIDENCES_SIZE, evidenceService.getEvidences().size());
 
         cellFromDate.setCellValue(EXISTING_FROMDATE);
         cellToDate.setCellValue(NONEXISTING_TODATE);
@@ -339,7 +341,7 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(0, evidenceService.getEvidences().size());
+        assertEquals(INITIAL_EVIDENCES_SIZE, evidenceService.getEvidences().size());
     }
 
     /**
