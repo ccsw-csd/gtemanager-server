@@ -38,15 +38,11 @@ public class CommentServiceImpl implements CommentService {
 		
 		if (dto.getId() == null) {
 			comment = new Comment();
-			System.out.println("nulo");
 		} else {
 			comment = this.get(dto.getId());	
 		}
 		
-		System.out.println("comment: " + dto.getComment());
 		comment.setComment(dto.getComment());
-		System.out.println("person: " + dto.getPerson().getId());
-		System.out.println("person: " + dto.getPerson().getName());
 		comment.setPerson(personService.findById(dto.getPerson().getId()));
 		
 		this.commentRepository.save(comment);

@@ -25,9 +25,16 @@ public class CommentController {
 	@Autowired
 	private BeanMapper beanMapper;
 	
+	@RequestMapping(path = "", method = RequestMethod.GET)
+	public List<CommentDto> findAll() {
+		
+		List<Comment> comments = commentService.getComments();
+		
+		return beanMapper.mapList(comments, CommentDto.class);
+	}
+	
 	@RequestMapping(path = "", method = RequestMethod.PUT)
 	public void save(@RequestBody CommentDto dto) throws EntityNotFoundException {
-		System.out.println("controlador " + dto);
 		this.commentService.save(dto);
 	}
 }
