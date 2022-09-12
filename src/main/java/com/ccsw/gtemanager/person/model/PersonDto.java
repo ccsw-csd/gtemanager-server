@@ -5,7 +5,19 @@ import com.ccsw.gtemanager.center.model.CenterDto;
 public class PersonDto {
 	private Long id;
 
-	private String saga, username, email, name, lastName, businessCode, grade;
+	private String saga;
+	
+	private String username;
+	
+	private String email;
+	
+	private String name;
+	
+	private String lastName;
+	
+	private String businessCode;
+	
+	private String grade;
 	
 	private CenterDto center;
 
