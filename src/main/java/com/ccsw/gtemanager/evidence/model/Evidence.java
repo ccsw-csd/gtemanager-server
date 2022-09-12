@@ -22,7 +22,7 @@ import com.ccsw.gtemanager.person.model.Person;
  * para optimización de consultas.
  */
 @NamedEntityGraph(name = "evidence-entity-graph", attributeNodes = {
-        @NamedAttributeNode(value = "personId", subgraph = "person-subgraph"), @NamedAttributeNode("evidenceTypeW1"),
+        @NamedAttributeNode(value = "person", subgraph = "person-subgraph"), @NamedAttributeNode("evidenceTypeW1"),
         @NamedAttributeNode("evidenceTypeW2"), @NamedAttributeNode("evidenceTypeW3"),
         @NamedAttributeNode("evidenceTypeW4"), @NamedAttributeNode("evidenceTypeW5"),
         @NamedAttributeNode("evidenceTypeW6") }, subgraphs = {
