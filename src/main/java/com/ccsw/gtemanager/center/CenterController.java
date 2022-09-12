@@ -11,10 +11,14 @@ import com.ccsw.gtemanager.center.model.Center;
 import com.ccsw.gtemanager.center.model.CenterDto;
 import com.ccsw.gtemanager.config.mapper.BeanMapper;
 
+/**
+ * CenterController: Controlador REST para interacción con datos. Contiene
+ * métodos de acceso a servicio de datos, asociados a Requests HTTP.
+ */
 @RequestMapping(value = "/center")
 @RestController
 public class CenterController {
-
+	
 	@Autowired
 	private CenterService centerService;
 	

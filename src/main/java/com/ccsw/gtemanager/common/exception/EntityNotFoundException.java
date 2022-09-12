@@ -13,7 +13,7 @@ public class EntityNotFoundException extends ResponseStatusException {
      * Constructor: crear ResponseStatusException con código 404 y mensaje de error.
      */
     public EntityNotFoundException() {
-        super(HttpStatus.NOT_FOUND, "Entity Not Found");
+        super(HttpStatus.NOT_FOUND, "No se ha podido encontrar el elemento.");
     }
 
 }

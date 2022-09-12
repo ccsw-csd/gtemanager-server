@@ -141,4 +141,5 @@ public class EvidenceTest {
         assertTrue(evidenceErrorService.getEvidenceErrors().isEmpty());
         assertTrue(propertiesService.getProperties().isEmpty());
     }
+
 }

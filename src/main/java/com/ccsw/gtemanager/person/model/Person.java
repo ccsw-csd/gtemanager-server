@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 
 import com.ccsw.gtemanager.center.model.Center;
@@ -17,8 +19,9 @@ import com.ccsw.gtemanager.center.model.Center;
  * Person: clase para la gestión de datos de persona. Contiene atributos para
  * código de saga, nombre de usuario, correo electrónico, nombre y apellidos,
  * centro de trabajo, código de negocio, grado, y actividad, además de getters y
- * setters.
+ * setters. Se implementa EntityGraph para optimización de consultas.
  */
+@NamedEntityGraph(name = "person-entity-graph", attributeNodes = { @NamedAttributeNode("center") })
 @Entity
 @Table(name = "person")
 public class Person {

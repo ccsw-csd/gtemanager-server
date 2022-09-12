@@ -4,8 +4,11 @@ import java.util.List;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,8 +18,21 @@ import com.ccsw.gtemanager.evidence.model.Evidence;
  * EvidenceRepository: repositorio de datos de evidencias.
  */
 @Repository
-public interface EvidenceRepository extends JpaRepository<Evidence, Long> {
+public interface EvidenceRepository extends JpaRepository<Evidence, Long>, JpaSpecificationExecutor<Evidence> {
 
-	@EntityGraph(attributePaths = { "person", "evidenceTypeW1", "evidenceTypeW2", "evidenceTypeW3", "evidenceTypeW4", "evidenceTypeW5", "evidenceTypeW6" })
-	List<Evidence> findAll(Specification<Evidence> specification, Sort by);
+    /**
+     * Obtener todas las evidencias de la base de datos.
+     * 
+     * Se hace uso de EntityGraph para optimización de la consulta.
+     */
+    @EntityGraph(value = "evidence-entity-graph", type = EntityGraphType.LOAD)
+    List<Evidence> findAll();
+
+    /**
+     * Obtener todas las evidencias de la base de datos según una especificación.
+     * 
+     * Se hace uso de EntityGraph para optimización de la consulta.
+     */
+    @EntityGraph(value = "evidence-entity-graph", type = EntityGraphType.LOAD)
+    List<Evidence> findAll(Specification<Evidence> specification);
 }

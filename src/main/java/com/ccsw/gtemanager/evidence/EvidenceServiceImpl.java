@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
+import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 import com.ccsw.gtemanager.common.exception.BadRequestException;
 import com.ccsw.gtemanager.common.exception.UnprocessableEntityException;
 import com.ccsw.gtemanager.common.exception.UnsupportedMediaTypeException;
@@ -135,6 +137,42 @@ public class EvidenceServiceImpl implements EvidenceService {
         return evidenceRepository.findAll();
     }
 
+    @Override
+    public Evidence getEvidenceForPerson(Person person) {
+        Evidence evidence = evidences.get(person);
+        return evidence != null ? evidence : new Evidence(person);
+    }
+
+    @Override
+    public List<Evidence> getEvidencesByCenter(Long centerId) {
+        EvidenceSpecification centerSpecification = new EvidenceSpecification(
+                new SearchCriteria("center", ":", centerId));
+        return evidenceRepository.findAll(Specification.where(centerSpecification));
+    }
+
+    @Override
+    public Map<String, EvidenceType> getTypesForEvidence(Evidence evidence, List<String> weeks) {
+        if (evidence == null)
+            throw new IllegalArgumentException();
+
+        Map<String, EvidenceType> typesMap = new LinkedHashMap<>();
+
+        if (evidence.getEvidenceTypeW1() != null)
+            typesMap.put(weeks.get(0), evidence.getEvidenceTypeW1());
+        if (evidence.getEvidenceTypeW2() != null)
+            typesMap.put(weeks.get(1), evidence.getEvidenceTypeW2());
+        if (evidence.getEvidenceTypeW3() != null)
+            typesMap.put(weeks.get(2), evidence.getEvidenceTypeW3());
+        if (evidence.getEvidenceTypeW4() != null)
+            typesMap.put(weeks.get(3), evidence.getEvidenceTypeW4());
+        if (weeks.size() >= 5 && evidence.getEvidenceTypeW5() != null)
+            typesMap.put(weeks.get(4), evidence.getEvidenceTypeW5());
+        if (weeks.size() == 6 && evidence.getEvidenceTypeW6() != null)
+            typesMap.put(weeks.get(5), evidence.getEvidenceTypeW6());
+
+        return typesMap;
+    }
+
     /**
      * Leer y procesar un archivo de hoja de cálculo para obtener y almacenar
      * evidencias.
@@ -164,7 +202,7 @@ public class EvidenceServiceImpl implements EvidenceService {
                     sheet.getRow(ROW_PROPERTY_FROM_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
             toDate = LocalDate.parse(
                     sheet.getRow(ROW_PROPERTY_TO_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
-            if (fromDate.compareTo(toDate) > 0)
+            if (fromDate.isAfter(toDate))
                 throw new BadRequestException("El informe no contiene fechas de periodo válidas (B2, C2).");
 
             runDate = LocalDateTime.parse(
@@ -309,19 +347,6 @@ public class EvidenceServiceImpl implements EvidenceService {
         } catch (IndexOutOfBoundsException e) {
             throw new IllegalArgumentException("No existe persona con el código saga especificado.");
         }
-    }
-
-    /**
-     * Obtener evidencia para una persona determinada. Se busca en el mapa de
-     * evidencias en procesamiento, y se devuelve un Evidence vacío, con la persona
-     * asociada, en caso de no encontrarse.
-     * 
-     * @param person Person por el que buscar
-     * @return Evidence hallado o Evidence nuevo en caso de no hallarse
-     */
-    private Evidence getEvidenceForPerson(Person person) {
-        Evidence evidence = evidences.get(person);
-        return evidence != null ? evidence : new Evidence(person);
     }
 
     /**
