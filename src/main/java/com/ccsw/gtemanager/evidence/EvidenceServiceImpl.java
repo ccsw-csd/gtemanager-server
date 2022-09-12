@@ -124,7 +124,7 @@ public class EvidenceServiceImpl implements EvidenceService {
             .appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
 	
 	@Override
-	public List<Evidence> findOrderedByGeography(Long idGeography) {
+	public List<Evidence> findAll(Long idGeography) {
 		
 		EvidenceSpecification geography = new EvidenceSpecification(new SearchCriteria("center", ":", idGeography));
 		Specification<Evidence> specification = Specification.where(geography);

@@ -15,7 +15,7 @@ import com.ccsw.gtemanager.person.model.Person;
  */
 public interface EvidenceService {
 	
-	List<Evidence> findOrderedByGeography(Long idGeography);
+	List<Evidence> findAll(Long idGeography);
 
     /**
      * Obtener un listado de todas las evidencias.

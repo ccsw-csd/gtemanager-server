@@ -20,7 +20,7 @@ public class EvidenceViewServiceImpl implements EvidenceViewService {
 	EvidenceViewRepository evidenceViewRepository;
 	
 	@Override
-	public List<EvidenceView> findOrderedByGeography(Long idGeography) {
+	public List<EvidenceView> findAll(Long idGeography) {
 
 		EvidenceViewSpecification geography = new EvidenceViewSpecification(new SearchCriteria("center", ":", idGeography));
 		Specification<EvidenceView> specification = Specification.where(geography);
