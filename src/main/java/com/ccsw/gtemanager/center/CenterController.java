@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ccsw.gtemanager.center.model.Center;
 import com.ccsw.gtemanager.center.model.CenterDto;
 import com.ccsw.gtemanager.config.mapper.BeanMapper;
 
@@ -17,18 +18,20 @@ import com.ccsw.gtemanager.config.mapper.BeanMapper;
 @RequestMapping(value = "/center")
 @RestController
 public class CenterController {
-
-    @Autowired
-    private CenterService centerService;
-
-    @Autowired
-    private BeanMapper beanMapper;
-
-    /**
-     * GET: Devuelve un listado con todos los centros almacenados en base de datos.
-     */
-    @RequestMapping(path = "", method = RequestMethod.GET)
-    public List<CenterDto> findAll() {
-        return beanMapper.mapList(centerService.findAll(), CenterDto.class);
-    }
+	
+	@Autowired
+	private CenterService centerService;
+	
+	@Autowired
+	private BeanMapper beanMapper;
+	
+	/*
+	 * GET: Devuelve un listado de centros
+	 */
+	@RequestMapping(path = "", method = RequestMethod.GET)
+	public List<CenterDto> findAll() {
+		
+		List<Center> centers = centerService.findAll();
+		return this.beanMapper.mapList(centers, CenterDto.class);
+	}
 }

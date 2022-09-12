@@ -1,13 +1,17 @@
 package com.ccsw.gtemanager.evidence;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.ccsw.gtemanager.config.mapper.BeanMapper;
+import com.ccsw.gtemanager.evidence.model.Evidence;
+import com.ccsw.gtemanager.evidence.model.EvidenceDto;
 import com.ccsw.gtemanager.common.exception.GlobalExceptionHandler;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 
@@ -19,8 +23,21 @@ import com.ccsw.gtemanager.evidence.model.FormDataDto;
 @RestController
 public class EvidenceController {
 
-    @Autowired
-    private EvidenceService evidenceService;
+	@Autowired
+	private EvidenceService evidenceService;
+	
+	@Autowired
+	private BeanMapper beanMapper;
+	
+	/**
+	 * GET: Devuelve un listado de evidencias filtrado
+	 */
+	@RequestMapping(path = "", method = RequestMethod.GET)
+	public List<EvidenceDto> findOrderedByGeography(@RequestParam(value = "geography", required = false) Long idGeography) {
+		List<Evidence> evidences = evidenceService.findOrderedByGeography(idGeography);
+		
+		return beanMapper.mapList(evidences, EvidenceDto.class);
+	}
 
     /**
      * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y

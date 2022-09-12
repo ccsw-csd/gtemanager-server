@@ -69,5 +69,4 @@ public class PropertiesServiceImpl implements PropertiesService {
     public void clear() {
         propertiesRepository.deleteAllInBatch();
     }
-
 }

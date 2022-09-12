@@ -15,5 +15,4 @@ public interface CenterService {
      * @return Listado de Center
      */
     List<Center> findAll();
-
 }

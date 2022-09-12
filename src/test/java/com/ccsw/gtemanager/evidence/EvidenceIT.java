@@ -1,10 +1,20 @@
 package com.ccsw.gtemanager.evidence;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -28,6 +38,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.ccsw.gtemanager.config.BaseITAbstract;
+import com.ccsw.gtemanager.evidence.model.EvidenceDto;
 import com.ccsw.gtemanager.config.BaseITAbstract;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
@@ -124,6 +136,16 @@ public class EvidenceIT extends BaseITAbstract {
     private static Cell[] cellsRowFirstEvidence;
     private static Cell[] cellsRowSecondEvidence;
     private static Cell[] cellsRowThirdEvidence;
+	
+	ParameterizedTypeReference<List<EvidenceDto>> responseTypeEvidence = new ParameterizedTypeReference<List<EvidenceDto>>() {};
+	
+	@Test
+	public void findEmptyShouldReturnEveryEvidence() {
+		HttpEntity<?> httpEntity = new HttpEntity<>(getHeaders());
+		
+		ResponseEntity<List<EvidenceDto>> response = restTemplate.exchange(
+				LOCALHOST + port + SERVICE_PATH + "find", HttpMethod.GET, httpEntity, responseTypeEvidence);
+	}
 
     /**
      * Inicializar hoja de cálculo y celdas de valores previo a la ejecución de los

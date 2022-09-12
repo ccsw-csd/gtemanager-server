@@ -2,12 +2,22 @@ package com.ccsw.gtemanager.person;
 
 import java.util.List;
 
+import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.person.model.Person;
 
 /**
  * PersonService: servicio de datos de personas.
  */
 public interface PersonService {
+	
+	/**
+	 * Obtener una persona según su id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	Person findById(Long id) throws EntityNotFoundException;
 
     /**
      * Obtener listado de todas las personas en la base de datos.
@@ -28,5 +38,4 @@ public interface PersonService {
      * @throws IllegalArgumentException No se ha introducido un código admisible
      */
     String parseSaga(String saga) throws IllegalArgumentException;
-
 }

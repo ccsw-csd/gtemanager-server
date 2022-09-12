@@ -15,13 +15,12 @@ import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 @Service
 @Transactional
 public class EvidenceTypeServiceImpl implements EvidenceTypeService {
-
-    @Autowired
-    private EvidenceTypeRepository evidenceTypeRepository;
+	
+	@Autowired
+	private EvidenceTypeRepository evidenceTypeRepository;
 
     @Override
     public List<EvidenceType> getEvidenceTypes() {
         return (List<EvidenceType>) evidenceTypeRepository.findAll();
     }
-
 }

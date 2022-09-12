@@ -106,14 +106,14 @@ public class EmailServiceImpl implements EmailService {
         for (Evidence evidence : evidences) {
             StringWriter writer = new StringWriter();
 
-            context.put(REMINDER_TEMPLATE_PERSON_PARAM, evidence.getPersonId().getName());
+            context.put(REMINDER_TEMPLATE_PERSON_PARAM, evidence.getPerson().getName());
             Map<String, EvidenceType> evidenceTypes = evidenceService.getTypesForEvidence(evidence, weeks);
             context.put(REMINDER_TEMPLATE_TYPELIST_PARAM, evidenceTypes);
             context.put(REMINDER_TEMPLATE_PENDING_PARAM, evidenceTypes.size());
 
             template.merge(context, writer);
 
-            messages.add(new EmailDto(evidence.getPersonId().getEmail(), null, REMINDER_EMAIL_SUBJECT + period,
+            messages.add(new EmailDto(evidence.getPerson().getEmail(), null, REMINDER_EMAIL_SUBJECT + period,
                     writer.toString()));
         }
 

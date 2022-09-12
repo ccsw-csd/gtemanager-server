@@ -17,17 +17,17 @@ import javax.persistence.Table;
 @Table(name = "evidence_type")
 public class EvidenceType {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(name = "code", nullable = false)
-    private String code;
+	@Column(name = "code", nullable = false)
+	private String code;
 
-    @Column(name = "name")
-    private String name;
+	@Column(name = "name")
+	private String name;
 
-    /**
+	/**
      * Constructor vacío para la creación de EvidenceType
      */
     public EvidenceType() {
@@ -48,54 +48,54 @@ public class EvidenceType {
      * 
      * @return ID en formato Long
      */
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    /**
+	/**
      * Obtener código de EvidenceType
      * 
      * @return código en formato String
      */
-    public String getCode() {
-        return code;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    /**
+	/**
      * Obtener nombre de EvidenceType
      * 
      * @return nombre en formato String
      */
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    /**
+	/**
      * Almacenar ID de EvidenceType
      * 
      * @param id ID de tipo de evidencia (Long)
      */
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    /**
+	/**
      * Almacenar código de EvidenceType
      * 
      * @param code código de tipo de evidencia (String)
      */
-    public void setCode(String code) {
-        this.code = code;
-    }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    /**
+	/**
      * Almacenar nombre de EvidenceType
      * 
      * @param name nombre de tipo de evidencia (String)
      */
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
     @Override
     public int hashCode() {
@@ -113,5 +113,4 @@ public class EvidenceType {
         EvidenceType other = (EvidenceType) obj;
         return Objects.equals(code, other.code);
     }
-
 }

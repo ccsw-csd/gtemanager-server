@@ -42,5 +42,4 @@ public interface PropertiesService {
      * Eliminar todos los registros de Properties.
      */
     void clear();
-
 }

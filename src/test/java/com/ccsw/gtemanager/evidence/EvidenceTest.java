@@ -16,8 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.ccsw.gtemanager.evidencecomment.EvidenceCommentRepository;
-import com.ccsw.gtemanager.evidencecomment.EvidenceCommentServiceImpl;
+import com.ccsw.gtemanager.comment.CommentRepository;
+import com.ccsw.gtemanager.comment.CommentServiceImpl;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorRepository;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorServiceImpl;
 import com.ccsw.gtemanager.person.PersonServiceImpl;
@@ -57,7 +57,7 @@ public class EvidenceTest {
     private EvidenceErrorRepository evidenceErrorRepository;
 
     @Mock
-    private EvidenceCommentRepository evidenceCommentRepository;
+    private CommentRepository commentRepository;
 
     @Mock
     private PropertiesRepository propertiesRepository;
@@ -69,7 +69,7 @@ public class EvidenceTest {
     private EvidenceErrorServiceImpl evidenceErrorService;
 
     @Mock
-    private EvidenceCommentServiceImpl evidenceCommentService;
+    private CommentServiceImpl commentService;
 
     @Mock
     private PersonServiceImpl personService;
@@ -128,7 +128,7 @@ public class EvidenceTest {
     @Test
     public void ifDeleteCommentsEmptyEvidenceComment() {
         evidenceService.clearReport(true);
-        assertTrue(evidenceCommentService.getEvidenceComments().isEmpty());
+        assertTrue(commentService.getComments().isEmpty());
     }
 
     /**

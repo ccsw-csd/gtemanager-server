@@ -89,6 +89,20 @@ CREATE TABLE properties (
 	PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS evidence_comment;
+
+CREATE TABLE evidence_comment (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  person_id bigint(20) NOT NULL,
+  comment varchar(400),
+  PRIMARY KEY (id),
+  CONSTRAINT evidence_comment_fk FOREIGN KEY (person_id) REFERENCES person (id)
+);
+
+-- ALTER TABLE evidence_comment ADD CONSTRAINT evidence_comment_fk FOREIGN KEY (person_id) REFERENCES person (id)
+
+INSERT INTO evidence_comment (person_id, comment) VALUES ('1', 'C1');
+INSERT INTO evidence_comment (person_id, comment) VALUES ('2', 'C2');
 
 INSERT INTO properties (key, value) VALUES ('LOAD_DATE', '27/07/2022 08:30');
 INSERT INTO properties (key, value) VALUES ('LOAD_USERNAME', 'user');
