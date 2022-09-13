@@ -89,6 +89,16 @@ CREATE TABLE properties (
 	PRIMARY KEY (id)
 );
 
+INSERT INTO properties (key, value) VALUES ('LOAD_DATE', '27/07/2022 08:30');
+INSERT INTO properties (key, value) VALUES ('LOAD_USERNAME', 'user');
+INSERT INTO properties (key, value) VALUES ('LOAD_WEEKS', '5');
+INSERT INTO properties (key, value) VALUES ('WEEK_1', '01-AUG-2022 - 07-AUG-2022');
+INSERT INTO properties (key, value) VALUES ('WEEK_2', '08-AUG-2022 - 14-AUG-2022');
+INSERT INTO properties (key, value) VALUES ('WEEK_3', '15-AUG-2022 - 21-AUG-2022');
+INSERT INTO properties (key, value) VALUES ('WEEK_4', '22-AUG-2022 - 28-AUG-2022');
+INSERT INTO properties (key, value) VALUES ('WEEK_5', '29-AUG-2022 - 04-SEP-2022');
+INSERT INTO properties (key, value) VALUES ('WEEK_6' , null);
+
 DROP TABLE IF EXISTS evidence_comment;
 
 CREATE TABLE evidence_comment (
@@ -99,17 +109,25 @@ CREATE TABLE evidence_comment (
   CONSTRAINT evidence_comment_fk FOREIGN KEY (person_id) REFERENCES person (id)
 );
 
--- ALTER TABLE evidence_comment ADD CONSTRAINT evidence_comment_fk FOREIGN KEY (person_id) REFERENCES person (id)
-
 INSERT INTO evidence_comment (person_id, comment) VALUES ('1', 'C1');
 INSERT INTO evidence_comment (person_id, comment) VALUES ('2', 'C2');
 
-INSERT INTO properties (key, value) VALUES ('LOAD_DATE', '27/07/2022 08:30');
-INSERT INTO properties (key, value) VALUES ('LOAD_USERNAME', 'user');
-INSERT INTO properties (key, value) VALUES ('LOAD_WEEKS', '5');
-INSERT INTO properties (key, value) VALUES ('WEEK_1', '01-AUG-2022 - 07-AUG-2022');
-INSERT INTO properties (key, value) VALUES ('WEEK_2', '08-AUG-2022 - 14-AUG-2022');
-INSERT INTO properties (key, value) VALUES ('WEEK_3', '15-AUG-2022 - 21-AUG-2022');
-INSERT INTO properties (key, value) VALUES ('WEEK_4', '22-AUG-2022 - 28-AUG-2022');
-INSERT INTO properties (key, value) VALUES ('WEEK_5', '29-AUG-2022 - 04-SEP-2022');
-INSERT INTO properties (key, value) VALUES ('WEEK_6' , null);
+CREATE TABLE v_evidence_with_comment (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  person_id int(11) NOT NULL,
+  comment_id bigint(20),
+  evidente_type_w1 int(11),
+  evidente_type_w2 int(11),
+  evidente_type_w3 int(11),
+  evidente_type_w4 int(11),
+  evidente_type_w5 int(11),
+  evidente_type_w6 int(11),
+  PRIMARY KEY (id)
+);
+
+INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('1', '1', null, null, null, '3', null, null);
+INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('2', null, null, null, null, '3', null, null);
+INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('3', null, null, null, '2', '3', null, null);
+INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('4', null, null, null, '2', '3', null, null);
+INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('5', null, null, '3', null, '3', null, null);
+INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('6', null, '1', null, '2', '3', '2', null);

@@ -56,7 +56,7 @@ public class EvidenceTest {
     @Mock
     private EvidenceErrorRepository evidenceErrorRepository;
 
-    @Mock
+    @Mock	
     private CommentRepository commentRepository;
 
     @Mock
@@ -79,7 +79,7 @@ public class EvidenceTest {
 
     private static DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive()
             .appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
-
+    
     /**
      * Se debe obtener el número y nombre apropiado de semanas en un mes.
      */
