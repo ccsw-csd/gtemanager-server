@@ -22,7 +22,7 @@ public class Properties {
     @Column(name = "`key`", nullable = false)
     private String key;
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "value")
     private String value;
 
     /**
@@ -96,4 +96,5 @@ public class Properties {
     public void setValue(String value) {
         this.value = value;
     }
+
 }

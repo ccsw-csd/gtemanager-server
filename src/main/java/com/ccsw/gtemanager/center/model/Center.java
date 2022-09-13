@@ -14,47 +14,47 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "center")
 public class Center {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	@Column(name = "name")
-	private String name;
 
-	/**
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    /**
      * Obtener ID de Center
      * 
      * @return ID en formato Long
      */
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	/**
+    /**
      * Almacenar ID de Center
      * 
      * @param id ID de Center (Long)
      */
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	/**
+    /**
      * Obtener nombre de Center
      * 
      * @return nombre en formato String
      */
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	/**
+    /**
      * Almacenar nombre de Center
      * 
      * @param name nombre de Center (String)
      */
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 }
