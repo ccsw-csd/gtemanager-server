@@ -4,6 +4,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -138,14 +140,6 @@ public class EvidenceIT extends BaseITAbstract {
     private static Cell[] cellsRowThirdEvidence;
 	
 	ParameterizedTypeReference<List<EvidenceDto>> responseTypeEvidence = new ParameterizedTypeReference<List<EvidenceDto>>() {};
-	
-	@Test
-	public void findEmptyShouldReturnEveryEvidence() {
-		HttpEntity<?> httpEntity = new HttpEntity<>(getHeaders());
-		
-		ResponseEntity<List<EvidenceDto>> response = restTemplate.exchange(
-				LOCALHOST + port + SERVICE_PATH + "find", HttpMethod.GET, httpEntity, responseTypeEvidence);
-	}
 
     /**
      * Inicializar hoja de cálculo y celdas de valores previo a la ejecución de los

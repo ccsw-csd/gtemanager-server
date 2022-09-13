@@ -28,16 +28,6 @@ public class EvidenceController {
 	
 	@Autowired
 	private BeanMapper beanMapper;
-	
-	/**
-	 * GET: Devuelve un listado de evidencias filtrado
-	 */
-	@RequestMapping(path = "", method = RequestMethod.GET)
-	public List<EvidenceDto> findOrderedByGeography(@RequestParam(value = "geography", required = false) Long idGeography) {
-		List<Evidence> evidences = evidenceService.findOrderedByGeography(idGeography);
-		
-		return beanMapper.mapList(evidences, EvidenceDto.class);
-	}
 
     /**
      * POST: Recibe elemento con archivo de evidencias (formato .xls o .xlsx) y

@@ -4,13 +4,11 @@ import java.util.List;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ccsw.gtemanager.evidence.model.Evidence;
 
@@ -34,5 +32,5 @@ public interface EvidenceRepository extends JpaRepository<Evidence, Long>, JpaSp
      * Se hace uso de EntityGraph para optimización de la consulta.
      */
     @EntityGraph(value = "evidence-entity-graph", type = EntityGraphType.LOAD)
-    List<Evidence> findAll(Specification<Evidence> specification);
+    List<Evidence> findAll(Specification<Evidence> specification, Sort by);
 }

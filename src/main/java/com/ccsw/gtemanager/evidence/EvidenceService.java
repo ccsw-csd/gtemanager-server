@@ -14,8 +14,8 @@ import com.ccsw.gtemanager.person.model.Person;
  * EvidenceService: servicio de datos de evidencias.
  */
 public interface EvidenceService {
-	
-	List<Evidence> findOrderedByGeography(Long idGeography);
+
+    List<Evidence> findByGeography(Long idGeography);
 
     /**
      * Obtener un listado de todas las evidencias.

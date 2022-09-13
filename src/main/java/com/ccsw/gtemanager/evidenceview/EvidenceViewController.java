@@ -15,20 +15,21 @@ import com.ccsw.gtemanager.evidenceview.model.EvidenceViewDto;
 @RequestMapping(value = "/evidence-view")
 @RestController
 public class EvidenceViewController {
-	
-	@Autowired
-	private EvidenceViewService evidenceViewService;
-	
-	@Autowired
-	private BeanMapper beanMapper;
-	
-	/**
-	 * GET: Devuelve el listado de evidencias filtrado por geografía
-	 */
-	@RequestMapping(path = "", method = RequestMethod.GET)
-	public List<EvidenceViewDto> findOrderedByGeography(@RequestParam(value = "geography", required = false) Long idGeography) {
-		List<EvidenceView> evidences = evidenceViewService.findOrderedByGeography(idGeography);
-		
-		return beanMapper.mapList(evidences, EvidenceViewDto.class);
-	}
+
+    @Autowired
+    private EvidenceViewService evidenceViewService;
+
+    @Autowired
+    private BeanMapper beanMapper;
+
+    /**
+     * GET: Devuelve el listado de evidencias filtrado por geografía
+     */
+    @RequestMapping(path = "", method = RequestMethod.GET)
+    public List<EvidenceViewDto> findByGeography(
+            @RequestParam(value = "geography", required = false) Long idGeography) {
+        List<EvidenceView> evidences = evidenceViewService.findByGeography(idGeography);
+
+        return beanMapper.mapList(evidences, EvidenceViewDto.class);
+    }
 }
