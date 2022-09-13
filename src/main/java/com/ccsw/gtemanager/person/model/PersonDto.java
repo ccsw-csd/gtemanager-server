@@ -3,92 +3,104 @@ package com.ccsw.gtemanager.person.model;
 import com.ccsw.gtemanager.center.model.CenterDto;
 
 public class PersonDto {
-	private Long id;
+    private Long id;
 
-	private String saga, username, email, name, lastName, businessCode, grade;
-	
-	private CenterDto center;
+    private String saga;
 
-	private boolean active;
+    private String username;
 
-	public Long getId() {
-		return id;
-	}
+    private String email;
 
-	public String getSaga() {
-		return saga;
-	}
+    private String name;
 
-	public String getUsername() {
-		return username;
-	}
+    private String lastName;
 
-	public String getEmail() {
-		return email;
-	}
+    private String businessCode;
 
-	public String getName() {
-		return name;
-	}
+    private String grade;
 
-	public String getLastName() {
-		return lastName;
-	}
+    private CenterDto center;
 
-	public CenterDto getCenter() {
-		return center;
-	}
+    private Boolean active;
 
-	public String getBusinessCode() {
-		return businessCode;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getGrade() {
-		return grade;
-	}
+    public String getSaga() {
+        return saga;
+    }
 
-	public boolean isActive() {
-		return active;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setSaga(String saga) {
-		this.saga = saga;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public CenterDto getCenter() {
+        return center;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getBusinessCode() {
+        return businessCode;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public String getGrade() {
+        return grade;
+    }
 
-	public void setCenter(CenterDto center) {
-		this.center = center;
-	}
+    public Boolean isActive() {
+        return active;
+    }
 
-	public void setBusinessCode(String businessCode) {
-		this.businessCode = businessCode;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setGrade(String grade) {
-		this.grade = grade;
-	}
+    public void setSaga(String saga) {
+        this.saga = saga;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setCenter(CenterDto center) {
+        this.center = center;
+    }
+
+    public void setBusinessCode(String businessCode) {
+        this.businessCode = businessCode;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 
 }
