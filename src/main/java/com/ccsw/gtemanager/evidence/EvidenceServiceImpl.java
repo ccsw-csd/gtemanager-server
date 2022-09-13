@@ -1,6 +1,5 @@
 package com.ccsw.gtemanager.evidence;
 
-import java.util.List;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -11,6 +10,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -21,14 +21,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 
+import com.ccsw.gtemanager.comment.CommentService;
 import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 import com.ccsw.gtemanager.common.exception.BadRequestException;
 import com.ccsw.gtemanager.common.exception.UnprocessableEntityException;
@@ -44,8 +44,6 @@ import com.ccsw.gtemanager.person.PersonService;
 import com.ccsw.gtemanager.person.model.Person;
 import com.ccsw.gtemanager.properties.PropertiesService;
 import com.ccsw.gtemanager.properties.model.Properties;
-import com.ccsw.gtemanager.comment.CommentService;
-import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 
 /**
  * EvidenceServiceImpl: clase de implementación de EvidenceService. Contiene
@@ -122,15 +120,16 @@ public class EvidenceServiceImpl implements EvidenceService {
             .appendPattern("LLLL dd, yyyy hh:mm a").toFormatter(Locale.getDefault());
     private static DateTimeFormatter formatDateTimeDB = new DateTimeFormatterBuilder().parseCaseInsensitive()
             .appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
-	
-	@Override
-	public List<Evidence> findAll(Long idGeography) {
-		
-		EvidenceSpecification geography = new EvidenceSpecification(new SearchCriteria("center", ":", idGeography));
-		Specification<Evidence> specification = Specification.where(geography);
-		List<Evidence> list = this.evidenceRepository.findAll(specification, Sort.by(Sort.Direction.ASC, "person"));
-		return list;
-	}	
+
+    @Override
+    public List<Evidence> findByGeography(Long idGeography) {
+
+        EvidenceSpecification geography = new EvidenceSpecification(new SearchCriteria("center", ":", idGeography));
+        Specification<Evidence> specification = Specification.where(geography);
+        List<Evidence> list = this.evidenceRepository.findAll(specification,
+                Sort.by(Sort.Direction.ASC, "person.center.name"));
+        return list;
+    }
 
     @Override
     public List<Evidence> getEvidences() {

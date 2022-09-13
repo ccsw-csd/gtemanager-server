@@ -36,7 +36,7 @@ public class EvidenceViewTest {
 
         when(evidenceViewRepository.findAll(any(), any())).thenReturn(list);
 
-        List<EvidenceView> evidences = evidenceViewServiceImpl.findAll(null);
+        List<EvidenceView> evidences = evidenceViewServiceImpl.findByGeography(null);
 
         assertNotNull(evidences);
         assertEquals(TOTAL_EVIDENCE, evidences.size());
