@@ -96,13 +96,14 @@ public class EvidenceServiceImpl implements EvidenceService {
     private PropertiesService propertiesService;
 
     @Autowired
+    private PersonDatabaseRepository personDatabaseRepository;
+
+    @Autowired
     private EvidenceRepository evidenceRepository;
 
-    private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive()
-            .appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
+    private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
 
-    private static DateTimeFormatter formatDateTimeFile = new DateTimeFormatterBuilder().parseCaseInsensitive()
-            .appendPattern("LLLL dd, yyyy hh:mm a").toFormatter(Locale.getDefault());
+    private static DateTimeFormatter formatDateTimeFile = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("LLLL dd, yyyy hh:mm a").toFormatter(Locale.getDefault());
 
     @Override
     public List<Evidence> findByGeography(Long idGeography) {
@@ -159,10 +160,14 @@ public class EvidenceServiceImpl implements EvidenceService {
      */
     @Override
     public boolean uploadEvidence(FormDataDto upload) throws ResponseStatusException {
+
         if (upload.getFile() == null)
             throw new UnsupportedMediaTypeException();
-        else if (!ALLOWED_FORMATS.contains(upload.getFile().getContentType()))
+
+        if (!ALLOWED_FORMATS.contains(upload.getFile().getContentType()))
             throw new UnprocessableEntityException();
+
+        updatePersonDatabase();
 
         Sheet sheet = obtainSheet(upload.getFile());
 
@@ -172,16 +177,12 @@ public class EvidenceServiceImpl implements EvidenceService {
         List<Properties> properties;
         List<String> weeks;
         try {
-            fromDate = LocalDate.parse(
-                    sheet.getRow(ROW_PROPERTY_FROM_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
-            toDate = LocalDate.parse(
-                    sheet.getRow(ROW_PROPERTY_TO_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
+            fromDate = LocalDate.parse(sheet.getRow(ROW_PROPERTY_FROM_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
+            toDate = LocalDate.parse(sheet.getRow(ROW_PROPERTY_TO_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
             if (fromDate.isAfter(toDate))
                 throw new BadRequestException("El informe no contiene fechas de periodo válidas (B2, C2).");
 
-            runDate = LocalDateTime.parse(
-                    sheet.getRow(ROW_PROPERTY_RUNDATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(),
-                    formatDateTimeFile);
+            runDate = LocalDateTime.parse(sheet.getRow(ROW_PROPERTY_RUNDATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDateTimeFile);
             weeks = obtainWeeks(fromDate);
             properties = propertiesService.parseProperties(runDate, weeks);
         } catch (NullPointerException | DateTimeException e) {
@@ -207,15 +208,13 @@ public class EvidenceServiceImpl implements EvidenceService {
             String period = currentRow.getCell(COL_EVIDENCE_PERIOD).getStringCellValue();
             String type = currentRow.getCell(COL_EVIDENCE_STATUS).getStringCellValue();
 
-            if (StringUtils.hasText(fullName) || StringUtils.hasText(saga) || StringUtils.hasText(email)
-                    || StringUtils.hasText(period) || StringUtils.hasText(type)) {
+            if (StringUtils.hasText(fullName) || StringUtils.hasText(saga) || StringUtils.hasText(email) || StringUtils.hasText(period) || StringUtils.hasText(type)) {
                 try {
                     saga = personService.parseSaga(saga);
                     if (!saga.equals(previousSaga) || person == null)
                         person = getPersonBySaga(people, saga);
 
-                    evidence = setTypeForWeek(getEvidenceForPerson(evidences, person),
-                            weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
+                    evidence = setTypeForWeek(getEvidenceForPerson(evidences, person), weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
                     evidences.put(person, evidence);
                 } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
                     evidenceErrors.add(new EvidenceErrorDto(fullName, saga, email, period, type));
@@ -228,6 +227,16 @@ public class EvidenceServiceImpl implements EvidenceService {
         clearReport(upload.isDeleteComments());
         saveReport(properties, evidences, evidenceErrors);
         return evidenceErrors.isEmpty();
+    }
+
+    private void updatePersonDatabase() {
+
+        personDatabaseRepository.disablePerson();
+
+        personDatabaseRepository.enablePerson();
+
+        personDatabaseRepository.createNewPerson();
+
     }
 
     @Override
@@ -251,8 +260,7 @@ public class EvidenceServiceImpl implements EvidenceService {
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
             return workbook.getSheetAt(FIRST_SHEET);
         } catch (Exception e) {
-            throw new BadRequestException(
-                    "Se ha producido un error leyendo el archivo. Compruebe la validez de los datos y que no se encuentra encriptado.");
+            throw new BadRequestException("Se ha producido un error leyendo el archivo. Compruebe la validez de los datos y que no se encuentra encriptado.");
         }
     }
 
@@ -364,8 +372,7 @@ public class EvidenceServiceImpl implements EvidenceService {
      * @return Evidence con tipo de evidencia registrado en la semana
      * @throws IllegalArgumentException No se ha especificado una semana correcta
      */
-    private Evidence setTypeForWeek(Evidence evidence, int week, EvidenceType evidenceType)
-            throws IllegalArgumentException {
+    private Evidence setTypeForWeek(Evidence evidence, int week, EvidenceType evidenceType) throws IllegalArgumentException {
         switch (week) {
         case 0:
             evidence.setEvidenceTypeW1(evidenceType);
@@ -412,8 +419,7 @@ public class EvidenceServiceImpl implements EvidenceService {
      * @param evidences      Map de Person y Evidence con evidencias del informe
      * @param evidenceErrors Listado de evidencias erróneas
      */
-    private void saveReport(List<Properties> properties, Map<Person, Evidence> evidences,
-            List<EvidenceErrorDto> evidenceErrors) {
+    private void saveReport(List<Properties> properties, Map<Person, Evidence> evidences, List<EvidenceErrorDto> evidenceErrors) {
         propertiesService.saveAll(properties);
         saveAll(new ArrayList<>(evidences.values()));
         evidenceErrorService.saveAll(evidenceErrors);
