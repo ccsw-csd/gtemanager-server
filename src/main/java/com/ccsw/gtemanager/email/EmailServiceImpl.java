@@ -53,7 +53,7 @@ public class EmailServiceImpl implements EmailService {
     private static final String PERIOD_SEPARATOR = " - ";
 
     @Value("${app.email.url}")
-    private String REMINDER_EMAIL_API_URL;
+    private String emailApiUrl;
 
     private static DateTimeFormatter formatDateDB = new DateTimeFormatterBuilder().parseCaseInsensitive()
             .appendPattern("dd/MM/yyyy").toFormatter(Locale.getDefault());
@@ -69,11 +69,11 @@ public class EmailServiceImpl implements EmailService {
         if (reminder.getClosingDate().isBefore(LocalDate.now()))
             throw new BadRequestException("La fecha de cierre no puede ser anterior a la actual.");
 
-        List<Evidence> evidences = evidenceService.getEvidencesByCenter(reminder.getCenterId());
+        List<Evidence> evidences = evidenceService.findByGeography(reminder.getCenterId());
         if (evidences.isEmpty())
             throw new BadRequestException("No hay evidencias para el centro seleccionado.");
 
-        return sendAllMessages(REMINDER_EMAIL_API_URL, composeEmails(reminder.getClosingDate(), evidences));
+        return sendAllMessages(emailApiUrl, composeEmails(reminder.getClosingDate(), evidences));
     }
 
     /**

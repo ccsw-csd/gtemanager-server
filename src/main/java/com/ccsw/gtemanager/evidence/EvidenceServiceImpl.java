@@ -131,17 +131,6 @@ public class EvidenceServiceImpl implements EvidenceService {
         return evidence != null ? evidence : new Evidence(person);
     }
 
-    /**
-     * @deprecated Usar findByGeography() en su lugar.
-     */
-    @Deprecated(since = "2022-09-14")
-    @Override
-    public List<Evidence> getEvidencesByCenter(Long centerId) {
-        EvidenceSpecification centerSpecification = new EvidenceSpecification(
-                new SearchCriteria("center", ":", centerId));
-        return evidenceRepository.findAll(Specification.where(centerSpecification));
-    }
-
     @Override
     public Map<String, EvidenceType> getTypesForEvidence(Evidence evidence, List<String> weeks) {
         if (evidence == null)
@@ -303,6 +292,8 @@ public class EvidenceServiceImpl implements EvidenceService {
      * Almacenar como objetos Properties.
      * 
      * @param runDate Fecha de ejecución de informe
+     * @param weeks   Listado de semanas a procesar
+     * @return List de Properties procesadas para su almaecenamiento en BD
      * @throws DateTimeException Existen fechas no admisibles
      */
     protected List<Properties> parseProperties(LocalDateTime runDate, List<String> weeks) throws DateTimeException {
@@ -333,7 +324,8 @@ public class EvidenceServiceImpl implements EvidenceService {
      * NULL, en su lugar lanzando una excepción, al no poder procesarse una
      * evidencia sin Person asociado.
      * 
-     * @param saga Código saga por el que buscar
+     * @param people List de Person en el que buscar
+     * @param saga   Código saga por el que buscar
      * @return Person hallado en base de datos
      * @throws IllegalArgumentException No se ha podido encontrar la persona
      *                                  especificada
@@ -395,7 +387,8 @@ public class EvidenceServiceImpl implements EvidenceService {
      * NULL, en su lugar lanzando una excepción, al no poder procesarse una
      * evidencia sin EvidenceType correctos.
      * 
-     * @param type Tipo de evidencia por el que buscar
+     * @param types List de EvidenceType en el que buscar
+     * @param type  Tipo de evidencia por el que buscar
      * @return EvidenceType hallado en base de datos
      * @throws IndexOutOfBoundsException No se ha podido encontrar el tipo
      *                                   especificado
@@ -456,6 +449,10 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     /**
      * Almacenar datos de parámetros, evidencias, y errores.
+     * 
+     * @param properties     Listado de propiedades del informe
+     * @param evidences      Map de Person y Evidence con evidencias del informe
+     * @param evidenceErrors Listado de evidencias erróneas
      */
     private void saveReport(List<Properties> properties, Map<Person, Evidence> evidences,
             List<EvidenceErrorDto> evidenceErrors) {
