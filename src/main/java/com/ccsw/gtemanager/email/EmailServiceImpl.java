@@ -102,7 +102,7 @@ public class EmailServiceImpl implements EmailService {
         if (reminder.getClosingDate().isBefore(LocalDate.now()))
             throw new BadRequestException("La fecha de cierre no puede ser anterior a la actual.");
 
-        List<Evidence> evidences = evidenceService.getEvidencesByCenter(reminder.getCenterId());
+        List<Evidence> evidences = evidenceService.findByGeography(reminder.getCenterId());
         if (evidences.isEmpty())
             throw new BadRequestException("No hay evidencias para el centro seleccionado.");
 

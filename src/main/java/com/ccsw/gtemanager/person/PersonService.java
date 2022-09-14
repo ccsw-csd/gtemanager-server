@@ -9,21 +9,18 @@ import com.ccsw.gtemanager.person.model.Person;
  * PersonService: servicio de datos de personas.
  */
 public interface PersonService {
-	
-	/**
-	 * Obtener una persona según su id
-	 * 
-	 * @param id
-	 * @return
-	 * @throws EntityNotFoundException
-	 */
-	Person findById(Long id) throws EntityNotFoundException;
+
+    /**
+     * Obtener una persona según su id
+     * 
+     * @param id
+     * @return
+     * @throws EntityNotFoundException
+     */
+    Person findById(Long id) throws EntityNotFoundException;
 
     /**
      * Obtener listado de todas las personas en la base de datos.
-     * 
-     * Se hace comparación con PersonSagaTranscode para reemplazar los códigos saga
-     * desactualizados en el registro de personas.
      * 
      * @return Listado de Person
      */
