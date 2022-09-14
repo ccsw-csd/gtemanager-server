@@ -20,7 +20,7 @@ public class PersonServiceImpl implements PersonService {
     private static final String SAGA_SEPARATOR = "_";
 
     @Autowired
-    PersonRepository personRepository;
+    private PersonRepository personRepository;
 
     @Override
     public Person findById(Long id) throws EntityNotFoundException {
