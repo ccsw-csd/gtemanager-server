@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.person.model.Person;
-import com.ccsw.gtemanager.personsagatranscode.PersonSagaTranscodeService;
-import com.ccsw.gtemanager.personsagatranscode.model.PersonSagaTranscode;
 
 /**
  * PersonServiceImpl: clase de implementación de PersonService.
@@ -18,34 +16,20 @@ import com.ccsw.gtemanager.personsagatranscode.model.PersonSagaTranscode;
 @Service
 @Transactional
 public class PersonServiceImpl implements PersonService {
-	
+
     private static final String SAGA_SEPARATOR = "_";
 
     @Autowired
-    private PersonSagaTranscodeService personSagaTranscodeService;
+    PersonRepository personRepository;
 
-	@Autowired
-	PersonRepository personRepository;
-	
-	@Override
-	public Person findById(Long id) throws EntityNotFoundException {
-		return this.personRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-	}
+    @Override
+    public Person findById(Long id) throws EntityNotFoundException {
+        return this.personRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
 
     @Override
     public List<Person> getPeople() {
-        List<PersonSagaTranscode> personTranscodes = personSagaTranscodeService.getPersonSagaTranscodes();
-        List<Person> people = personRepository.findAll();
-        for (PersonSagaTranscode personSagaTranscode : personTranscodes) {
-            Person person = personSagaTranscode.getPersonId();
-            person.setSaga(personSagaTranscode.getSaga());
-            try {
-                people.set(people.indexOf(person), person);
-            } catch (IndexOutOfBoundsException e) {
-                people.add(person);
-            }
-        }
-        return people;
+        return personRepository.findAll();
     }
 
     @Override
