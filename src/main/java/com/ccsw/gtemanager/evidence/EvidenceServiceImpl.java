@@ -33,7 +33,6 @@ import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 import com.ccsw.gtemanager.common.exception.BadRequestException;
 import com.ccsw.gtemanager.common.exception.UnprocessableEntityException;
 import com.ccsw.gtemanager.common.exception.UnsupportedMediaTypeException;
-import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
@@ -59,15 +58,8 @@ public class EvidenceServiceImpl implements EvidenceService {
     private static final String XLSX_FILE_FORMAT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private static final List<String> ALLOWED_FORMATS = Arrays.asList(XLS_FILE_FORMAT, XLSX_FILE_FORMAT);
 
-    private static final String PROPERTY_LOAD_DATE = "LOAD_DATE";
-    private static final String PROPERTY_LOAD_USERNAME = "LOAD_USERNAME";
-    private static final String PROPERTY_LOAD_WEEKS = "LOAD_WEEKS";
-    private static final String PROPERTY_WEEK = "WEEK_";
-
     private static final int MONTH_START = 1;
     private static final int WEEK_OFFSET = 7;
-    private static final int WEEK_PROPERTIES_START = 1;
-    private static final int MAX_WEEKS_IN_MONTH = 6;
 
     private static final int FIRST_SHEET = 0;
 
@@ -108,10 +100,9 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive()
             .appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
+
     private static DateTimeFormatter formatDateTimeFile = new DateTimeFormatterBuilder().parseCaseInsensitive()
             .appendPattern("LLLL dd, yyyy hh:mm a").toFormatter(Locale.getDefault());
-    private static DateTimeFormatter formatDateTimeDB = new DateTimeFormatterBuilder().parseCaseInsensitive()
-            .appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
 
     @Override
     public List<Evidence> findByGeography(Long idGeography) {
@@ -192,7 +183,7 @@ public class EvidenceServiceImpl implements EvidenceService {
                     sheet.getRow(ROW_PROPERTY_RUNDATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(),
                     formatDateTimeFile);
             weeks = obtainWeeks(fromDate);
-            properties = parseProperties(runDate, weeks);
+            properties = propertiesService.parseProperties(runDate, weeks);
         } catch (NullPointerException | DateTimeException e) {
             throw new BadRequestException("El informe no contiene fecha de ejecución válida (B10).");
         }
@@ -284,39 +275,6 @@ public class EvidenceServiceImpl implements EvidenceService {
         }
 
         return weekList;
-    }
-
-    /**
-     * Leer y almacenar propiedades de la hoja de cálculo recibida. Deducir fecha de
-     * carga, nombre de usuario, semanas dentro del periodo, y número de semanas.
-     * Almacenar como objetos Properties.
-     * 
-     * @param runDate Fecha de ejecución de informe
-     * @param weeks   Listado de semanas a procesar
-     * @return List de Properties procesadas para su almaecenamiento en BD
-     * @throws DateTimeException Existen fechas no admisibles
-     */
-    protected List<Properties> parseProperties(LocalDateTime runDate, List<String> weeks) throws DateTimeException {
-        List<Properties> propertiesList = new ArrayList<>();
-        propertiesList.add(new Properties(PROPERTY_LOAD_DATE, runDate.format(formatDateTimeDB)));
-
-        propertiesList.add(new Properties(PROPERTY_LOAD_USERNAME, UserUtils.getUserDetails().getUsername()));
-
-        List<Properties> weekProperties = new ArrayList<>();
-        for (int i = WEEK_PROPERTIES_START; i <= MAX_WEEKS_IN_MONTH; i++) {
-            Properties weekProperty = new Properties(PROPERTY_WEEK + i, null);
-            try {
-                weekProperty.setValue(weeks.get(i - 1));
-            } catch (IndexOutOfBoundsException e) {
-                weekProperty.setValue(null);
-            }
-            weekProperties.add(weekProperty);
-        }
-
-        propertiesList.add(new Properties(PROPERTY_LOAD_WEEKS, String.valueOf(weeks.size())));
-        propertiesList.addAll(weekProperties);
-
-        return propertiesList;
     }
 
     /**
