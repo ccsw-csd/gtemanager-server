@@ -32,7 +32,7 @@ public interface EvidenceService {
      * @param person Person por el que buscar
      * @return Evidence hallado o Evidence nuevo en caso de no hallarse
      */
-    Evidence getEvidenceForPerson(Person person);
+    Evidence getEvidenceForPerson(Map<Person, Evidence> evidences, Person person);
 
     /**
      * Obtener tipo de evidencia registrado en cada semana, en un mapa asociado a
@@ -50,7 +50,9 @@ public interface EvidenceService {
      * 
      * @param centerId ID del centro por la que filtrar
      * @return List de evidencias filtradas por centro
+     * @deprecated Usar findByGeography() en su lugar.
      */
+    @Deprecated(since = "2022-09-14")
     List<Evidence> getEvidencesByCenter(Long centerId);
 
     /**
