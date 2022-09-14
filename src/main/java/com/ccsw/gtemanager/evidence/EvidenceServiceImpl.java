@@ -33,7 +33,6 @@ import com.ccsw.gtemanager.common.criteria.SearchCriteria;
 import com.ccsw.gtemanager.common.exception.BadRequestException;
 import com.ccsw.gtemanager.common.exception.UnprocessableEntityException;
 import com.ccsw.gtemanager.common.exception.UnsupportedMediaTypeException;
-import com.ccsw.gtemanager.config.security.UserUtils;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
@@ -59,15 +58,8 @@ public class EvidenceServiceImpl implements EvidenceService {
     private static final String XLSX_FILE_FORMAT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private static final List<String> ALLOWED_FORMATS = Arrays.asList(XLS_FILE_FORMAT, XLSX_FILE_FORMAT);
 
-    private static final String PROPERTY_LOAD_DATE = "LOAD_DATE";
-    private static final String PROPERTY_LOAD_USERNAME = "LOAD_USERNAME";
-    private static final String PROPERTY_LOAD_WEEKS = "LOAD_WEEKS";
-    private static final String PROPERTY_WEEK = "WEEK_";
-
     private static final int MONTH_START = 1;
     private static final int WEEK_OFFSET = 7;
-    private static final int WEEK_PROPERTIES_START = 1;
-    private static final int MAX_WEEKS_IN_MONTH = 6;
 
     private static final int FIRST_SHEET = 0;
 
@@ -106,29 +98,17 @@ public class EvidenceServiceImpl implements EvidenceService {
     @Autowired
     private EvidenceRepository evidenceRepository;
 
-    private List<Properties> propertiesList;
-    private List<Properties> weekProperties;
-    private List<Person> people;
-    private List<EvidenceType> types;
-    private List<String> weeks;
-    private Map<Person, Evidence> evidences;
-    private List<EvidenceErrorDto> evidenceErrors;
-
     private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive()
             .appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
+
     private static DateTimeFormatter formatDateTimeFile = new DateTimeFormatterBuilder().parseCaseInsensitive()
             .appendPattern("LLLL dd, yyyy hh:mm a").toFormatter(Locale.getDefault());
-    private static DateTimeFormatter formatDateTimeDB = new DateTimeFormatterBuilder().parseCaseInsensitive()
-            .appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
 
     @Override
     public List<Evidence> findByGeography(Long idGeography) {
-
         EvidenceSpecification geography = new EvidenceSpecification(new SearchCriteria("center", ":", idGeography));
         Specification<Evidence> specification = Specification.where(geography);
-        List<Evidence> list = this.evidenceRepository.findAll(specification,
-                Sort.by(Sort.Direction.ASC, "person.center.name"));
-        return list;
+        return this.evidenceRepository.findAll(specification, Sort.by(Sort.Direction.ASC, "person.center.name"));
     }
 
     @Override
@@ -137,16 +117,9 @@ public class EvidenceServiceImpl implements EvidenceService {
     }
 
     @Override
-    public Evidence getEvidenceForPerson(Person person) {
+    public Evidence getEvidenceForPerson(Map<Person, Evidence> evidences, Person person) {
         Evidence evidence = evidences.get(person);
         return evidence != null ? evidence : new Evidence(person);
-    }
-
-    @Override
-    public List<Evidence> getEvidencesByCenter(Long centerId) {
-        EvidenceSpecification centerSpecification = new EvidenceSpecification(
-                new SearchCriteria("center", ":", centerId));
-        return evidenceRepository.findAll(Specification.where(centerSpecification));
     }
 
     @Override
@@ -196,6 +169,8 @@ public class EvidenceServiceImpl implements EvidenceService {
         LocalDate fromDate = null;
         LocalDate toDate = null;
         LocalDateTime runDate = null;
+        List<Properties> properties;
+        List<String> weeks;
         try {
             fromDate = LocalDate.parse(
                     sheet.getRow(ROW_PROPERTY_FROM_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
@@ -208,18 +183,18 @@ public class EvidenceServiceImpl implements EvidenceService {
                     sheet.getRow(ROW_PROPERTY_RUNDATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(),
                     formatDateTimeFile);
             weeks = obtainWeeks(fromDate);
-            parseProperties(runDate);
+            properties = propertiesService.parseProperties(runDate, weeks);
         } catch (NullPointerException | DateTimeException e) {
             throw new BadRequestException("El informe no contiene fecha de ejecución válida (B10).");
         }
 
-        people = personService.getPeople();
+        List<Person> people = personService.getPeople();
 
-        types = evidenceTypeService.getEvidenceTypes();
+        List<EvidenceType> evidenceTypes = evidenceTypeService.getEvidenceTypes();
 
-        evidences = new LinkedHashMap<>();
+        Map<Person, Evidence> evidences = new LinkedHashMap<>();
 
-        evidenceErrors = new ArrayList<>();
+        List<EvidenceErrorDto> evidenceErrors = new ArrayList<>();
 
         Row currentRow = sheet.getRow(ROW_EVIDENCE_LIST_START);
         Person person = null;
@@ -237,10 +212,10 @@ public class EvidenceServiceImpl implements EvidenceService {
                 try {
                     saga = personService.parseSaga(saga);
                     if (!saga.equals(previousSaga) || person == null)
-                        person = getPersonBySaga(saga);
+                        person = getPersonBySaga(people, saga);
 
-                    evidence = setTypeForWeek(getEvidenceForPerson(person), weeks.indexOf(getWeekForPeriod(period)),
-                            getEvidenceType(type));
+                    evidence = setTypeForWeek(getEvidenceForPerson(evidences, person),
+                            weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
                     evidences.put(person, evidence);
                 } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
                     evidenceErrors.add(new EvidenceErrorDto(fullName, saga, email, period, type));
@@ -251,7 +226,7 @@ public class EvidenceServiceImpl implements EvidenceService {
         }
 
         clearReport(upload.isDeleteComments());
-        saveReport();
+        saveReport(properties, evidences, evidenceErrors);
         return evidenceErrors.isEmpty();
     }
 
@@ -303,44 +278,17 @@ public class EvidenceServiceImpl implements EvidenceService {
     }
 
     /**
-     * Leer y almacenar propiedades de la hoja de cálculo recibida. Deducir fecha de
-     * carga, nombre de usuario, semanas dentro del periodo, y número de semanas.
-     * Almacenar como objetos Properties.
-     * 
-     * @param runDate Fecha de ejecución de informe
-     * @throws DateTimeException Existen fechas no admisibles
-     */
-    protected void parseProperties(LocalDateTime runDate) throws DateTimeException {
-        propertiesList = new ArrayList<>();
-        propertiesList.add(new Properties(PROPERTY_LOAD_DATE, runDate.format(formatDateTimeDB)));
-
-        propertiesList.add(new Properties(PROPERTY_LOAD_USERNAME, UserUtils.getUserDetails().getUsername()));
-
-        weekProperties = new ArrayList<>();
-        for (int i = WEEK_PROPERTIES_START; i <= MAX_WEEKS_IN_MONTH; i++) {
-            Properties weekProperty = new Properties(PROPERTY_WEEK + i, null);
-            try {
-                weekProperty.setValue(weeks.get(i - 1));
-            } catch (IndexOutOfBoundsException e) {
-                weekProperty.setValue(null);
-            }
-            weekProperties.add(weekProperty);
-        }
-
-        propertiesList.add(new Properties(PROPERTY_LOAD_WEEKS, String.valueOf(weeks.size())));
-    }
-
-    /**
      * Obtener persona dado un código saga determinado. No se devuelve un valor
      * NULL, en su lugar lanzando una excepción, al no poder procesarse una
      * evidencia sin Person asociado.
      * 
-     * @param saga Código saga por el que buscar
+     * @param people List de Person en el que buscar
+     * @param saga   Código saga por el que buscar
      * @return Person hallado en base de datos
      * @throws IllegalArgumentException No se ha podido encontrar la persona
      *                                  especificada
      */
-    private Person getPersonBySaga(String saga) throws IllegalArgumentException {
+    private Person getPersonBySaga(List<Person> people, String saga) throws IllegalArgumentException {
         try {
             return people.get(people.indexOf(new Person(saga)));
         } catch (IndexOutOfBoundsException e) {
@@ -397,12 +345,13 @@ public class EvidenceServiceImpl implements EvidenceService {
      * NULL, en su lugar lanzando una excepción, al no poder procesarse una
      * evidencia sin EvidenceType correctos.
      * 
-     * @param type Tipo de evidencia por el que buscar
+     * @param types List de EvidenceType en el que buscar
+     * @param type  Tipo de evidencia por el que buscar
      * @return EvidenceType hallado en base de datos
      * @throws IndexOutOfBoundsException No se ha podido encontrar el tipo
      *                                   especificado
      */
-    private EvidenceType getEvidenceType(String type) throws IndexOutOfBoundsException {
+    private EvidenceType getEvidenceType(List<EvidenceType> types, String type) throws IndexOutOfBoundsException {
         return types.get(types.indexOf(new EvidenceType(type)));
     }
 
@@ -458,10 +407,14 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     /**
      * Almacenar datos de parámetros, evidencias, y errores.
+     * 
+     * @param properties     Listado de propiedades del informe
+     * @param evidences      Map de Person y Evidence con evidencias del informe
+     * @param evidenceErrors Listado de evidencias erróneas
      */
-    private void saveReport() {
-        propertiesService.saveAll(propertiesList);
-        propertiesService.saveAll(weekProperties);
+    private void saveReport(List<Properties> properties, Map<Person, Evidence> evidences,
+            List<EvidenceErrorDto> evidenceErrors) {
+        propertiesService.saveAll(properties);
         saveAll(new ArrayList<>(evidences.values()));
         evidenceErrorService.saveAll(evidenceErrors);
     }

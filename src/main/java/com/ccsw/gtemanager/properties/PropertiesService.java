@@ -1,5 +1,7 @@
 package com.ccsw.gtemanager.properties;
 
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ccsw.gtemanager.properties.model.Properties;
@@ -17,6 +19,13 @@ public interface PropertiesService {
     List<Properties> getProperties();
 
     /**
+     * Obtener y procesar listado de semanas almacenadas en BD como String.
+     * 
+     * @return Listado de String con valores de las semanas en el periodo
+     */
+    List<String> getWeeks();
+
+    /**
      * Obtener propiedad buscando por la clave especificada.
      * 
      * @param key Clave por la que buscar en BD
@@ -25,11 +34,16 @@ public interface PropertiesService {
     Properties getProperty(String key);
 
     /**
-     * Obtener y procesar listado de semanas almacenadas en BD como String.
+     * Leer y almacenar propiedades de la hoja de cálculo recibida. Deducir fecha de
+     * carga, nombre de usuario, semanas dentro del periodo, y número de semanas.
+     * Almacenar como objetos Properties.
      * 
-     * @return Listado de String con valores de las semanas en el periodo
+     * @param runDate Fecha de ejecución de informe
+     * @param weeks   Listado de semanas a procesar
+     * @return List de Properties procesadas para su almaecenamiento en BD
+     * @throws DateTimeException Existen fechas no admisibles
      */
-    List<String> getWeeks();
+    List<Properties> parseProperties(LocalDateTime runDate, List<String> weeks) throws DateTimeException;
 
     /**
      * Guardar todos los registros de Properties porporcionados.

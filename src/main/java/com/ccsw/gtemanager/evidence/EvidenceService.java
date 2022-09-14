@@ -15,6 +15,13 @@ import com.ccsw.gtemanager.person.model.Person;
  */
 public interface EvidenceService {
 
+    /**
+     * Obtener listado de evidencias según el centro referenciado por la persona
+     * asociada a la evidencia.
+     * 
+     * @param idGeography ID del centro por la que filtrar
+     * @return List de evidencias filtradas y ordenadas por centro
+     */
     List<Evidence> findByGeography(Long idGeography);
 
     /**
@@ -29,10 +36,11 @@ public interface EvidenceService {
      * evidencias en procesamiento, y se devuelve un Evidence vacío, con la persona
      * asociada, en caso de no encontrarse.
      * 
-     * @param person Person por el que buscar
+     * @param evidences Map de Person y Evidence en el que buscar
+     * @param person    Person por el que buscar
      * @return Evidence hallado o Evidence nuevo en caso de no hallarse
      */
-    Evidence getEvidenceForPerson(Person person);
+    Evidence getEvidenceForPerson(Map<Person, Evidence> evidences, Person person);
 
     /**
      * Obtener tipo de evidencia registrado en cada semana, en un mapa asociado a
@@ -45,21 +53,12 @@ public interface EvidenceService {
     Map<String, EvidenceType> getTypesForEvidence(Evidence evidence, List<String> weeks);
 
     /**
-     * Obtener listado de evidencias según el centro referenciado por la persona
-     * asociada a la evidencia.
-     * 
-     * @param centerId ID del centro por la que filtrar
-     * @return List de evidencias filtradas por centro
-     */
-    List<Evidence> getEvidencesByCenter(Long centerId);
-
-    /**
      * Leer y procesar un archivo de hoja de cálculo para obtener y almacenar
      * evidencias.
      * 
      * @param upload Elemento de subida de archivo con boolean deleteComments
-     * @return true si se han guardadon todos los datos correctamente, false si se
-     *         ha guardado con errores
+     * @return true si se han guardado todos los datos correctamente, false si se
+     *         han guardado con errores
      * @throws ResponseStatusException Hay errores a la hora de procesar el envío
      *                                 recibido
      */
