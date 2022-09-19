@@ -34,6 +34,9 @@ public class EvidenceError {
     @Column(name = "status", nullable = false)
     private String status;
 
+    @Column(name = "error_message", nullable = false)
+    private String message;
+
     /**
      * Obtener ID de EvidenceError
      * 
@@ -89,6 +92,15 @@ public class EvidenceError {
     }
 
     /**
+     * Obtener mensaje de error de evidencia registrado en el error
+     * 
+     * @return mensaje en formato String
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
      * Almacenar ID de EvidenceError
      * 
      * @param id ID de EvidenceError (Long)
@@ -140,6 +152,15 @@ public class EvidenceError {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    /**
+     * Almacenar mensaje de error de la evidencia
+     * 
+     * @param message mensaje de error (String)
+     */
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }
