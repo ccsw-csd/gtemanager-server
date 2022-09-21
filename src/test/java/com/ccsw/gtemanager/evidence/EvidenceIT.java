@@ -102,9 +102,7 @@ public class EvidenceIT extends BaseITAbstract {
     private static final String EXISTING_TYPE_2 = "Missing";
     private static final String NONEXISTING_TYPE = "Completed";
 
-    private static final String EXISTING_MESSAGE_1 = "No existe persona con el código saga especificado.";
-    private static final String EXISTING_MESSAGE_2 = "No existe persona con el código saga especificado.";
-    private static final String EXISTING_MESSAGE_3 = "No existe persona con el código saga especificado.";
+    private static final String EXISTING_MESSAGE = "No existe persona con el código saga especificado.";
 
     @LocalServerPort
     private int port;
@@ -254,21 +252,21 @@ public class EvidenceIT extends BaseITAbstract {
         cellsRowFirstEvidence[2].setCellValue(EXISTING_EMAIL_P1);
         cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W4);
         cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
-        cellsRowFirstEvidence[5].setCellValue(EXISTING_MESSAGE_1);
+        cellsRowFirstEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         cellsRowSecondEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
         cellsRowSecondEvidence[1].setCellValue(EXISTING_SAGA_P1);
         cellsRowSecondEvidence[2].setCellValue(EXISTING_EMAIL_P1);
         cellsRowSecondEvidence[3].setCellValue(EXISTING_PERIOD_W5);
         cellsRowSecondEvidence[4].setCellValue(EXISTING_TYPE_2);
-        cellsRowSecondEvidence[5].setCellValue(EXISTING_MESSAGE_2);
+        cellsRowSecondEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         cellsRowThirdEvidence[0].setCellValue(EXISTING_FULLNAME_P2);
         cellsRowThirdEvidence[1].setCellValue(EXISTING_SAGA_P2);
         cellsRowThirdEvidence[2].setCellValue(EXISTING_EMAIL_P2);
         cellsRowThirdEvidence[3].setCellValue(EXISTING_PERIOD_W5);
         cellsRowThirdEvidence[4].setCellValue(EXISTING_TYPE_1);
-        cellsRowThirdEvidence[5].setCellValue(EXISTING_MESSAGE_3);
+        cellsRowThirdEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT,
                 exportSpreadsheet());
@@ -376,18 +374,21 @@ public class EvidenceIT extends BaseITAbstract {
         cellsRowFirstEvidence[2].setCellValue(EXISTING_EMAIL_P1);
         cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W4);
         cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
+        cellsRowFirstEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         cellsRowSecondEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
         cellsRowSecondEvidence[1].setCellValue(EXISTING_SAGA_P1);
         cellsRowSecondEvidence[2].setCellValue(EXISTING_EMAIL_P1);
         cellsRowSecondEvidence[3].setCellValue(EXISTING_PERIOD_W5);
         cellsRowSecondEvidence[4].setCellValue(EXISTING_TYPE_2);
+        cellsRowSecondEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         cellsRowThirdEvidence[0].setCellValue(EXISTING_FULLNAME_P2);
         cellsRowThirdEvidence[1].setCellValue(EXISTING_SAGA_P2);
         cellsRowThirdEvidence[2].setCellValue(EXISTING_EMAIL_P2);
         cellsRowThirdEvidence[3].setCellValue(EXISTING_PERIOD_W5);
         cellsRowThirdEvidence[4].setCellValue(EXISTING_TYPE_1);
+        cellsRowThirdEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT,
                 exportSpreadsheet());

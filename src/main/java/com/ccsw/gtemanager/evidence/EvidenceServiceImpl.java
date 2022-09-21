@@ -80,6 +80,8 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     private static final String PERIOD_SEPARATOR = " - ";
 
+    private static final int MAX_ERROR_MESSAGE_SIZE = 3499;
+
     @Autowired
     private EvidenceErrorService evidenceErrorService;
 
@@ -226,8 +228,10 @@ public class EvidenceServiceImpl implements EvidenceService {
                             weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
                     evidences.put(person, evidence);
                 } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-                    // message = e.getCause().getMessage();
                     message = e.getLocalizedMessage();
+                    if (message.length() >= MAX_ERROR_MESSAGE_SIZE) {
+                        message = message.substring(0, MAX_ERROR_MESSAGE_SIZE);
+                    }
                     evidenceErrors.add(new EvidenceErrorDto(fullName, saga, email, period, type, message));
                 }
                 previousSaga = saga;
