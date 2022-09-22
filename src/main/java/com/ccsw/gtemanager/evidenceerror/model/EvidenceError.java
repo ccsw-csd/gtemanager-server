@@ -14,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "evidence_error")
-public class EvidenceError {
+public class EvidenceError { 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
