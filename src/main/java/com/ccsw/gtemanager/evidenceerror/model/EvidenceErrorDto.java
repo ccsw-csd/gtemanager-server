@@ -19,6 +19,8 @@ public class EvidenceErrorDto {
 
     private String status;
 
+    private String message;
+
     /**
      * Constructor vacío para la creación de EvidenceErrorDto
      */
@@ -30,18 +32,20 @@ public class EvidenceErrorDto {
      * Constructor con parámetros de la evidencia a asociar con el error del
      * registro
      * 
-     * @param name   Nombre completo de la persona implicada
-     * @param saga   Código saga obtenido del fichero
-     * @param email  Correo electrónico de la persona implicada
-     * @param period Periodo obtenido del fichero
-     * @param status Estado (tipo) de evidencia obtenido del fichero
+     * @param name    Nombre completo de la persona implicada
+     * @param saga    Código saga obtenido del fichero
+     * @param email   Correo electrónico de la persona implicada
+     * @param period  Periodo obtenido del fichero
+     * @param status  Estado (tipo) de evidencia obtenido del fichero
+     * @param message Mensaje de error
      */
-    public EvidenceErrorDto(String name, String saga, String email, String period, String status) {
+    public EvidenceErrorDto(String name, String saga, String email, String period, String status, String message) {
         this.name = name;
         this.saga = saga;
         this.email = email;
         this.period = period;
         this.status = status;
+        this.message = message;
     }
 
     /**
@@ -99,6 +103,15 @@ public class EvidenceErrorDto {
     }
 
     /**
+     * Obtener mensaje de error registrado en el error
+     * 
+     * @return mensaje en formato String
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
      * Almacenar ID de EvidenceErrorDto
      * 
      * @param id ID de EvidenceErrorDto (Long)
@@ -152,4 +165,12 @@ public class EvidenceErrorDto {
         this.status = status;
     }
 
+    /**
+     * Almacenar mensaje de error de la evidencia
+     * 
+     * @param message mensaje de error (String)
+     */
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
