@@ -19,7 +19,7 @@ public class EvidenceErrorDto {
 
     private String status;
 
-    private String message;
+    private String error_message;
 
     /**
      * Constructor vacío para la creación de EvidenceErrorDto
@@ -45,7 +45,7 @@ public class EvidenceErrorDto {
         this.email = email;
         this.period = period;
         this.status = status;
-        this.message = message;
+        this.error_message = message;
     }
 
     /**
@@ -108,7 +108,7 @@ public class EvidenceErrorDto {
      * @return mensaje en formato String
      */
     public String getMessage() {
-        return message;
+        return error_message;
     }
 
     /**
@@ -171,6 +171,6 @@ public class EvidenceErrorDto {
      * @param message mensaje de error (String)
      */
     public void setMessage(String message) {
-        this.message = message;
+        this.error_message = message;
     }
 }
