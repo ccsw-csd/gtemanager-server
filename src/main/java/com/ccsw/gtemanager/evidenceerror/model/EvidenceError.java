@@ -35,7 +35,7 @@ public class EvidenceError {
     private String status;
 
     @Column(name = "error_message", nullable = false)
-    private String error_message;
+    private String message;
 
     /**
      * Obtener ID de EvidenceError
@@ -96,8 +96,8 @@ public class EvidenceError {
      * 
      * @return mensaje en formato String
      */
-    public String getErrorMessage() {
-        return error_message;
+    public String getMessage() {
+        return message;
     }
 
     /**
@@ -159,8 +159,8 @@ public class EvidenceError {
      * 
      * @param message mensaje de error (String)
      */
-    public void setErrorMessage(String message) {
-        this.error_message = message;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }
