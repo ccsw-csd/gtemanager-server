@@ -96,7 +96,7 @@ public class EvidenceError {
      * 
      * @return mensaje en formato String
      */
-    public String getMessage() {
+    public String getErrorMessage() {
         return error_message;
     }
 
@@ -159,7 +159,7 @@ public class EvidenceError {
      * 
      * @param message mensaje de error (String)
      */
-    public void setMessage(String message) {
+    public void setErrorMessage(String message) {
         this.error_message = message;
     }
 
