@@ -11,11 +11,6 @@ import com.ccsw.gtemanager.config.mapper.BeanMapper;
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceErrorDto;
 
-/**
- * EvidenceErrorController: Controlador REST para interacción con datos.
- * Contiene métodos de acceso a servicio de datos, asociados a Requests HTTP.
- *
- */
 @RequestMapping(value = "/evidence-error")
 @RestController
 public class EvidenceErrorController {

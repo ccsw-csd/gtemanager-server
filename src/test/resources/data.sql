@@ -111,6 +111,11 @@ CREATE TABLE evidence_error (
 	PRIMARY KEY (id)
 );
 
+INSERT INTO evidence_error (name, saga, email, period, status, error_message) VALUES ('P1', 'S1', 'E1', 'P1', 'S1', 'E1');
+INSERT INTO evidence_error (name, saga, email, period, status, error_message) VALUES ('P2', 'S2', 'E2', 'P2', 'S2', 'E2');
+INSERT INTO evidence_error (name, saga, email, period, status, error_message) VALUES ('P3', 'S3', 'E3', 'P3', 'S3', 'E3');
+
+
 CREATE TABLE properties (
 	id bigint(20) NOT NULL AUTO_INCREMENT,
 	key varchar(20) NOT NULL,
