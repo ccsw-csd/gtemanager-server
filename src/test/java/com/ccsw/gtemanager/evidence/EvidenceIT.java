@@ -1,22 +1,11 @@
 package com.ccsw.gtemanager.evidence;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -29,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -42,7 +32,6 @@ import org.springframework.util.MultiValueMap;
 
 import com.ccsw.gtemanager.config.BaseITAbstract;
 import com.ccsw.gtemanager.evidence.model.EvidenceDto;
-import com.ccsw.gtemanager.config.BaseITAbstract;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
 
@@ -73,6 +62,7 @@ public class EvidenceIT extends BaseITAbstract {
     private static final int COL_EVIDENCE_EMAIL = 2;
     private static final int COL_EVIDENCE_PERIOD = 9;
     private static final int COL_EVIDENCE_STATUS = 10;
+    private static final int COL_EVIDENCE_MESSAGE = 0;
 
     private static final String FILE_VARIABLE = "file";
     private static final String DELETE_COMMENTS_VARIABLE = "deleteComments";
@@ -112,6 +102,8 @@ public class EvidenceIT extends BaseITAbstract {
     private static final String EXISTING_TYPE_2 = "Missing";
     private static final String NONEXISTING_TYPE = "Completed";
 
+    private static final String EXISTING_MESSAGE = "No existe persona con el código saga especificado.";
+
     @LocalServerPort
     private int port;
 
@@ -138,8 +130,9 @@ public class EvidenceIT extends BaseITAbstract {
     private static Cell[] cellsRowFirstEvidence;
     private static Cell[] cellsRowSecondEvidence;
     private static Cell[] cellsRowThirdEvidence;
-	
-	ParameterizedTypeReference<List<EvidenceDto>> responseTypeEvidence = new ParameterizedTypeReference<List<EvidenceDto>>() {};
+
+    ParameterizedTypeReference<List<EvidenceDto>> responseTypeEvidence = new ParameterizedTypeReference<List<EvidenceDto>>() {
+    };
 
     /**
      * Inicializar hoja de cálculo y celdas de valores previo a la ejecución de los
@@ -156,28 +149,31 @@ public class EvidenceIT extends BaseITAbstract {
         cellRunDate = sheet.createRow(ROW_PROPERTY_RUNDATE).createCell(COL_PROPERTY_VALUE);
 
         rowFirstEvidence = sheet.createRow(ROW_EVIDENCE_LIST_FIRST);
-        cellsRowFirstEvidence = new Cell[5];
+        cellsRowFirstEvidence = new Cell[6];
         cellsRowFirstEvidence[0] = rowFirstEvidence.createCell(COL_EVIDENCE_NAME);
         cellsRowFirstEvidence[1] = rowFirstEvidence.createCell(COL_EVIDENCE_SAGA);
         cellsRowFirstEvidence[2] = rowFirstEvidence.createCell(COL_EVIDENCE_EMAIL);
         cellsRowFirstEvidence[3] = rowFirstEvidence.createCell(COL_EVIDENCE_PERIOD);
         cellsRowFirstEvidence[4] = rowFirstEvidence.createCell(COL_EVIDENCE_STATUS);
+        cellsRowFirstEvidence[5] = rowFirstEvidence.createCell(COL_EVIDENCE_MESSAGE);
 
         rowSecondEvidence = sheet.createRow(ROW_EVIDENCE_LIST_SECOND);
-        cellsRowSecondEvidence = new Cell[5];
+        cellsRowSecondEvidence = new Cell[6];
         cellsRowSecondEvidence[0] = rowSecondEvidence.createCell(COL_EVIDENCE_NAME);
         cellsRowSecondEvidence[1] = rowSecondEvidence.createCell(COL_EVIDENCE_SAGA);
         cellsRowSecondEvidence[2] = rowSecondEvidence.createCell(COL_EVIDENCE_EMAIL);
         cellsRowSecondEvidence[3] = rowSecondEvidence.createCell(COL_EVIDENCE_PERIOD);
         cellsRowSecondEvidence[4] = rowSecondEvidence.createCell(COL_EVIDENCE_STATUS);
+        cellsRowSecondEvidence[5] = rowFirstEvidence.createCell(COL_EVIDENCE_MESSAGE);
 
         rowThirdEvidence = sheet.createRow(ROW_EVIDENCE_LIST_THIRD);
-        cellsRowThirdEvidence = new Cell[5];
+        cellsRowThirdEvidence = new Cell[6];
         cellsRowThirdEvidence[0] = rowThirdEvidence.createCell(COL_EVIDENCE_NAME);
         cellsRowThirdEvidence[1] = rowThirdEvidence.createCell(COL_EVIDENCE_SAGA);
         cellsRowThirdEvidence[2] = rowThirdEvidence.createCell(COL_EVIDENCE_EMAIL);
         cellsRowThirdEvidence[3] = rowThirdEvidence.createCell(COL_EVIDENCE_PERIOD);
         cellsRowThirdEvidence[4] = rowThirdEvidence.createCell(COL_EVIDENCE_STATUS);
+        cellsRowThirdEvidence[5] = rowFirstEvidence.createCell(COL_EVIDENCE_MESSAGE);
     }
 
     /**
@@ -256,18 +252,21 @@ public class EvidenceIT extends BaseITAbstract {
         cellsRowFirstEvidence[2].setCellValue(EXISTING_EMAIL_P1);
         cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W4);
         cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
+        cellsRowFirstEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         cellsRowSecondEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
         cellsRowSecondEvidence[1].setCellValue(EXISTING_SAGA_P1);
         cellsRowSecondEvidence[2].setCellValue(EXISTING_EMAIL_P1);
         cellsRowSecondEvidence[3].setCellValue(EXISTING_PERIOD_W5);
         cellsRowSecondEvidence[4].setCellValue(EXISTING_TYPE_2);
+        cellsRowSecondEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         cellsRowThirdEvidence[0].setCellValue(EXISTING_FULLNAME_P2);
         cellsRowThirdEvidence[1].setCellValue(EXISTING_SAGA_P2);
         cellsRowThirdEvidence[2].setCellValue(EXISTING_EMAIL_P2);
         cellsRowThirdEvidence[3].setCellValue(EXISTING_PERIOD_W5);
         cellsRowThirdEvidence[4].setCellValue(EXISTING_TYPE_1);
+        cellsRowThirdEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT,
                 exportSpreadsheet());
@@ -375,18 +374,21 @@ public class EvidenceIT extends BaseITAbstract {
         cellsRowFirstEvidence[2].setCellValue(EXISTING_EMAIL_P1);
         cellsRowFirstEvidence[3].setCellValue(EXISTING_PERIOD_W4);
         cellsRowFirstEvidence[4].setCellValue(EXISTING_TYPE_1);
+        cellsRowFirstEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         cellsRowSecondEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
         cellsRowSecondEvidence[1].setCellValue(EXISTING_SAGA_P1);
         cellsRowSecondEvidence[2].setCellValue(EXISTING_EMAIL_P1);
         cellsRowSecondEvidence[3].setCellValue(EXISTING_PERIOD_W5);
         cellsRowSecondEvidence[4].setCellValue(EXISTING_TYPE_2);
+        cellsRowSecondEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         cellsRowThirdEvidence[0].setCellValue(EXISTING_FULLNAME_P2);
         cellsRowThirdEvidence[1].setCellValue(EXISTING_SAGA_P2);
         cellsRowThirdEvidence[2].setCellValue(EXISTING_EMAIL_P2);
         cellsRowThirdEvidence[3].setCellValue(EXISTING_PERIOD_W5);
         cellsRowThirdEvidence[4].setCellValue(EXISTING_TYPE_1);
+        cellsRowThirdEvidence[5].setCellValue(EXISTING_MESSAGE);
 
         MockMultipartFile file = new MockMultipartFile(XLSX_FILE_NAME, XLSX_FILE_NAME, XLSX_FILE_FORMAT,
                 exportSpreadsheet());

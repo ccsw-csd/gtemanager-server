@@ -1,3 +1,20 @@
+CREATE SCHEMA personal AUTHORIZATION sa; 
+
+CREATE TABLE personal.t_person (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  saga varchar(25) NOT NULL,
+  username varchar(25) NOT NULL,
+  email varchar(100) NOT NULL,
+  name varchar(50) NOT NULL,
+  lastname varchar(100) NOT NULL,
+  center varchar(20) DEFAULT NULL,
+  businesscode varchar(50) DEFAULT NULL,
+  grade varchar(5) DEFAULT NULL,
+  active int(1) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+
 
 CREATE TABLE center (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -8,6 +25,17 @@ CREATE TABLE center (
 INSERT INTO center (name) VALUES ('Madrid');
 INSERT INTO center (name) VALUES ('Barcelona');
 INSERT INTO center (name) VALUES ('Valencia');
+
+
+
+CREATE TABLE center_transcode (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  name varchar(50) NOT NULL,
+  center_id bigint(20) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
+
 
 CREATE TABLE person (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -79,6 +107,7 @@ CREATE TABLE evidence_error (
 	email varchar(500) NOT NULL,
 	period varchar(100) NOT NULL,
 	status varchar(50) NOT NULL,
+	error_message varchar(4000) NULL,
 	PRIMARY KEY (id)
 );
 
@@ -131,3 +160,11 @@ INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, ev
 INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('4', null, null, null, '2', '3', null, null);
 INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('5', null, null, '3', null, '3', null, null);
 INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('6', null, '1', null, '2', '3', '2', null);
+
+
+
+
+
+
+
+
