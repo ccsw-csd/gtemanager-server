@@ -2,6 +2,7 @@ package com.ccsw.gtemanager.evidenceerror;
 
 import java.util.List;
 
+import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceErrorDto;
 
 /**
@@ -12,9 +13,9 @@ public interface EvidenceErrorService {
     /**
      * Obtener un listado de todos los errores de evidencias.
      * 
-     * @return Listado de EvidenceErrorDto
+     * @return Listado de EvidenceError
      */
-    List<EvidenceErrorDto> getEvidenceErrors();
+    List<EvidenceError> getEvidenceErrors();
 
     /**
      * Guardar todos los registros de EvidenceErrorDto proporcionados.
