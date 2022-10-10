@@ -26,8 +26,7 @@ public class EvidenceViewController {
      * GET: Devuelve el listado de evidencias filtrado por geografía
      */
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public List<EvidenceViewDto> findByGeography(
-            @RequestParam(value = "geography", required = false) Long idGeography) {
+    public List<EvidenceViewDto> findByGeography(@RequestParam(value = "geography", required = false) String idGeography) {
         List<EvidenceView> evidences = evidenceViewService.findByGeography(idGeography);
 
         return beanMapper.mapList(evidences, EvidenceViewDto.class);

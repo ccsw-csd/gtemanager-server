@@ -6,5 +6,5 @@ import com.ccsw.gtemanager.evidenceview.model.EvidenceView;
 
 public interface EvidenceViewService {
 
-    List<EvidenceView> findByGeography(Long idGeography);
+    List<EvidenceView> findByGeography(String idGeography);
 }
