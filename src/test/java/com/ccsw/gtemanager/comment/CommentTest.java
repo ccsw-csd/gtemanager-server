@@ -1,7 +1,7 @@
 package com.ccsw.gtemanager.comment;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,7 +14,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
 import com.ccsw.gtemanager.comment.model.Comment;
 import com.ccsw.gtemanager.comment.model.CommentDto;
@@ -25,61 +24,63 @@ import com.ccsw.gtemanager.person.model.PersonDto;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentTest {
-	
-	public static final Integer TOTAL_COMMENT = 1;
-	public static final Long EXISTS_ID = 1L;
-	public static final Long NOT_EXISTS_ID = 2L;
-	public static final Long PERSON_ID = 1L;
-	public static final String NEW_COMMENT = "New";
-	
-	@Mock
-	private CommentRepository commentRepository;
 
-	@InjectMocks
-	private CommentServiceImpl commentServiceImpl;
-	
-	@Mock
-	private PersonService personService;
+    public static final Integer TOTAL_COMMENT = 1;
+    public static final Long EXISTS_ID = 1L;
+    public static final Long NOT_EXISTS_ID = 2L;
+    public static final Long PERSON_ID = 1L;
+    public static final String NEW_COMMENT = "New";
 
-	@Test
-	public void saveNotExistCommentShouldCreate() throws EntityNotFoundException {
+    @Mock
+    private CommentRepository commentRepository;
 
-		PersonDto personDto = new PersonDto();
-		personDto.setId(PERSON_ID);
+    @InjectMocks
+    private CommentServiceImpl commentServiceImpl;
 
-		CommentDto commentDto = new CommentDto();
-		commentDto.setComment(NEW_COMMENT);
-		commentDto.setPerson(personDto);
+    @Mock
+    private PersonService personService;
 
-		ArgumentCaptor<Comment> commentEntityCaptor = ArgumentCaptor.forClass(Comment.class);
+    @Test
+    public void saveNotExistCommentShouldCreate() throws EntityNotFoundException {
 
-		when(personService.findById(PERSON_ID)).thenReturn(mock(Person.class));
+        PersonDto personDto = new PersonDto();
+        personDto.setId(PERSON_ID);
 
-		this.commentServiceImpl.save(commentDto);
+        CommentDto commentDto = new CommentDto();
+        commentDto.setComment(NEW_COMMENT);
+        commentDto.setPerson(personDto);
 
-		verify(this.commentRepository).save(commentEntityCaptor.capture());
+        ArgumentCaptor<Comment> commentEntityCaptor = ArgumentCaptor.forClass(Comment.class);
 
-		assertEquals(NEW_COMMENT, commentEntityCaptor.getValue().getComment());
-	}
-	
-	@Test
-	public void saveExistCommentShouldUpdate() throws EntityNotFoundException {
+        when(personService.findById(PERSON_ID)).thenReturn(mock(Person.class));
 
-		PersonDto personDto = new PersonDto();
-		personDto.setId(PERSON_ID);
+        this.commentServiceImpl.save(commentDto);
 
-		CommentDto commentDto = new CommentDto();
-		commentDto.setId(EXISTS_ID);
-		commentDto.setComment(NEW_COMMENT);
-		commentDto.setPerson(personDto);
+        verify(this.commentRepository).save(commentEntityCaptor.capture());
 
-		Comment commentEntity = mock(Comment.class);
+        assertEquals(NEW_COMMENT, commentEntityCaptor.getValue().getComment());
+        assertEquals("Desconocido", commentEntityCaptor.getValue().getLastEditAuthor());
+        assertNotNull(commentEntityCaptor.getValue().getLastEditDate());
+    }
 
-		when(commentRepository.findById(EXISTS_ID)).thenReturn(Optional.of(commentEntity));
-		when(personService.findById(PERSON_ID)).thenReturn(mock(Person.class));
+    @Test
+    public void saveExistCommentShouldUpdate() throws EntityNotFoundException {
 
-		this.commentServiceImpl.save(commentDto);
-		
-		verify(this.commentRepository).save(commentEntity);
-	}
+        PersonDto personDto = new PersonDto();
+        personDto.setId(PERSON_ID);
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setId(EXISTS_ID);
+        commentDto.setComment(NEW_COMMENT);
+        commentDto.setPerson(personDto);
+
+        Comment commentEntity = mock(Comment.class);
+
+        when(commentRepository.findById(EXISTS_ID)).thenReturn(Optional.of(commentEntity));
+        when(personService.findById(PERSON_ID)).thenReturn(mock(Person.class));
+
+        this.commentServiceImpl.save(commentDto);
+
+        verify(this.commentRepository).save(commentEntity);
+    }
 }

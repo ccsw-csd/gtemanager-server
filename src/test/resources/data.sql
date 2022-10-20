@@ -139,12 +139,14 @@ CREATE TABLE evidence_comment (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   person_id bigint(20) NOT NULL,
   comment varchar(400),
+  last_edit_date DATE,
+  last_edit_author varchar(100),
   PRIMARY KEY (id),
   CONSTRAINT evidence_comment_fk FOREIGN KEY (person_id) REFERENCES person (id)
 );
 
-INSERT INTO evidence_comment (person_id, comment) VALUES ('1', 'C1');
-INSERT INTO evidence_comment (person_id, comment) VALUES ('2', 'C2');
+INSERT INTO evidence_comment (person_id, comment, last_edit_date, last_edit_author) VALUES ('1', 'C1','2022-01-01','Author1');
+INSERT INTO evidence_comment (person_id, comment, last_edit_date, last_edit_author) VALUES ('2', 'C2','2022-05-01','Author2');
 
 CREATE TABLE v_evidence_with_comment (
   id bigint(20) NOT NULL AUTO_INCREMENT,
