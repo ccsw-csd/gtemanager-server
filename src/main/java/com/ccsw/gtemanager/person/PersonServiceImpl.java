@@ -42,4 +42,9 @@ public class PersonServiceImpl implements PersonService {
             return saga.substring(saga.length() - 4);
         }
     }
+
+    @Override
+    public Person findByEmail(String email) {
+        return this.personRepository.findByEmail(email);
+    }
 }

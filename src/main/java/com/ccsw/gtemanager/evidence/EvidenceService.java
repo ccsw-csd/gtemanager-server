@@ -43,6 +43,15 @@ public interface EvidenceService {
     Evidence getEvidenceForPerson(Map<Person, Evidence> evidences, Person person);
 
     /**
+     * Actualiza un evidencia para una persona determinada indicando que se le ha
+     * enviado la notificación por email.
+     * 
+     * @param id de Person
+     * @return Evidence hallado
+     */
+    void setEmailNotificationSentForPersonId(Long id);
+
+    /**
      * Obtener tipo de evidencia registrado en cada semana, en un mapa asociado a
      * dicha semana.
      * 

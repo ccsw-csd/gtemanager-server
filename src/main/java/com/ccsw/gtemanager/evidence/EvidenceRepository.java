@@ -33,4 +33,6 @@ public interface EvidenceRepository extends JpaRepository<Evidence, Long>, JpaSp
      */
     @EntityGraph(value = "evidence-entity-graph", type = EntityGraphType.LOAD)
     List<Evidence> findAll(Specification<Evidence> specification, Sort by);
+
+    Evidence findByPersonId(Long id);
 }

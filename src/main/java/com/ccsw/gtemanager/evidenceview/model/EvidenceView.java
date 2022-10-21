@@ -20,7 +20,8 @@ import com.ccsw.gtemanager.person.model.Person;
 @NamedEntityGraph(name = "evidence-view-graph", attributeNodes = { @NamedAttributeNode("person"),
         @NamedAttributeNode("comment"), @NamedAttributeNode("evidenceTypeW1"), @NamedAttributeNode("evidenceTypeW2"),
         @NamedAttributeNode("evidenceTypeW3"), @NamedAttributeNode("evidenceTypeW4"),
-        @NamedAttributeNode("evidenceTypeW5"), @NamedAttributeNode("evidenceTypeW6") })
+        @NamedAttributeNode("evidenceTypeW5"), @NamedAttributeNode("evidenceTypeW6"),
+        @NamedAttributeNode("emailNotificationSent") })
 public class EvidenceView {
 
     @Id
@@ -58,6 +59,9 @@ public class EvidenceView {
     @JoinColumn(name = "evidente_type_w6", nullable = true)
     private EvidenceType evidenceTypeW6;
 
+    @JoinColumn(name = "email_notification_sent", nullable = true)
+    private boolean emailNotificationSent;
+
     public Person getPerson() {
         return person;
     }
@@ -88,5 +92,9 @@ public class EvidenceView {
 
     public EvidenceType getEvidenceTypeW6() {
         return evidenceTypeW6;
+    }
+
+    public boolean getEmailNotificationSent() {
+        return emailNotificationSent;
     }
 }

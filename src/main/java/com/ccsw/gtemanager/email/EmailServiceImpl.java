@@ -28,6 +28,7 @@ import com.ccsw.gtemanager.email.model.ReminderDto;
 import com.ccsw.gtemanager.evidence.EvidenceService;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
+import com.ccsw.gtemanager.person.PersonService;
 import com.ccsw.gtemanager.properties.PropertiesService;
 
 /**
@@ -63,6 +64,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private EvidenceService evidenceService;
+
+    @Autowired
+    private PersonService personService;
 
     @Override
     public boolean sendReminderEmails(ReminderDto reminder) throws ResponseStatusException {
@@ -135,6 +139,8 @@ public class EmailServiceImpl implements EmailService {
         for (EmailDto message : emails) {
             try {
                 restTemplate.exchange(emailApiUrl, HttpMethod.POST, new HttpEntity<EmailDto>(message), String.class);
+                var person = personService.findByEmail(message.getTo());
+                evidenceService.setEmailNotificationSentForPersonId(person.getId());
             } catch (Exception e) {
                 ok = false;
             }
