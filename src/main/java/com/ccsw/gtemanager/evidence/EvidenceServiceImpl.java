@@ -442,4 +442,11 @@ public class EvidenceServiceImpl implements EvidenceService {
         saveAll(new ArrayList<>(evidences.values()));
         evidenceErrorService.saveAll(evidenceErrors);
     }
+
+    @Override
+    public void setEmailNotificationSentForPersonId(Long id) {
+        Evidence evidence = evidenceRepository.findByPersonId(id);
+        evidence.setEmailNotificationSent(true);
+        evidenceRepository.save(evidence);
+    }
 }

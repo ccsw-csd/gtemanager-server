@@ -25,7 +25,7 @@ import com.ccsw.gtemanager.person.model.Person;
         @NamedAttributeNode(value = "person", subgraph = "person-subgraph"), @NamedAttributeNode("evidenceTypeW1"),
         @NamedAttributeNode("evidenceTypeW2"), @NamedAttributeNode("evidenceTypeW3"),
         @NamedAttributeNode("evidenceTypeW4"), @NamedAttributeNode("evidenceTypeW5"),
-        @NamedAttributeNode("evidenceTypeW6") }, subgraphs = {
+        @NamedAttributeNode("evidenceTypeW6"), @NamedAttributeNode("emailNotificationSent") }, subgraphs = {
                 @NamedSubgraph(name = "person-subgraph", attributeNodes = { @NamedAttributeNode("center") }) })
 @Entity
 @Table(name = "evidence")
@@ -62,6 +62,9 @@ public class Evidence {
     @ManyToOne
     @JoinColumn(name = "evidente_type_w6")
     private EvidenceType evidenceTypeW6;
+
+    @JoinColumn(name = "email_notification_sent", nullable = true)
+    private boolean emailNotificationSent;
 
     /**
      * Constructor vacío para la creación de Evidence
@@ -152,6 +155,15 @@ public class Evidence {
     }
 
     /**
+     * Obtener si se ha enviado el email de notificación
+     * 
+     * @return boolean en true si se ha enviado, false si no se ha enviado
+     */
+    public boolean getEmailNotificationSent() {
+        return emailNotificationSent;
+    }
+
+    /**
      * Almacenar ID de Evidence
      * 
      * @param id ID de Evidence (Long)
@@ -221,5 +233,15 @@ public class Evidence {
      */
     public void setEvidenceTypeW6(EvidenceType evidenceTypeW6) {
         this.evidenceTypeW6 = evidenceTypeW6;
+    }
+
+    /**
+     * Almacenar el estado booleano para indicar si se ha enviado la notificación al
+     * email
+     * 
+     * @param emailNotificationSent estado de la notificación (boolean)
+     */
+    public void setEmailNotificationSent(boolean emailNotificationSent) {
+        this.emailNotificationSent = emailNotificationSent;
     }
 }

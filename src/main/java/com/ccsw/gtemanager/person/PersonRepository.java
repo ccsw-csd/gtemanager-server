@@ -22,4 +22,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
      */
     @EntityGraph(value = "person-entity-graph", type = EntityGraphType.LOAD)
     List<Person> findAll();
+
+    Person findByEmail(String email);
 }

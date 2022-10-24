@@ -77,16 +77,17 @@ CREATE TABLE evidence (
   evidente_type_w4 int(11),
   evidente_type_w5 int(11),
   evidente_type_w6 int(11),
+  email_notification_sent tinyint(1) DEFAULT 0 NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT evidence_person_fk FOREIGN KEY (person_id) REFERENCES person (id)
 );
 
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('1', null, null, null, '3', null, null);
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('2', null, null, null, '3', null, null);
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('3', null, null, '2', '3', null, null);
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('4', null, null, '2', '3', null, null);
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('5', null, '3', null, '3', null, null);
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('6', '1', null, '2', '3', '2', null);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('1', null, null, null, '3', null, null, 1);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('2', null, null, null, '3', null, null, 0);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('3', null, null, '2', '3', null, null, 0);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('4', null, null, '2', '3', null, null, 0);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('5', null, '3', null, '3', null, null, 0);
+INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('6', '1', null, '2', '3', '2', null, 0);
 
 CREATE TABLE evidence_type (
 	id bigint(20) NOT NULL AUTO_INCREMENT,

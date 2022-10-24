@@ -20,6 +20,15 @@ public interface PersonService {
     Person findById(Long id) throws EntityNotFoundException;
 
     /**
+     * Obtener una persona según su email
+     * 
+     * @param email
+     * @return
+     * @throws EntityNotFoundException
+     */
+    Person findByEmail(String email);
+
+    /**
      * Obtener listado de todas las personas en la base de datos.
      * 
      * @return Listado de Person
