@@ -188,9 +188,7 @@ public class EvidenceServiceImpl implements EvidenceService {
             if (fromDate.isAfter(toDate))
                 throw new BadRequestException("El informe no contiene fechas de periodo válidas (B2, C2).");
 
-            runDate = LocalDateTime.parse(
-                    sheet.getRow(ROW_PROPERTY_RUNDATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(),
-                    formatDateTimeFile);
+            runDate = LocalDateTime.now();
             weeks = obtainWeeks(fromDate);
             properties = propertiesService.parseProperties(runDate, weeks);
         } catch (NullPointerException | DateTimeException e) {
