@@ -28,4 +28,13 @@ public interface EvidenceErrorService {
      * Eliminar todos los registros de EvidenceError.
      */
     void clear();
+
+    /**
+     * Recupera los errores del mismo saga
+     * @param saga
+     * @return
+     */
+    List<EvidenceError> findBySaga(String saga);
+
+    void deleteAll(List<EvidenceError> evidenceErrors);
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +39,12 @@ public class EvidenceController {
         if (evidenceService.uploadEvidence(upload))
             return ResponseEntity.status(HttpStatus.OK).body(null);
         else
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("\"Se ha guardado el informe correctamente con algunos errores de evidencias.\"");
+            return ResponseEntity.status(HttpStatus.OK).body("\"Se ha guardado el informe correctamente con algunos errores de evidencias.\"");
+    }
+
+    @RequestMapping(path = "/mapPerson/{personId}/{saga}", method = RequestMethod.PUT)
+    public void mapPerson(@PathVariable Long personId, @PathVariable String saga) {
+
+        evidenceService.mapPerson(personId, saga);
     }
 }

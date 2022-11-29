@@ -39,4 +39,14 @@ public class EvidenceErrorServiceImpl implements EvidenceErrorService {
         evidenceErrorRepository.deleteAllInBatch();
     }
 
+    @Override
+    public List<EvidenceError> findBySaga(String saga) {
+        return evidenceErrorRepository.findBySaga(saga);
+    }
+
+    @Override
+    public void deleteAll(List<EvidenceError> evidenceErrors) {
+        evidenceErrorRepository.deleteAll(evidenceErrors);
+    }
+
 }

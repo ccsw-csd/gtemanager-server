@@ -1,5 +1,6 @@
 package com.ccsw.gtemanager.evidenceview.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -17,11 +18,8 @@ import com.ccsw.gtemanager.person.model.Person;
 @Entity
 @Table(name = "v_evidence_with_comment")
 @Immutable
-@NamedEntityGraph(name = "evidence-view-graph", attributeNodes = { @NamedAttributeNode("person"),
-        @NamedAttributeNode("comment"), @NamedAttributeNode("evidenceTypeW1"), @NamedAttributeNode("evidenceTypeW2"),
-        @NamedAttributeNode("evidenceTypeW3"), @NamedAttributeNode("evidenceTypeW4"),
-        @NamedAttributeNode("evidenceTypeW5"), @NamedAttributeNode("evidenceTypeW6"),
-        @NamedAttributeNode("emailNotificationSent") })
+@NamedEntityGraph(name = "evidence-view-graph", attributeNodes = { @NamedAttributeNode("person"), @NamedAttributeNode("comment"), @NamedAttributeNode("evidenceTypeW1"), @NamedAttributeNode("evidenceTypeW2"),
+        @NamedAttributeNode("evidenceTypeW3"), @NamedAttributeNode("evidenceTypeW4"), @NamedAttributeNode("evidenceTypeW5"), @NamedAttributeNode("evidenceTypeW6"), @NamedAttributeNode("emailNotificationSent") })
 public class EvidenceView {
 
     @Id
@@ -34,6 +32,9 @@ public class EvidenceView {
     @ManyToOne
     @JoinColumn(name = "comment_id", nullable = true)
     private Comment comment;
+
+    @Column(name = "row_color")
+    private String rowColor;
 
     @ManyToOne
     @JoinColumn(name = "evidente_type_w1", nullable = true)
@@ -97,4 +98,12 @@ public class EvidenceView {
     public boolean getEmailNotificationSent() {
         return emailNotificationSent;
     }
+
+    /**
+     * @return the rowColor
+     */
+    public String getRowColor() {
+        return rowColor;
+    }
+
 }

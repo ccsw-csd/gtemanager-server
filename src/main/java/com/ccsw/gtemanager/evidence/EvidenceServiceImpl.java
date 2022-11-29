@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +36,10 @@ import com.ccsw.gtemanager.common.exception.UnprocessableEntityException;
 import com.ccsw.gtemanager.common.exception.UnsupportedMediaTypeException;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
+import com.ccsw.gtemanager.evidence.model.PersonSagaMapper;
+import com.ccsw.gtemanager.evidencecolor.EvidenceColorService;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
+import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceErrorDto;
 import com.ccsw.gtemanager.evidencetype.EvidenceTypeService;
 import com.ccsw.gtemanager.evidencetype.model.EvidenceType;
@@ -54,6 +58,7 @@ import com.ccsw.gtemanager.properties.model.Properties;
 @Transactional
 public class EvidenceServiceImpl implements EvidenceService {
 
+    private static final String ORIGINAL_FROM_DATE = "ORIGINAL_FROM_DATE";
     private static final String XLS_FILE_FORMAT = "application/vnd.ms-excel";
     private static final String XLSX_FILE_FORMAT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private static final List<String> ALLOWED_FORMATS = Arrays.asList(XLS_FILE_FORMAT, XLSX_FILE_FORMAT);
@@ -65,7 +70,6 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     private static final int ROW_PROPERTY_FROM_DATE = 1;
     private static final int ROW_PROPERTY_TO_DATE = 2;
-    private static final int ROW_PROPERTY_RUNDATE = 9;
 
     private static final int ROW_EVIDENCE_LIST_START = 14;
     private static final int ROW_EVIDENCE_LIST_NEXT = ROW_EVIDENCE_LIST_START + 1;
@@ -89,6 +93,9 @@ public class EvidenceServiceImpl implements EvidenceService {
     private CommentService evidenceCommentService;
 
     @Autowired
+    private EvidenceColorService evidenceColorService;
+
+    @Autowired
     private EvidenceTypeService evidenceTypeService;
 
     @Autowired
@@ -103,11 +110,10 @@ public class EvidenceServiceImpl implements EvidenceService {
     @Autowired
     private EvidenceRepository evidenceRepository;
 
-    private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive()
-            .appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
+    @Autowired
+    private PersonSagaMapperRepository personSagaMapperRepository;
 
-    private static DateTimeFormatter formatDateTimeFile = new DateTimeFormatterBuilder().parseCaseInsensitive()
-            .appendPattern("LLLL dd, yyyy hh:mm a").toFormatter(Locale.getDefault());
+    private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
 
     @Override
     public List<Evidence> findByGeography(Long idGeography) {
@@ -172,6 +178,7 @@ public class EvidenceServiceImpl implements EvidenceService {
             throw new UnprocessableEntityException();
 
         updatePersonDatabase();
+        clearReport(upload.isDeleteComments());
 
         Sheet sheet = obtainSheet(upload.getFile());
 
@@ -181,32 +188,31 @@ public class EvidenceServiceImpl implements EvidenceService {
         List<Properties> properties;
         List<String> weeks;
         try {
-            fromDate = LocalDate.parse(
-                    sheet.getRow(ROW_PROPERTY_FROM_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
-            toDate = LocalDate.parse(
-                    sheet.getRow(ROW_PROPERTY_TO_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
+            String originalFromDate = sheet.getRow(ROW_PROPERTY_FROM_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue();
+            fromDate = LocalDate.parse(originalFromDate, formatDate);
+            toDate = LocalDate.parse(sheet.getRow(ROW_PROPERTY_TO_DATE).getCell(COL_PROPERTY_VALUE).getStringCellValue(), formatDate);
             if (fromDate.isAfter(toDate))
                 throw new BadRequestException("El informe no contiene fechas de periodo válidas (B2, C2).");
 
             runDate = LocalDateTime.now();
             weeks = obtainWeeks(fromDate);
             properties = propertiesService.parseProperties(runDate, weeks);
+            properties.add(new Properties(ORIGINAL_FROM_DATE, originalFromDate));
+
         } catch (NullPointerException | DateTimeException e) {
             throw new BadRequestException("El informe no contiene fecha de ejecución válida (B10).");
         }
 
-        List<Person> people = personService.getPeople();
+        Map<String, Person> personMap = createSagaPersonMap();
 
         List<EvidenceType> evidenceTypes = evidenceTypeService.getEvidenceTypes();
 
         Map<Person, Evidence> evidences = new LinkedHashMap<>();
-
         List<EvidenceErrorDto> evidenceErrors = new ArrayList<>();
 
         Row currentRow = sheet.getRow(ROW_EVIDENCE_LIST_START);
         Person person = null;
         Evidence evidence = null;
-        String previousSaga = "";
         for (int i = ROW_EVIDENCE_LIST_NEXT; currentRow != null; i++) {
             String fullName = currentRow.getCell(COL_EVIDENCE_NAME).getStringCellValue();
             String saga = currentRow.getCell(COL_EVIDENCE_SAGA).getStringCellValue();
@@ -215,29 +221,28 @@ public class EvidenceServiceImpl implements EvidenceService {
             String type = currentRow.getCell(COL_EVIDENCE_STATUS).getStringCellValue();
             String message;
 
-            if (StringUtils.hasText(fullName) || StringUtils.hasText(saga) || StringUtils.hasText(email)
-                    || StringUtils.hasText(period) || StringUtils.hasText(type)) {
+            if (StringUtils.hasText(fullName) || StringUtils.hasText(saga) || StringUtils.hasText(email) || StringUtils.hasText(period) || StringUtils.hasText(type)) {
                 try {
                     saga = personService.parseSaga(saga);
-                    if (!saga.equals(previousSaga) || person == null)
-                        person = getPersonBySaga(people, saga);
 
-                    evidence = setTypeForWeek(getEvidenceForPerson(evidences, person),
-                            weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
+                    person = personMap.get(saga);
+                    if (person == null) {
+                        throw new Exception("No existe persona con el código saga especificado.");
+                    }
+
+                    evidence = setTypeForWeek(getEvidenceForPerson(evidences, person), weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
                     evidences.put(person, evidence);
-                } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+                } catch (Exception e) {
                     message = e.getLocalizedMessage();
                     if (message.length() >= MAX_ERROR_MESSAGE_SIZE) {
                         message = message.substring(0, MAX_ERROR_MESSAGE_SIZE);
                     }
                     evidenceErrors.add(new EvidenceErrorDto(fullName, saga, email, period, type, message));
                 }
-                previousSaga = saga;
             }
             currentRow = sheet.getRow(i);
         }
 
-        clearReport(upload.isDeleteComments());
         saveReport(properties, evidences, evidenceErrors);
         return evidenceErrors.isEmpty();
     }
@@ -273,8 +278,7 @@ public class EvidenceServiceImpl implements EvidenceService {
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
             return workbook.getSheetAt(FIRST_SHEET);
         } catch (Exception e) {
-            throw new BadRequestException(
-                    "Se ha producido un error leyendo el archivo. Compruebe la validez de los datos y que no se encuentra encriptado.");
+            throw new BadRequestException("Se ha producido un error leyendo el archivo. Compruebe la validez de los datos y que no se encuentra encriptado.");
         }
     }
 
@@ -299,23 +303,17 @@ public class EvidenceServiceImpl implements EvidenceService {
         return weekList;
     }
 
-    /**
-     * Obtener persona dado un código saga determinado. No se devuelve un valor
-     * NULL, en su lugar lanzando una excepción, al no poder procesarse una
-     * evidencia sin Person asociado.
-     * 
-     * @param people List de Person en el que buscar
-     * @param saga   Código saga por el que buscar
-     * @return Person hallado en base de datos
-     * @throws IllegalArgumentException No se ha podido encontrar la persona
-     *                                  especificada
-     */
-    private Person getPersonBySaga(List<Person> people, String saga) throws IllegalArgumentException {
-        try {
-            return people.get(people.indexOf(new Person(saga)));
-        } catch (IndexOutOfBoundsException e) {
-            throw new IllegalArgumentException("No existe persona con el código saga especificado.");
-        }
+    private Map<String, Person> createSagaPersonMap() {
+
+        Map<String, Person> map = new HashMap<>();
+
+        List<PersonSagaMapper> peopleMapper = personSagaMapperRepository.findAll();
+        peopleMapper.forEach(item -> map.put(item.getSaga(), item.getPerson()));
+
+        List<Person> people = personService.getPeople();
+        people.forEach(item -> map.put(item.getSaga(), item));
+
+        return map;
     }
 
     /**
@@ -386,8 +384,7 @@ public class EvidenceServiceImpl implements EvidenceService {
      * @return Evidence con tipo de evidencia registrado en la semana
      * @throws IllegalArgumentException No se ha especificado una semana correcta
      */
-    private Evidence setTypeForWeek(Evidence evidence, int week, EvidenceType evidenceType)
-            throws IllegalArgumentException {
+    private Evidence setTypeForWeek(Evidence evidence, int week, EvidenceType evidenceType) throws IllegalArgumentException {
         switch (week) {
         case 0:
             evidence.setEvidenceTypeW1(evidenceType);
@@ -420,9 +417,12 @@ public class EvidenceServiceImpl implements EvidenceService {
      * @param deleteComments Controlar si se desea borrar comentarios
      */
     public void clearReport(boolean deleteComments) {
-        propertiesService.clear();
-        if (deleteComments)
+        //propertiesService.clear();
+        if (deleteComments) {
             evidenceCommentService.clear();
+            evidenceColorService.clear();
+            personSagaMapperRepository.deleteAllInBatch();
+        }
         clear();
         evidenceErrorService.clear();
     }
@@ -434,8 +434,7 @@ public class EvidenceServiceImpl implements EvidenceService {
      * @param evidences      Map de Person y Evidence con evidencias del informe
      * @param evidenceErrors Listado de evidencias erróneas
      */
-    private void saveReport(List<Properties> properties, Map<Person, Evidence> evidences,
-            List<EvidenceErrorDto> evidenceErrors) {
+    private void saveReport(List<Properties> properties, Map<Person, Evidence> evidences, List<EvidenceErrorDto> evidenceErrors) {
         propertiesService.saveAll(properties);
         saveAll(new ArrayList<>(evidences.values()));
         evidenceErrorService.saveAll(evidenceErrors);
@@ -445,6 +444,38 @@ public class EvidenceServiceImpl implements EvidenceService {
     public void setEmailNotificationSentForPersonId(Long id) {
         Evidence evidence = evidenceRepository.findByPersonId(id);
         evidence.setEmailNotificationSent(true);
+        evidenceRepository.save(evidence);
+    }
+
+    @Override
+    public void mapPerson(Long personId, String saga) {
+
+        Properties propertyOriginalDate = propertiesService.getProperty(ORIGINAL_FROM_DATE);
+
+        String originalFromDate = propertyOriginalDate.getValue();
+        LocalDate fromDate = LocalDate.parse(originalFromDate, formatDate);
+
+        List<String> weeks = obtainWeeks(fromDate);
+
+        Person person = personService.findById(personId);
+        List<EvidenceError> evidenceErrors = evidenceErrorService.findBySaga(saga);
+        List<EvidenceType> evidenceTypes = evidenceTypeService.getEvidenceTypes();
+        Evidence evidence = new Evidence(person);
+
+        for (EvidenceError error : evidenceErrors) {
+
+            String period = error.getPeriod();
+            String type = error.getStatus();
+
+            setTypeForWeek(evidence, weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
+        }
+
+        PersonSagaMapper personSagaMapper = new PersonSagaMapper();
+        personSagaMapper.setPerson(person);
+        personSagaMapper.setSaga(saga);
+        personSagaMapperRepository.save(personSagaMapper);
+
+        evidenceErrorService.deleteAll(evidenceErrors);
         evidenceRepository.save(evidence);
     }
 }

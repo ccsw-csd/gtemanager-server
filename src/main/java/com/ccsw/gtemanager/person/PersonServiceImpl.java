@@ -5,10 +5,14 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.ccsw.gtemanager.common.criteria.TernarySearchCriteria;
 import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 import com.ccsw.gtemanager.person.model.Person;
+import com.ccsw.gtemanager.person.model.PersonSpecification;
 
 /**
  * PersonServiceImpl: clase de implementación de PersonService.
@@ -47,4 +51,17 @@ public class PersonServiceImpl implements PersonService {
     public Person findByEmail(String email) {
         return this.personRepository.findByEmail(email);
     }
+
+    @Override
+    public List<Person> findFirst15Filter(String filter) {
+
+        PersonSpecification active = new PersonSpecification(new TernarySearchCriteria("active", null, null, ":", true));
+
+        PersonSpecification usernameNameLastname = new PersonSpecification(new TernarySearchCriteria("username", "name", "lastName", "concat concat :", filter));
+
+        Specification<Person> specification = Specification.where(active).and(usernameNameLastname);
+
+        return this.personRepository.findAll(specification, PageRequest.of(0, 15)).getContent();
+    }
+
 }

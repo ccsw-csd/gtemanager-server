@@ -85,4 +85,6 @@ public interface EvidenceService {
      */
     void clear();
 
+    void mapPerson(Long personId, String saga);
+
 }

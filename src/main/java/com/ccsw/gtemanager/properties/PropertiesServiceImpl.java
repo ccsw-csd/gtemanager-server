@@ -37,14 +37,11 @@ public class PropertiesServiceImpl implements PropertiesService {
     @Autowired
     private PropertiesRepository propertiesRepository;
 
-    private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive()
-            .appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
+    private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
 
-    private static DateTimeFormatter formatDateDB = new DateTimeFormatterBuilder().parseCaseInsensitive()
-            .appendPattern("dd/MM/yyyy").toFormatter(Locale.getDefault());
+    private static DateTimeFormatter formatDateDB = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd/MM/yyyy").toFormatter(Locale.getDefault());
 
-    private static DateTimeFormatter formatDateTimeDB = new DateTimeFormatterBuilder().parseCaseInsensitive()
-            .appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
+    private static DateTimeFormatter formatDateTimeDB = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd/MM/yyyy HH:mm").toFormatter(Locale.getDefault());
 
     @Override
     public List<Properties> getProperties() {
@@ -97,7 +94,17 @@ public class PropertiesServiceImpl implements PropertiesService {
 
     @Override
     public void saveAll(List<Properties> propertiesList) {
-        propertiesRepository.saveAll(propertiesList);
+
+        for (Properties propertyDto : propertiesList) {
+
+            Properties property = this.getProperty(propertyDto.getKey());
+            if (property != null) {
+
+                property.setValue(propertyDto.getValue());
+                propertiesRepository.save(property);
+            }
+        }
+
     }
 
     @Override

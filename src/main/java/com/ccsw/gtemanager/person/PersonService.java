@@ -44,4 +44,6 @@ public interface PersonService {
      * @throws IllegalArgumentException No se ha introducido un código admisible
      */
     String parseSaga(String saga) throws IllegalArgumentException;
+
+    List<Person> findFirst15Filter(String filter);
 }
