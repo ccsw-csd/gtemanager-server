@@ -42,6 +42,8 @@ public interface EvidenceService {
      */
     Evidence getEvidenceForPerson(Map<Person, Evidence> evidences, Person person);
 
+    Map<String, Person> createSagaPersonMap();
+
     /**
      * Actualiza un evidencia para una persona determinada indicando que se le ha
      * enviado la notificación por email.

@@ -8,9 +8,11 @@ public class EvidenceViewDto {
 
     private PersonDto person;
 
-    private String rowColor;
-
     private CommentDto comment;
+
+    private String manager;
+
+    private String rowColor;
 
     private EvidenceTypeDto evidenceTypeW1;
 
@@ -40,6 +42,22 @@ public class EvidenceViewDto {
 
     public void setComment(CommentDto comment) {
         this.comment = comment;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
+
+    public String getRowColor() {
+        return rowColor;
+    }
+
+    public void setRowColor(String rowColor) {
+        this.rowColor = rowColor;
     }
 
     public EvidenceTypeDto getEvidenceTypeW1() {
@@ -96,19 +114,5 @@ public class EvidenceViewDto {
 
     public void setEmailNotificationSent(boolean emailNotificationSent) {
         this.emailNotificationSent = emailNotificationSent;
-    }
-
-    /**
-     * @return the rowColor
-     */
-    public String getRowColor() {
-        return rowColor;
-    }
-
-    /**
-     * @param rowColor the rowColor to set
-     */
-    public void setRowColor(String rowColor) {
-        this.rowColor = rowColor;
     }
 }

@@ -33,6 +33,9 @@ public class EvidenceView {
     @JoinColumn(name = "comment_id", nullable = true)
     private Comment comment;
 
+    @Column(name = "manager")
+    private String manager;
+
     @Column(name = "row_color")
     private String rowColor;
 
@@ -71,6 +74,14 @@ public class EvidenceView {
         return comment;
     }
 
+    public String getManager() {
+        return manager;
+    }
+
+    public String getRowColor() {
+        return rowColor;
+    }
+
     public EvidenceType getEvidenceTypeW1() {
         return evidenceTypeW1;
     }
@@ -99,11 +110,5 @@ public class EvidenceView {
         return emailNotificationSent;
     }
 
-    /**
-     * @return the rowColor
-     */
-    public String getRowColor() {
-        return rowColor;
-    }
 
 }

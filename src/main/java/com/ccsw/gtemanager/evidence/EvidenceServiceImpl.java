@@ -61,7 +61,7 @@ public class EvidenceServiceImpl implements EvidenceService {
     private static final String ORIGINAL_FROM_DATE = "ORIGINAL_FROM_DATE";
     private static final String XLS_FILE_FORMAT = "application/vnd.ms-excel";
     private static final String XLSX_FILE_FORMAT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    private static final List<String> ALLOWED_FORMATS = Arrays.asList(XLS_FILE_FORMAT, XLSX_FILE_FORMAT);
+    public static final List<String> ALLOWED_FORMATS = Arrays.asList(XLS_FILE_FORMAT, XLSX_FILE_FORMAT);
 
     private static final int MONTH_START = 1;
     private static final int WEEK_OFFSET = 7;
@@ -272,7 +272,7 @@ public class EvidenceServiceImpl implements EvidenceService {
      * 
      * @param file Archivo de hojas de cálculo
      * @return Hoja de cálculo elegida
-     * @throws UnreadableReportException No es posible leer el fichero proporcionado
+     * @throws BadRequestException No es posible leer el fichero proporcionado
      */
     private Sheet obtainSheet(MultipartFile file) throws BadRequestException {
         try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
@@ -303,7 +303,8 @@ public class EvidenceServiceImpl implements EvidenceService {
         return weekList;
     }
 
-    private Map<String, Person> createSagaPersonMap() {
+    @Override
+    public Map<String, Person> createSagaPersonMap() {
 
         Map<String, Person> map = new HashMap<>();
 
