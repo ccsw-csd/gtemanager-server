@@ -12,8 +12,8 @@ import javax.persistence.Table;
 import com.ccsw.gtemanager.person.model.Person;
 
 @Entity
-@Table(name = "person_saga_transcode")
-public class PersonSagaMapper {
+@Table(name = "person_email_transcode")
+public class PersonEmailMapper {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +23,8 @@ public class PersonSagaMapper {
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
-    @Column(name = "saga", nullable = false)
-    private String saga;
+    @Column(name = "email", nullable = false)
+    private String email;
 
     /**
      * @return the id
@@ -55,17 +55,17 @@ public class PersonSagaMapper {
     }
 
     /**
-     * @return the saga
+     * @return the email
      */
-    public String getSaga() {
-        return saga;
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * @param saga the saga to set
+     * @param email the email to set
      */
-    public void setSaga(String saga) {
-        this.saga = saga;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

@@ -36,7 +36,7 @@ import com.ccsw.gtemanager.common.exception.UnprocessableEntityException;
 import com.ccsw.gtemanager.common.exception.UnsupportedMediaTypeException;
 import com.ccsw.gtemanager.evidence.model.Evidence;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
-import com.ccsw.gtemanager.evidence.model.PersonSagaMapper;
+import com.ccsw.gtemanager.evidence.model.PersonEmailMapper;
 import com.ccsw.gtemanager.evidencecolor.EvidenceColorService;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorService;
 import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
@@ -111,7 +111,7 @@ public class EvidenceServiceImpl implements EvidenceService {
     private EvidenceRepository evidenceRepository;
 
     @Autowired
-    private PersonSagaMapperRepository personSagaMapperRepository;
+    private PersonEmailMapperRepository personEmailMapperRepository;
 
     private static DateTimeFormatter formatDate = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
 
@@ -203,7 +203,7 @@ public class EvidenceServiceImpl implements EvidenceService {
             throw new BadRequestException("El informe no contiene fecha de ejecución válida (B10).");
         }
 
-        Map<String, Person> personMap = createSagaPersonMap();
+        Map<String, Person> emailPersonMap = createEmailPersonMap();
 
         List<EvidenceType> evidenceTypes = evidenceTypeService.getEvidenceTypes();
 
@@ -225,9 +225,9 @@ public class EvidenceServiceImpl implements EvidenceService {
                 try {
                     saga = personService.parseSaga(saga);
 
-                    person = personMap.get(saga);
+                    person = emailPersonMap.get(email);
                     if (person == null) {
-                        throw new Exception("No existe persona con el código saga especificado.");
+                        throw new Exception("No existe persona con el email especificado.");
                     }
 
                     evidence = setTypeForWeek(getEvidenceForPerson(evidences, person), weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
@@ -304,15 +304,15 @@ public class EvidenceServiceImpl implements EvidenceService {
     }
 
     @Override
-    public Map<String, Person> createSagaPersonMap() {
+    public Map<String, Person> createEmailPersonMap() {
 
         Map<String, Person> map = new HashMap<>();
 
-        List<PersonSagaMapper> peopleMapper = personSagaMapperRepository.findAll();
-        peopleMapper.forEach(item -> map.put(item.getSaga(), item.getPerson()));
+        List<PersonEmailMapper> peopleMapper = personEmailMapperRepository.findAll();
+        peopleMapper.forEach(item -> map.put(item.getEmail(), item.getPerson()));
 
         List<Person> people = personService.getPeople();
-        people.forEach(item -> map.put(item.getSaga(), item));
+        people.forEach(item -> map.put(item.getEmail(), item));
 
         return map;
     }
@@ -422,7 +422,7 @@ public class EvidenceServiceImpl implements EvidenceService {
         if (deleteComments) {
             evidenceCommentService.clear();
             evidenceColorService.clear();
-            personSagaMapperRepository.deleteAllInBatch();
+            //personEmailMapperRepository.deleteAllInBatch();
         }
         clear();
         evidenceErrorService.clear();
@@ -449,7 +449,7 @@ public class EvidenceServiceImpl implements EvidenceService {
     }
 
     @Override
-    public void mapPerson(Long personId, String saga) {
+    public void mapPerson(Long personId, String email) {
 
         Properties propertyOriginalDate = propertiesService.getProperty(ORIGINAL_FROM_DATE);
 
@@ -459,7 +459,7 @@ public class EvidenceServiceImpl implements EvidenceService {
         List<String> weeks = obtainWeeks(fromDate);
 
         Person person = personService.findById(personId);
-        List<EvidenceError> evidenceErrors = evidenceErrorService.findBySaga(saga);
+        List<EvidenceError> evidenceErrors = evidenceErrorService.findByEmail(email);
         List<EvidenceType> evidenceTypes = evidenceTypeService.getEvidenceTypes();
         Evidence evidence = new Evidence(person);
 
@@ -471,10 +471,10 @@ public class EvidenceServiceImpl implements EvidenceService {
             setTypeForWeek(evidence, weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
         }
 
-        PersonSagaMapper personSagaMapper = new PersonSagaMapper();
-        personSagaMapper.setPerson(person);
-        personSagaMapper.setSaga(saga);
-        personSagaMapperRepository.save(personSagaMapper);
+        PersonEmailMapper personEmailMapper = new PersonEmailMapper();
+        personEmailMapper.setPerson(person);
+        personEmailMapper.setEmail(email);
+        personEmailMapperRepository.save(personEmailMapper);
 
         evidenceErrorService.deleteAll(evidenceErrors);
         evidenceRepository.save(evidence);

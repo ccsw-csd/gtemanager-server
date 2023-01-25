@@ -40,8 +40,8 @@ public class EvidenceErrorServiceImpl implements EvidenceErrorService {
     }
 
     @Override
-    public List<EvidenceError> findBySaga(String saga) {
-        return evidenceErrorRepository.findBySaga(saga);
+    public List<EvidenceError> findByEmail(String email) {
+        return evidenceErrorRepository.findByEmail(email);
     }
 
     @Override

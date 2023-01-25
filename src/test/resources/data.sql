@@ -153,12 +153,15 @@ CREATE TABLE v_evidence_with_comment (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   person_id int(11) NOT NULL,
   comment_id bigint(20),
+  manager varchar(400),
+  row_color varchar(400),
   evidente_type_w1 int(11),
   evidente_type_w2 int(11),
   evidente_type_w3 int(11),
   evidente_type_w4 int(11),
   evidente_type_w5 int(11),
   evidente_type_w6 int(11),
+  email_notification_sent int(1),
   PRIMARY KEY (id)
 );
 

@@ -42,7 +42,7 @@ public interface EvidenceService {
      */
     Evidence getEvidenceForPerson(Map<Person, Evidence> evidences, Person person);
 
-    Map<String, Person> createSagaPersonMap();
+    Map<String, Person> createEmailPersonMap();
 
     /**
      * Actualiza un evidencia para una persona determinada indicando que se le ha
@@ -87,6 +87,6 @@ public interface EvidenceService {
      */
     void clear();
 
-    void mapPerson(Long personId, String saga);
+    void mapPerson(Long personId, String email);
 
 }

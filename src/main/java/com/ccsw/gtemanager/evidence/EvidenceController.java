@@ -42,9 +42,9 @@ public class EvidenceController {
             return ResponseEntity.status(HttpStatus.OK).body("\"Se ha guardado el informe correctamente con algunos errores de evidencias.\"");
     }
 
-    @RequestMapping(path = "/mapPerson/{personId}/{saga}", method = RequestMethod.PUT)
-    public void mapPerson(@PathVariable Long personId, @PathVariable String saga) {
+    @RequestMapping(path = "/mapPerson/{personId}/{email}", method = RequestMethod.PUT)
+    public void mapPerson(@PathVariable Long personId, @PathVariable String email) {
 
-        evidenceService.mapPerson(personId, saga);
+        evidenceService.mapPerson(personId, email);
     }
 }

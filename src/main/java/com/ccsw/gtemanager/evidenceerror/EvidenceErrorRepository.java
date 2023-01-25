@@ -13,6 +13,6 @@ import com.ccsw.gtemanager.evidenceerror.model.EvidenceError;
 @Repository
 public interface EvidenceErrorRepository extends JpaRepository<EvidenceError, Long> {
 
-    List<EvidenceError> findBySaga(String saga);
+    List<EvidenceError> findByEmail(String email);
 
 }

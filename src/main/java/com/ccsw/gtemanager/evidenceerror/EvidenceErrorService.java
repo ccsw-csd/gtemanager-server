@@ -30,11 +30,11 @@ public interface EvidenceErrorService {
     void clear();
 
     /**
-     * Recupera los errores del mismo saga
+     * Recupera los errores del mismo email
      * @param saga
      * @return
      */
-    List<EvidenceError> findBySaga(String saga);
+    List<EvidenceError> findByEmail(String email);
 
     void deleteAll(List<EvidenceError> evidenceErrors);
 }
