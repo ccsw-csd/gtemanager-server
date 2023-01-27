@@ -224,6 +224,7 @@ public class EvidenceServiceImpl implements EvidenceService {
             if (StringUtils.hasText(fullName) || StringUtils.hasText(saga) || StringUtils.hasText(email) || StringUtils.hasText(period) || StringUtils.hasText(type)) {
                 try {
                     saga = personService.parseSaga(saga);
+                    email = email.toLowerCase();
 
                     person = emailPersonMap.get(email);
                     if (person == null) {
@@ -309,7 +310,7 @@ public class EvidenceServiceImpl implements EvidenceService {
         Map<String, Person> map = new HashMap<>();
 
         List<PersonEmailMapper> peopleMapper = personEmailMapperRepository.findAll();
-        peopleMapper.forEach(item -> map.put(item.getEmail(), item.getPerson()));
+        peopleMapper.forEach(item -> map.put(item.getEmail().toLowerCase(), item.getPerson()));
 
         List<Person> people = personService.getPeople();
         people.forEach(item -> map.put(item.getEmail(), item));

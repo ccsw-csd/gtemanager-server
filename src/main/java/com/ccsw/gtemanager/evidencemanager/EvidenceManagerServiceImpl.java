@@ -70,6 +70,7 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
 
             if (StringUtils.hasText(email) && StringUtils.hasText(manager)) {
 
+                email = email.toLowerCase();
                 Person person = personMap.get(email);
 
                 if (person != null) {
