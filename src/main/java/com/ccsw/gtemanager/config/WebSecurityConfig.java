@@ -1,8 +1,7 @@
 package com.ccsw.gtemanager.config;
 
-import com.ccsw.gtemanager.config.security.JsonWebTokenAuthenticationFilter;
-import com.ccsw.gtemanager.config.security.JsonWebTokenAuthenticationProvider;
-import com.devonfw.module.basic.common.api.config.SpringProfileConstants;
+import javax.inject.Inject;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -18,7 +17,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.inject.Inject;
+import com.ccsw.gtemanager.config.security.JsonWebTokenAuthenticationFilter;
+import com.ccsw.gtemanager.config.security.JsonWebTokenAuthenticationProvider;
+import com.devonfw.module.basic.common.api.config.SpringProfileConstants;
 
 /**
  * This type serves as a base class for extensions of the {@code WebSecurityConfigurerAdapter} and provides a default
@@ -32,86 +33,86 @@ import javax.inject.Inject;
 @Profile(SpringProfileConstants.NOT_JUNIT)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Inject
-  private JsonWebTokenAuthenticationProvider jwtAuthProvider;
+    @Inject
+    private JsonWebTokenAuthenticationProvider jwtAuthProvider;
 
-  @Inject
-  private JsonWebTokenAuthenticationFilter jwtAuthFilter;
+    @Inject
+    private JsonWebTokenAuthenticationFilter jwtAuthFilter;
 
-  /**
-   * {@inheritDoc}
-   */
-  @Bean
-  @Override
-  public AuthenticationManager authenticationManagerBean() throws Exception {
+    /**
+     * {@inheritDoc}
+     */
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
 
-    // This method is here with the @Bean annotation so that Spring can
-    // autowire it
-    return super.authenticationManagerBean();
-  }
+        // This method is here with the @Bean annotation so that Spring can
+        // autowire it
+        return super.authenticationManagerBean();
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-    auth.authenticationProvider(this.jwtAuthProvider);
-  }
+        auth.authenticationProvider(this.jwtAuthProvider);
+    }
 
-  /**
-   * Configure spring security.
-   */
-  @Override
-  public void configure(HttpSecurity http) throws Exception {
+    /**
+     * Configure spring security.
+     */
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
 
-    http
-        // Disable unnecessary default configurations
-        .csrf().disable().cors().disable().httpBasic().disable().formLogin().disable()
+        http
+                // Disable unnecessary default configurations
+                .csrf().disable().cors().disable().httpBasic().disable().formLogin().disable()
 
-        // No session will be created by Spring Security
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                // No session will be created by Spring Security
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-    // Return 403 when not authenticated
-    // .and().exceptionHandling().authenticationEntryPoint(new Http401AuthenticationEntryPoint(""));
+        // Return 403 when not authenticated
+        // .and().exceptionHandling().authenticationEntryPoint(new Http401AuthenticationEntryPoint(""));
 
-    setupAuthorization(http);
+        setupAuthorization(http);
 
-    http.addFilterBefore(this.jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-  }
+        http.addFilterBefore(this.jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    }
 
-  /**
-   * Forces child classes to set up the authorization paths
-   *
-   * @param http an {@link HttpSecurity}
-   * @throws Exception an {@link Exception}
-   */
-  protected void setupAuthorization(HttpSecurity http) throws Exception {
+    /**
+     * Forces child classes to set up the authorization paths
+     *
+     * @param http an {@link HttpSecurity}
+     * @throws Exception an {@link Exception}
+     */
+    protected void setupAuthorization(HttpSecurity http) throws Exception {
 
-    String[] unsecuredResources = new String[] { "/", "/public/**" };
+        String[] unsecuredResources = new String[] { "/", "/public/**", "/health", "/actuator/**" };
 
-    http.authorizeRequests()
-        // Allow Options request
-        .antMatchers(HttpMethod.OPTIONS).permitAll()
-        // Allow unsecured resources
-        .antMatchers(unsecuredResources).permitAll()
-        // Authenticate all other requests
-        .anyRequest().authenticated();
+        http.authorizeRequests()
+                // Allow Options request
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
+                // Allow unsecured resources
+                .antMatchers(unsecuredResources).permitAll()
+                // Authenticate all other requests
+                .anyRequest().authenticated();
 
-    // TODO Disable security
-    //.anyRequest().permitAll();
-  }
+        // TODO Disable security
+        //.anyRequest().permitAll();
+    }
 
-  @Bean
-  public WebMvcConfigurer corsConfigurer() {
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
 
-    return new WebMvcConfigurer() {
-      @Override
-      public void addCorsMappings(CorsRegistry registry) {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
 
-        registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE");
-      }
-    };
-  }
+                registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE");
+            }
+        };
+    }
 
 }
