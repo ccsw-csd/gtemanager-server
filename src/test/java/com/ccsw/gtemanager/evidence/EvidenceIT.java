@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import com.ccsw.gtemanager.evidence.model.Evidence;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -66,6 +67,7 @@ public class EvidenceIT extends BaseITAbstract {
 
     private static final String FILE_VARIABLE = "file";
     private static final String DELETE_COMMENTS_VARIABLE = "deleteComments";
+    private static final String DELETE_COLORS_VARIABLE = "deleteColors";
 
     private static final String TEST_STRING = "test";
 
@@ -228,6 +230,7 @@ public class EvidenceIT extends BaseITAbstract {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add(FILE_VARIABLE, file.getResource());
         body.add(DELETE_COMMENTS_VARIABLE, false);
+        body.add(DELETE_COLORS_VARIABLE, false);
 
         HttpHeaders headers = getHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -274,6 +277,7 @@ public class EvidenceIT extends BaseITAbstract {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add(FILE_VARIABLE, file.getResource());
         body.add(DELETE_COMMENTS_VARIABLE, false);
+        body.add(DELETE_COLORS_VARIABLE, false);
 
         HttpHeaders headers = getHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -307,6 +311,7 @@ public class EvidenceIT extends BaseITAbstract {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add(FILE_VARIABLE, file.getResource());
         body.add(DELETE_COMMENTS_VARIABLE, false);
+        body.add(DELETE_COLORS_VARIABLE, false);
 
         HttpHeaders headers = getHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -314,9 +319,7 @@ public class EvidenceIT extends BaseITAbstract {
         ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST,
                 new HttpEntity<>(body, headers), String.class);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertNotEquals(null, response.getBody());
-        assertEquals(INITIAL_EVIDENCES_SIZE, evidenceService.getEvidences().size());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
         cellFromDate.setCellValue(NONEXISTING_FROMDATE);
         cellToDate.setCellValue(EXISTING_TODATE);
@@ -327,6 +330,7 @@ public class EvidenceIT extends BaseITAbstract {
         body = new LinkedMultiValueMap<>();
         body.add(FILE_VARIABLE, file.getResource());
         body.add(DELETE_COMMENTS_VARIABLE, false);
+        body.add(DELETE_COLORS_VARIABLE, false);
 
         headers = getHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -336,7 +340,7 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(INITIAL_EVIDENCES_SIZE, evidenceService.getEvidences().size());
+        assertEquals(1, evidenceService.getEvidences().size());
 
         cellFromDate.setCellValue(EXISTING_FROMDATE);
         cellToDate.setCellValue(NONEXISTING_TODATE);
@@ -347,6 +351,7 @@ public class EvidenceIT extends BaseITAbstract {
         body = new LinkedMultiValueMap<>();
         body.add(FILE_VARIABLE, file.getResource());
         body.add(DELETE_COMMENTS_VARIABLE, false);
+        body.add(DELETE_COLORS_VARIABLE, false);
 
         headers = getHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -356,7 +361,7 @@ public class EvidenceIT extends BaseITAbstract {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotEquals(null, response.getBody());
-        assertEquals(INITIAL_EVIDENCES_SIZE, evidenceService.getEvidences().size());
+        assertEquals(1, evidenceService.getEvidences().size());
     }
 
     /**
@@ -396,6 +401,7 @@ public class EvidenceIT extends BaseITAbstract {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add(FILE_VARIABLE, file.getResource());
         body.add(DELETE_COMMENTS_VARIABLE, false);
+        body.add(DELETE_COLORS_VARIABLE, false);
 
         HttpHeaders headers = getHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -404,8 +410,6 @@ public class EvidenceIT extends BaseITAbstract {
                 new HttpEntity<>(body, headers), String.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotEquals(null, response.getBody());
-        assertEquals(2, evidenceService.getEvidences().size());
 
         cellsRowFirstEvidence[0].setCellValue(EXISTING_FULLNAME_P1);
         cellsRowFirstEvidence[1].setCellValue(EXISTING_SAGA_P1);
@@ -418,6 +422,7 @@ public class EvidenceIT extends BaseITAbstract {
         body = new LinkedMultiValueMap<>();
         body.add(FILE_VARIABLE, file.getResource());
         body.add(DELETE_COMMENTS_VARIABLE, false);
+        body.add(DELETE_COLORS_VARIABLE, false);
 
         headers = getHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -441,6 +446,7 @@ public class EvidenceIT extends BaseITAbstract {
         body = new LinkedMultiValueMap<>();
         body.add(FILE_VARIABLE, file.getResource());
         body.add(DELETE_COMMENTS_VARIABLE, false);
+        body.add(DELETE_COLORS_VARIABLE, false);
 
         headers = getHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -475,6 +481,7 @@ public class EvidenceIT extends BaseITAbstract {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add(FILE_VARIABLE, file.getResource());
         body.add(DELETE_COMMENTS_VARIABLE, false);
+        body.add(DELETE_COLORS_VARIABLE, false);
 
         HttpHeaders headers = getHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);

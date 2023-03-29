@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import java.util.Locale;
 
+import com.ccsw.gtemanager.evidencecolor.EvidenceColorServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -70,6 +71,9 @@ public class EvidenceTest {
 
     @Mock
     private CommentServiceImpl commentService;
+
+    @Mock
+    private EvidenceColorServiceImpl evidenceColorService;
 
     @Mock
     private PersonServiceImpl personService;

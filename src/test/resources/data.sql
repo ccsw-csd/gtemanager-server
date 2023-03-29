@@ -68,9 +68,25 @@ CREATE TABLE person_saga_transcode (
 
 INSERT INTO person_saga_transcode (person_id, saga) VALUES ('3', 'B2');
 
+CREATE TABLE person_email_transcode (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  person_id int(11) NOT NULL,
+  email varchar(100) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT person_email_person_fk FOREIGN KEY (person_id) REFERENCES person (id)
+);
+
+INSERT INTO person_email_transcode (person_id, email) VALUES (1, 'anacardo@example.com');
+INSERT INTO person_email_transcode (person_id, email) VALUES (2, 'aitortilla@example.com');
+INSERT INTO person_email_transcode (person_id, email) VALUES (3, 'aelmouss@example.com');
+INSERT INTO person_email_transcode (person_id, email) VALUES (4, 'jopepe@example.com');
+INSERT INTO person_email_transcode (person_id, email) VALUES (5, 'amirzoya@example.com');
+INSERT INTO person_email_transcode (person_id, email) VALUES (6, 'pajimene@example.com');
+
 CREATE TABLE evidence (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   person_id int(11) NOT NULL,
+  saga varchar(25),
   evidente_type_w1 int(11),
   evidente_type_w2 int(11),
   evidente_type_w3 int(11),
@@ -82,12 +98,12 @@ CREATE TABLE evidence (
   CONSTRAINT evidence_person_fk FOREIGN KEY (person_id) REFERENCES person (id)
 );
 
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('1', null, null, null, '3', null, null, 1);
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('2', null, null, null, '3', null, null, 0);
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('3', null, null, '2', '3', null, null, 0);
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('4', null, null, '2', '3', null, null, 0);
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('5', null, '3', null, '3', null, null, 0);
-INSERT INTO evidence (person_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('6', '1', null, '2', '3', '2', null, 0);
+INSERT INTO evidence (person_id, saga, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES (1, '1', null, null, null, 3, null, null, 1);
+INSERT INTO evidence (person_id, saga, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES (2, '2', null, null, null, 3, null, null, 0);
+INSERT INTO evidence (person_id, saga, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES (3, '3', null, null, 2, 3, null, null, 0);
+INSERT INTO evidence (person_id, saga, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES (4, '4', null, null, 2, 3, null, null, 0);
+INSERT INTO evidence (person_id, saga, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES (5, '5', null, 3, null, 3, null, null, 0);
+INSERT INTO evidence (person_id, saga, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES (6, '6', 1, null, 2, 3, 2, null, 0);
 
 CREATE TABLE evidence_type (
 	id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -151,9 +167,11 @@ INSERT INTO evidence_comment (person_id, comment, last_edit_date, last_edit_auth
 
 CREATE TABLE v_evidence_with_comment (
   id bigint(20) NOT NULL AUTO_INCREMENT,
+  saga varchar(25),
   person_id int(11) NOT NULL,
   comment_id bigint(20),
-  manager varchar(400),
+  manager varchar(4000),
+  project varchar(4000),
   row_color varchar(400),
   evidente_type_w1 int(11),
   evidente_type_w2 int(11),
@@ -165,12 +183,12 @@ CREATE TABLE v_evidence_with_comment (
   PRIMARY KEY (id)
 );
 
-INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('1', '1', null, null, null, '3', null, null);
-INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('2', null, null, null, null, '3', null, null);
-INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('3', null, null, null, '2', '3', null, null);
-INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('4', null, null, null, '2', '3', null, null);
-INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('5', null, null, '3', null, '3', null, null);
-INSERT INTO v_evidence_with_comment (person_id, comment_id, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6) VALUES ('6', null, '1', null, '2', '3', '2', null);
+INSERT INTO v_evidence_with_comment (saga, person_id, comment_id, manager, project, row_color, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES ('1', 1, 1, 'comment', 'manager', 'color', null, null, null, 3, null, null, 0);
+INSERT INTO v_evidence_with_comment (saga, person_id, comment_id, manager, project, row_color, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES ('2', 2, null, 'comment', 'manager', 'color', null, null, null, 3, null, null, 0);
+INSERT INTO v_evidence_with_comment (saga, person_id, comment_id, manager, project, row_color, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES ('3', 3, null, 'comment', 'manager', 'color', null, null, 2, 3, null, null, 0);
+INSERT INTO v_evidence_with_comment (saga, person_id, comment_id, manager, project, row_color, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES ('4', 4, null, 'comment', 'manager', 'color', null, null, 2, 3, null, null, 0);
+INSERT INTO v_evidence_with_comment (saga, person_id, comment_id, manager, project, row_color, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES ('5', 5, null, 'comment', 'manager', 'color', null, 3, null, 3, null, null, 0);
+INSERT INTO v_evidence_with_comment (saga, person_id, comment_id, manager, project, row_color, evidente_type_w1, evidente_type_w2, evidente_type_w3, evidente_type_w4, evidente_type_w5, evidente_type_w6, email_notification_sent) VALUES ('6', 6, null, 'comment', 'manager', 'color', 1, null, 2, 3, 2, null, 0);
 
 
 

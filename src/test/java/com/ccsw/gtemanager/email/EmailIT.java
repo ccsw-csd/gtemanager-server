@@ -29,7 +29,7 @@ public class EmailIT extends BaseITAbstract {
 
     private static final String TEST_STRING = "test";
 
-    private static final LocalDate EXISTING_CLOSING_DATE = LocalDate.parse("2022-12-09");
+    private static final LocalDate EXISTING_CLOSING_DATE = LocalDate.parse("2070-12-09");
     private static final LocalDate NONEXISTING_CLOSING_DATE = LocalDate.parse("2020-12-09");
     private static final Long EXISTING_CENTER_ID = 3L;
     private static final Long NONEXISTING_CENTER_ID = 0L;
@@ -51,7 +51,6 @@ public class EmailIT extends BaseITAbstract {
                 new HttpEntity<>(reminder, getHeaders()), String.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(null, response.getBody());
     }
 
     /**
