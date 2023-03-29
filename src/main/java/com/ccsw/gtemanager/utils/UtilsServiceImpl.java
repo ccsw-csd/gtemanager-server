@@ -27,7 +27,7 @@ public class UtilsServiceImpl implements UtilsService {
       return new Manifest(Application.class.getResourceAsStream("/META-INF/MANIFEST.MF")).getMainAttributes().get(Attributes.Name.IMPLEMENTATION_VERSION)
           .toString();
     } catch (Exception e) {
-      LOG.error("Error al extraer la version", e);
+      LOG.error("Error al extraer la version");
     }
 
     return "?";

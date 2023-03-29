@@ -31,17 +31,6 @@ public interface EvidenceService {
      */
     List<Evidence> getEvidences();
 
-    /**
-     * Obtener evidencia para una persona determinada. Se busca en el mapa de
-     * evidencias en procesamiento, y se devuelve un Evidence vacío, con la persona
-     * asociada, en caso de no encontrarse.
-     * 
-     * @param evidences Map de Person y Evidence en el que buscar
-     * @param person    Person por el que buscar
-     * @return Evidence hallado o Evidence nuevo en caso de no hallarse
-     */
-    Evidence getEvidenceForPerson(Map<Person, Evidence> evidences, Person person);
-
     Map<String, Person> createEmailPersonMap();
 
     /**
@@ -56,7 +45,7 @@ public interface EvidenceService {
     /**
      * Obtener tipo de evidencia registrado en cada semana, en un mapa asociado a
      * dicha semana.
-     * 
+     *
      * @param evidence Evidencia en la que buscar
      * @param weeks    Listado de semanas a comparar
      * @return Map con tipos asociados a las semanas registradas

@@ -3,7 +3,6 @@ package com.ccsw.gtemanager.evidencemanager.model;
 import com.ccsw.gtemanager.person.model.Person;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "evidence_manager")
@@ -19,6 +18,9 @@ public class EvidenceManager {
 
     @Column(name = "manager", nullable = false)
     private String manager;
+
+    @Column(name = "project", nullable = false)
+    private String project;
 
     public Long getId() {
         return id;
@@ -44,4 +46,11 @@ public class EvidenceManager {
         this.manager = manager;
     }
 
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(String project) {
+        this.project = project;
+    }
 }

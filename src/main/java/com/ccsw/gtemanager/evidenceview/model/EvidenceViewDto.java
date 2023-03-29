@@ -8,9 +8,13 @@ public class EvidenceViewDto {
 
     private PersonDto person;
 
+    private String saga;
+
     private CommentDto comment;
 
     private String manager;
+
+    private String project;
 
     private String rowColor;
 
@@ -36,6 +40,14 @@ public class EvidenceViewDto {
         this.person = person;
     }
 
+    public String getSaga() {
+        return saga;
+    }
+
+    public void setSaga(String saga) {
+        this.saga = saga;
+    }
+
     public CommentDto getComment() {
         return comment;
     }
@@ -50,6 +62,14 @@ public class EvidenceViewDto {
 
     public void setManager(String manager) {
         this.manager = manager;
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(String project) {
+        this.project = project;
     }
 
     public String getRowColor() {

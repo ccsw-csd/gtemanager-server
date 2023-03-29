@@ -32,7 +32,7 @@ public class EvidenceManagerController {
 		if (evidenceManagerService.uploadEvidenceManager(upload)){
 			return ResponseEntity.status(HttpStatus.OK).body(null);
 		} else {
-			return ResponseEntity.status(HttpStatus.OK).body("Se ha guardado el informe correctamente con algunos errores de gestores.");
+			return ResponseEntity.status(HttpStatus.OK).body("\"Se ha guardado el informe correctamente con algunos errores de gestores y/o proyectos.\"");
 		}
 	}
 

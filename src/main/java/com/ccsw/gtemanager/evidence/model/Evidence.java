@@ -39,6 +39,9 @@ public class Evidence {
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
+    @JoinColumn(name = "saga", nullable = false)
+    private String saga;
+
     @ManyToOne
     @JoinColumn(name = "evidente_type_w1")
     private EvidenceType evidenceTypeW1;
@@ -75,11 +78,22 @@ public class Evidence {
 
     /**
      * Constructor con parámetro para asociar Person a Evidence
-     * 
+     *
      * @param person Person implicada en Evidence
      */
     public Evidence(Person person) {
         this.person = person;
+    }
+
+    /**
+     * Constructor con parámetro para asociar Person a Evidence
+     * 
+     * @param person Person implicada en Evidence
+     *                    * @param person Person implicada en Evidence
+     */
+    public Evidence(Person person, String saga) {
+        this.person = person;
+        this.saga = saga;
     }
 
     /**
@@ -98,6 +112,15 @@ public class Evidence {
      */
     public Person getPerson() {
         return person;
+    }
+
+    /**
+     * Obtener Saga implicado en Evidence (no siempre es el mismo que en el objeto Persona)
+     *
+     * @return saga importado
+     */
+    public String getSaga() {
+        return saga;
     }
 
     /**
@@ -179,6 +202,15 @@ public class Evidence {
      */
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    /**
+     * Almacenar Saga de la persona implicada en Evidence (no siempre es el mismo que en el objeto Persona)
+     *
+     * @param saga saga importado
+     */
+    public void setSaga(String saga) {
+        this.saga = saga;
     }
 
     /**

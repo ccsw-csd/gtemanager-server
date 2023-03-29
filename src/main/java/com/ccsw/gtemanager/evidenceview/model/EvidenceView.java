@@ -29,12 +29,18 @@ public class EvidenceView {
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
+    @Column(name = "saga")
+    private String saga;
+
     @ManyToOne
     @JoinColumn(name = "comment_id", nullable = true)
     private Comment comment;
 
     @Column(name = "manager")
     private String manager;
+
+    @Column(name = "project")
+    private String project;
 
     @Column(name = "row_color")
     private String rowColor;
@@ -70,12 +76,20 @@ public class EvidenceView {
         return person;
     }
 
+    public String getSaga() {
+        return saga;
+    }
+
     public Comment getComment() {
         return comment;
     }
 
     public String getManager() {
         return manager;
+    }
+
+    public String getProject() {
+        return project;
     }
 
     public String getRowColor() {

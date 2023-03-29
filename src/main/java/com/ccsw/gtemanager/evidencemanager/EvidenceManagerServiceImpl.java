@@ -1,6 +1,7 @@
 package com.ccsw.gtemanager.evidencemanager;
 
 import static com.ccsw.gtemanager.evidence.EvidenceServiceImpl.ALLOWED_FORMATS;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -8,9 +9,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.ccsw.gtemanager.evidencemanager.model.EvidenceManagerDto;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -38,6 +41,7 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
     private static final int ROW_EVIDENCE_MANAGER_START = 6;
 
     private static final int COL_EVIDENCE_MANAGER_PERSON_EMAIL = 2;
+    private static final int COL_EVIDENCE_MANAGER_PROJECT = 9;
     private static final int COL_EVIDENCE_MANAGER_MANAGER = 19;
 
     @Autowired
@@ -59,26 +63,27 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
 
         Map<String, Person> personMap = evidenceService.createEmailPersonMap();
 
-        Map<Person, Set<String>> evidenceManagers = new LinkedHashMap<>();
-        boolean evidenceManagerErrors = false;
+        Map<Person, Set<EvidenceManagerDto>> evidenceManagers = new LinkedHashMap<>();
+        boolean evidenceManagerWithNoErrors = true;
 
         Row currentRow = sheet.getRow(ROW_EVIDENCE_MANAGER_START);
 
         for (int i = ROW_EVIDENCE_MANAGER_START + 1; currentRow != null; i++) {
             String email = currentRow.getCell(COL_EVIDENCE_MANAGER_PERSON_EMAIL).getStringCellValue();
+            String project = currentRow.getCell(COL_EVIDENCE_MANAGER_PROJECT).getStringCellValue();
             String manager = currentRow.getCell(COL_EVIDENCE_MANAGER_MANAGER).getStringCellValue();
 
-            if (StringUtils.hasText(email) && StringUtils.hasText(manager)) {
+            if (StringUtils.hasText(email) && StringUtils.hasText(manager) && StringUtils.hasText(project)) {
 
                 email = email.toLowerCase();
                 Person person = personMap.get(email);
 
                 if (person != null) {
                     evidenceManagers.computeIfAbsent(person, s -> new LinkedHashSet<>());
-                    Set<String> managers = evidenceManagers.get(person);
-                    managers.add(formatName(manager));
+                    Set<EvidenceManagerDto> managers = evidenceManagers.get(person);
+                    managers.add(new EvidenceManagerDto(formatName(manager), project));
                 } else {
-                    evidenceManagerErrors = true;
+                    evidenceManagerWithNoErrors = false;
                 }
             }
             currentRow = sheet.getRow(i);
@@ -87,7 +92,7 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
         clear();
         saveAll(evidenceManagers);
 
-        return evidenceManagerErrors;
+        return evidenceManagerWithNoErrors;
     }
 
     private String formatName(String name) {
@@ -103,14 +108,15 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
         }
     }
 
-    private void saveAll(Map<Person, Set<String>> evidenceManagers) {
+    private void saveAll(Map<Person, Set<EvidenceManagerDto>> evidenceManagers) {
 
         List<EvidenceManager> entities = new ArrayList<>();
 
         evidenceManagers.forEach((key, value) -> {
             EvidenceManager manager = new EvidenceManager();
             manager.setPerson(key);
-            manager.setManager(value.toString().replace("[", "").replace("]", ""));
+            manager.setManager(value.stream().map(EvidenceManagerDto::getManager).distinct().collect(Collectors.toList()).toString().replace("[", "").replace("]", ""));
+            manager.setProject(value.stream().map(EvidenceManagerDto::getProject).distinct().collect(Collectors.toList()).toString().replace("[", "").replace("]", ""));
             entities.add(manager);
         });
 

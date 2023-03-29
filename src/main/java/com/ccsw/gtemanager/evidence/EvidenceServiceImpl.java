@@ -124,13 +124,8 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     @Override
     public List<Evidence> getEvidences() {
-        return evidenceRepository.findAll();
-    }
 
-    @Override
-    public Evidence getEvidenceForPerson(Map<Person, Evidence> evidences, Person person) {
-        Evidence evidence = evidences.get(person);
-        return evidence != null ? evidence : new Evidence(person);
+        return evidenceRepository.findAll();
     }
 
     @Override
@@ -178,7 +173,7 @@ public class EvidenceServiceImpl implements EvidenceService {
             throw new UnprocessableEntityException();
 
         updatePersonDatabase();
-        clearReport(upload.isDeleteComments());
+        clearReport(upload.isDeleteComments(), upload.isDeleteColors());
 
         Sheet sheet = obtainSheet(upload.getFile());
 
@@ -231,7 +226,7 @@ public class EvidenceServiceImpl implements EvidenceService {
                         throw new Exception("No existe persona con el email especificado.");
                     }
 
-                    evidence = setTypeForWeek(getEvidenceForPerson(evidences, person), weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
+                    evidence = setTypeForWeek(getEvidenceForPerson(evidences, person, saga), weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
                     evidences.put(person, evidence);
                 } catch (Exception e) {
                     message = e.getLocalizedMessage();
@@ -246,6 +241,21 @@ public class EvidenceServiceImpl implements EvidenceService {
 
         saveReport(properties, evidences, evidenceErrors);
         return evidenceErrors.isEmpty();
+    }
+
+    /**
+     * Obtener evidencia para una persona determinada. Se busca en el mapa de
+     * evidencias en procesamiento, y se devuelve un Evidence vacío, con la persona
+     * asociada, en caso de no encontrarse.
+     *
+     * @param evidences Map de Person y Evidence en el que buscar
+     * @param person    Person por el que buscar
+     * @param saga      Saga importado que almacenar en el caso de que sea nuevo
+     * @return Evidence hallado o Evidence nuevo en caso de no hallarse
+     */
+    private Evidence getEvidenceForPerson(Map<Person, Evidence> evidences, Person person, String saga) {
+        Evidence evidence = evidences.get(person);
+        return evidence != null ? evidence : new Evidence(person, saga);
     }
 
     private void updatePersonDatabase() {
@@ -418,12 +428,14 @@ public class EvidenceServiceImpl implements EvidenceService {
      * 
      * @param deleteComments Controlar si se desea borrar comentarios
      */
-    public void clearReport(boolean deleteComments) {
+    public void clearReport(boolean deleteComments, boolean deleteColors) {
         //propertiesService.clear();
         if (deleteComments) {
             evidenceCommentService.clear();
-            evidenceColorService.clear();
             //personEmailMapperRepository.deleteAllInBatch();
+        }
+        if (deleteColors) {
+            evidenceColorService.clear();
         }
         clear();
         evidenceErrorService.clear();
@@ -469,6 +481,7 @@ public class EvidenceServiceImpl implements EvidenceService {
             String period = error.getPeriod();
             String type = error.getStatus();
 
+            evidence.setSaga(error.getSaga());
             setTypeForWeek(evidence, weeks.indexOf(getWeekForPeriod(period)), getEvidenceType(evidenceTypes, type));
         }
 
