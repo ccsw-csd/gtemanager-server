@@ -42,6 +42,12 @@ public class EvidenceView {
     @Column(name = "project")
     private String project;
 
+    @Column(name = "client")
+    private String client;
+
+    @Column(name = "recurrence")
+    private Boolean recurrence;
+
     @Column(name = "row_color")
     private String rowColor;
 
@@ -124,5 +130,12 @@ public class EvidenceView {
         return emailNotificationSent;
     }
 
+    public String getClient() {
+        return client;
+    }
+
+    public Boolean getRecurrence() {
+        return recurrence;
+    }
 
 }

@@ -12,6 +12,8 @@ public class FormDataDto {
     private MultipartFile file;
     private Boolean deleteComments;
     private Boolean deleteColors;
+    private Boolean deleteColorsGrey;
+    private Boolean deleteRecurrence;
 
     /**
      * Obtener archivo recibido.
@@ -65,6 +67,34 @@ public class FormDataDto {
      */
     public void setDeleteColors(Boolean deleteColors) {
         this.deleteColors = deleteColors;
+    }
+
+    /**
+     * @return the deleteColorsGrey
+     */
+    public Boolean isDeleteColorsGrey() {
+        return deleteColorsGrey;
+    }
+
+    /**
+     * @param deleteColorsGrey the deleteColorsGrey to set
+     */
+    public void setDeleteColorsGrey(Boolean deleteColorsGrey) {
+        this.deleteColorsGrey = deleteColorsGrey;
+    }
+
+    /**
+     * @return the deleteRecurrence
+     */
+    public Boolean isDeleteRecurrence() {
+        return deleteRecurrence;
+    }
+
+    /**
+     * @param deleteRecurrence the deleteRecurrence to set
+     */
+    public void setDeleteRecurrence(Boolean deleteRecurrence) {
+        this.deleteRecurrence = deleteRecurrence;
     }
 
 }

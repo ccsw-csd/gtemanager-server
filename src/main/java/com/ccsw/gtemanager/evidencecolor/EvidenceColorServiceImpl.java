@@ -43,7 +43,11 @@ public class EvidenceColorServiceImpl implements EvidenceColorService {
     }
 
     @Override
-    public void clear() {
-        evidenceColorRepository.deleteAllInBatch();
+    public void clear(boolean clearGrey) {
+
+        if (clearGrey)
+            evidenceColorRepository.deleteAllInBatch();
+        else
+            evidenceColorRepository.removeAllWithoutGreyColor();
     }
 }

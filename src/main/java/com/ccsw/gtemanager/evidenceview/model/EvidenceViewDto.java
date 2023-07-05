@@ -16,6 +16,10 @@ public class EvidenceViewDto {
 
     private String project;
 
+    private String client;
+
+    private Boolean recurrence;
+
     private String rowColor;
 
     private EvidenceTypeDto evidenceTypeW1;
@@ -134,5 +138,33 @@ public class EvidenceViewDto {
 
     public void setEmailNotificationSent(boolean emailNotificationSent) {
         this.emailNotificationSent = emailNotificationSent;
+    }
+
+    /**
+     * @return the client
+     */
+    public String getClient() {
+        return client;
+    }
+
+    /**
+     * @param client the client to set
+     */
+    public void setClient(String client) {
+        this.client = client;
+    }
+
+    /**
+     * @return the recurrence
+     */
+    public Boolean getRecurrence() {
+        return recurrence;
+    }
+
+    /**
+     * @param recurrence the recurrence to set
+     */
+    public void setRecurrence(Boolean recurrence) {
+        this.recurrence = recurrence;
     }
 }

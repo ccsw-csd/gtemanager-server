@@ -6,9 +6,12 @@ public class EvidenceManagerDto {
 
     private String project;
 
-    public EvidenceManagerDto(String manager, String project) {
+    private String client;
+
+    public EvidenceManagerDto(String manager, String project, String client) {
         this.manager = manager;
         this.project = project;
+        this.client = client;
     }
 
     public String getManager() {
@@ -25,5 +28,13 @@ public class EvidenceManagerDto {
 
     public void setProject(String project) {
         this.project = project;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
     }
 }

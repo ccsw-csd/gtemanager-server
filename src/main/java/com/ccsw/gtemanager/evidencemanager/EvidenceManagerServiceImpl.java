@@ -1,7 +1,6 @@
 package com.ccsw.gtemanager.evidencemanager;
 
 import static com.ccsw.gtemanager.evidence.EvidenceServiceImpl.ALLOWED_FORMATS;
-import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -13,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import com.ccsw.gtemanager.evidencemanager.model.EvidenceManagerDto;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -30,6 +28,7 @@ import com.ccsw.gtemanager.common.exception.UnsupportedMediaTypeException;
 import com.ccsw.gtemanager.evidence.EvidenceService;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 import com.ccsw.gtemanager.evidencemanager.model.EvidenceManager;
+import com.ccsw.gtemanager.evidencemanager.model.EvidenceManagerDto;
 import com.ccsw.gtemanager.person.model.Person;
 
 @Service
@@ -43,6 +42,7 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
     private static final int COL_EVIDENCE_MANAGER_PERSON_EMAIL = 2;
     private static final int COL_EVIDENCE_MANAGER_PROJECT = 9;
     private static final int COL_EVIDENCE_MANAGER_MANAGER = 19;
+    private static final int COL_EVIDENCE_MANAGER_CLIENT = 21;
 
     @Autowired
     private EvidenceManagerRepository evidenceManagerRepository;
@@ -72,6 +72,7 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
             String email = currentRow.getCell(COL_EVIDENCE_MANAGER_PERSON_EMAIL).getStringCellValue();
             String project = currentRow.getCell(COL_EVIDENCE_MANAGER_PROJECT).getStringCellValue();
             String manager = currentRow.getCell(COL_EVIDENCE_MANAGER_MANAGER).getStringCellValue();
+            String client = currentRow.getCell(COL_EVIDENCE_MANAGER_CLIENT).getStringCellValue();
 
             if (StringUtils.hasText(email) && StringUtils.hasText(manager) && StringUtils.hasText(project)) {
 
@@ -81,7 +82,7 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
                 if (person != null) {
                     evidenceManagers.computeIfAbsent(person, s -> new LinkedHashSet<>());
                     Set<EvidenceManagerDto> managers = evidenceManagers.get(person);
-                    managers.add(new EvidenceManagerDto(formatName(manager), project));
+                    managers.add(new EvidenceManagerDto(formatName(manager), project, client));
                 } else {
                     evidenceManagerWithNoErrors = false;
                 }
@@ -117,6 +118,7 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
             manager.setPerson(key);
             manager.setManager(value.stream().map(EvidenceManagerDto::getManager).distinct().collect(Collectors.toList()).toString().replace("[", "").replace("]", ""));
             manager.setProject(value.stream().map(EvidenceManagerDto::getProject).distinct().collect(Collectors.toList()).toString().replace("[", "").replace("]", ""));
+            manager.setClient(value.stream().map(EvidenceManagerDto::getClient).distinct().collect(Collectors.toList()).toString().replace("[", "").replace("]", ""));
             entities.add(manager);
         });
 

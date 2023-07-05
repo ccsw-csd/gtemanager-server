@@ -7,5 +7,5 @@ public interface EvidenceColorService {
     /**
      * Eliminar todos los registros de EvidenceColor.
      */
-    void clear();
+    void clear(boolean clearGrey);
 }

@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.ccsw</groupId>
 	<artifactId>gtemanager-server</artifactId>
-	<version>1.3.0</version>
+	<version>1.4.0</version>
 	<name>gtemanager</name>
 	<description>GTE Manager project for Spring Boot - CCSW</description>
 

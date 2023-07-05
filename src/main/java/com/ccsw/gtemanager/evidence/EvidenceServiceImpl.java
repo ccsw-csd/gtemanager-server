@@ -47,6 +47,7 @@ import com.ccsw.gtemanager.person.PersonService;
 import com.ccsw.gtemanager.person.model.Person;
 import com.ccsw.gtemanager.properties.PropertiesService;
 import com.ccsw.gtemanager.properties.model.Properties;
+import com.ccsw.gtemanager.recurrence.RecurrenceService;
 
 /**
  * EvidenceServiceImpl: clase de implementación de EvidenceService. Contiene
@@ -103,6 +104,9 @@ public class EvidenceServiceImpl implements EvidenceService {
 
     @Autowired
     private PropertiesService propertiesService;
+
+    @Autowired
+    private RecurrenceService recurrenceService;
 
     @Autowired
     private PersonDatabaseRepository personDatabaseRepository;
@@ -173,7 +177,7 @@ public class EvidenceServiceImpl implements EvidenceService {
             throw new UnprocessableEntityException();
 
         updatePersonDatabase();
-        clearReport(upload.isDeleteComments(), upload.isDeleteColors());
+        clearReport(upload);
 
         Sheet sheet = obtainSheet(upload.getFile());
 
@@ -428,14 +432,16 @@ public class EvidenceServiceImpl implements EvidenceService {
      * 
      * @param deleteComments Controlar si se desea borrar comentarios
      */
-    public void clearReport(boolean deleteComments, boolean deleteColors) {
+    public void clearReport(FormDataDto upload) {
         //propertiesService.clear();
-        if (deleteComments) {
+        if (upload.isDeleteComments()) {
             evidenceCommentService.clear();
-            //personEmailMapperRepository.deleteAllInBatch();
         }
-        if (deleteColors) {
-            evidenceColorService.clear();
+        if (upload.isDeleteColors()) {
+            evidenceColorService.clear(upload.isDeleteColorsGrey());
+        }
+        if (upload.isDeleteRecurrence()) {
+            recurrenceService.clear();
         }
         clear();
         evidenceErrorService.clear();

@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import java.util.Locale;
 
-import com.ccsw.gtemanager.evidencecolor.EvidenceColorServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.ccsw.gtemanager.comment.CommentRepository;
 import com.ccsw.gtemanager.comment.CommentServiceImpl;
+import com.ccsw.gtemanager.evidence.model.FormDataDto;
+import com.ccsw.gtemanager.evidencecolor.EvidenceColorServiceImpl;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorRepository;
 import com.ccsw.gtemanager.evidenceerror.EvidenceErrorServiceImpl;
 import com.ccsw.gtemanager.person.PersonServiceImpl;
@@ -57,7 +58,7 @@ public class EvidenceTest {
     @Mock
     private EvidenceErrorRepository evidenceErrorRepository;
 
-    @Mock	
+    @Mock
     private CommentRepository commentRepository;
 
     @Mock
@@ -81,9 +82,8 @@ public class EvidenceTest {
     @Mock
     private PropertiesServiceImpl propertiesService;
 
-    private static DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive()
-            .appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
-    
+    private static DateTimeFormatter format = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy").toFormatter(Locale.getDefault());
+
     /**
      * Se debe obtener el número y nombre apropiado de semanas en un mes.
      */
@@ -131,7 +131,14 @@ public class EvidenceTest {
      */
     @Test
     public void ifDeleteCommentsEmptyEvidenceComment() {
-        evidenceService.clearReport(true, true);
+        FormDataDto upload = new FormDataDto();
+
+        upload.setDeleteComments(true);
+        upload.setDeleteColors(false);
+        upload.setDeleteColorsGrey(false);
+        upload.setDeleteRecurrence(false);
+
+        evidenceService.clearReport(upload);
         assertTrue(commentService.getComments().isEmpty());
     }
 
@@ -140,7 +147,15 @@ public class EvidenceTest {
      */
     @Test
     public void beginningProcessShouldEmptyEvidence() {
-        evidenceService.clearReport(false, true);
+
+        FormDataDto upload = new FormDataDto();
+
+        upload.setDeleteComments(false);
+        upload.setDeleteColors(true);
+        upload.setDeleteColorsGrey(true);
+        upload.setDeleteRecurrence(true);
+
+        evidenceService.clearReport(upload);
         assertTrue(evidenceService.getEvidences().isEmpty());
         assertTrue(evidenceErrorService.getEvidenceErrors().isEmpty());
         assertTrue(propertiesService.getProperties().isEmpty());
