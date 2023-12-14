@@ -69,24 +69,32 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
         Row currentRow = sheet.getRow(ROW_EVIDENCE_MANAGER_START);
 
         for (int i = ROW_EVIDENCE_MANAGER_START + 1; currentRow != null; i++) {
-            String email = currentRow.getCell(COL_EVIDENCE_MANAGER_PERSON_EMAIL).getStringCellValue();
-            String project = currentRow.getCell(COL_EVIDENCE_MANAGER_PROJECT).getStringCellValue();
-            String manager = currentRow.getCell(COL_EVIDENCE_MANAGER_MANAGER).getStringCellValue();
-            String client = currentRow.getCell(COL_EVIDENCE_MANAGER_CLIENT).getStringCellValue();
 
-            if (StringUtils.hasText(email) && StringUtils.hasText(manager) && StringUtils.hasText(project)) {
+            if (currentRow.getCell(COL_EVIDENCE_MANAGER_PERSON_EMAIL) != null && //
+                    currentRow.getCell(COL_EVIDENCE_MANAGER_PROJECT) != null && //
+                    currentRow.getCell(COL_EVIDENCE_MANAGER_MANAGER) != null && //
+                    currentRow.getCell(COL_EVIDENCE_MANAGER_CLIENT) != null) {
 
-                email = email.toLowerCase();
-                Person person = personMap.get(email);
+                String email = currentRow.getCell(COL_EVIDENCE_MANAGER_PERSON_EMAIL).getStringCellValue();
+                String project = currentRow.getCell(COL_EVIDENCE_MANAGER_PROJECT).getStringCellValue();
+                String manager = currentRow.getCell(COL_EVIDENCE_MANAGER_MANAGER).getStringCellValue();
+                String client = currentRow.getCell(COL_EVIDENCE_MANAGER_CLIENT).getStringCellValue();
 
-                if (person != null) {
-                    evidenceManagers.computeIfAbsent(person, s -> new LinkedHashSet<>());
-                    Set<EvidenceManagerDto> managers = evidenceManagers.get(person);
-                    managers.add(new EvidenceManagerDto(formatName(manager), project, client));
-                } else {
-                    evidenceManagerWithNoErrors = false;
+                if (StringUtils.hasText(email) && StringUtils.hasText(manager) && StringUtils.hasText(project)) {
+
+                    email = email.toLowerCase();
+                    Person person = personMap.get(email);
+
+                    if (person != null) {
+                        evidenceManagers.computeIfAbsent(person, s -> new LinkedHashSet<>());
+                        Set<EvidenceManagerDto> managers = evidenceManagers.get(person);
+                        managers.add(new EvidenceManagerDto(formatName(manager), project, client));
+                    } else {
+                        evidenceManagerWithNoErrors = false;
+                    }
                 }
             }
+
             currentRow = sheet.getRow(i);
         }
 
@@ -116,9 +124,9 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
         evidenceManagers.forEach((key, value) -> {
             EvidenceManager manager = new EvidenceManager();
             manager.setPerson(key);
-            manager.setManager(value.stream().map(EvidenceManagerDto::getManager).distinct().collect(Collectors.toList()).toString().replace("[", "").replace("]", ""));
-            manager.setProject(value.stream().map(EvidenceManagerDto::getProject).distinct().collect(Collectors.toList()).toString().replace("[", "").replace("]", ""));
-            manager.setClient(value.stream().map(EvidenceManagerDto::getClient).distinct().collect(Collectors.toList()).toString().replace("[", "").replace("]", ""));
+            manager.setManager(value.stream().map(EvidenceManagerDto::getManager).distinct().collect(Collectors.joining("; ")));
+            manager.setProject(value.stream().map(EvidenceManagerDto::getProject).distinct().collect(Collectors.joining("; ")));
+            manager.setClient(value.stream().map(EvidenceManagerDto::getClient).distinct().collect(Collectors.joining("; ")));
             entities.add(manager);
         });
 
