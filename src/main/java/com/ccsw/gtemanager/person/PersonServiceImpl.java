@@ -64,4 +64,15 @@ public class PersonServiceImpl implements PersonService {
         return this.personRepository.findAll(specification, PageRequest.of(0, 15)).getContent();
     }
 
+    @Override
+    public Person getByNameLastName(String name, String lastName) {
+
+        List<Person> persons = personRepository.findByNameAndLastName(name, lastName);
+
+        if (persons != null && persons.size() > 0)
+            return persons.get(0);
+
+        return null;
+    }
+
 }

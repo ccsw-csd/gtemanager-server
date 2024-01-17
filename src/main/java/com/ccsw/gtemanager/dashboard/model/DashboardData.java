@@ -4,6 +4,7 @@ public class DashboardData {
 
     private String name;
     private Long weeks;
+    private Long countItems;
 
     public String getName() {
         return name;
@@ -23,6 +24,14 @@ public class DashboardData {
 
     public Long getHours() {
         return weeks * 5 * 8;
+    }
+
+    public Long getCountItems() {
+        return countItems;
+    }
+
+    public void setCountItems(Long countItems) {
+        this.countItems = countItems;
     }
 
 }

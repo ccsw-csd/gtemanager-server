@@ -14,4 +14,7 @@ public interface EvidenceViewRepository extends CrudRepository<EvidenceView, Com
 
     @EntityGraph(value = "evidence-view-graph", type = EntityGraph.EntityGraphType.LOAD)
     List<EvidenceView> findAll(Specification<EvidenceView> specification, Sort by);
+
+    @EntityGraph(value = "evidence-view-graph", type = EntityGraph.EntityGraphType.LOAD)
+    List<EvidenceView> findByPersonIdIn(List<Long> personList);
 }

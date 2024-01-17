@@ -28,13 +28,14 @@ public class DashboardServiceImpl implements DashboardService {
 
         for (Dashboard data : listDataRaw) {
 
+            String clientList[] = data.getClient().split("; ");
+
             DashboardData person = new DashboardData();
             person.setName(data.getPerson().getName() + " " + data.getPerson().getLastName());
             person.setWeeks(data.getEvidenceWeeks());
-
+            person.setCountItems(Long.valueOf(clientList.length));
             persons.add(person);
 
-            String clientList[] = data.getClient().split("; ");
             for (String clientName : clientList) {
                 DashboardData client = clients.get(clientName);
 
@@ -43,9 +44,11 @@ public class DashboardServiceImpl implements DashboardService {
                     clients.put(clientName, client);
                     client.setName(clientName);
                     client.setWeeks(0L);
+                    client.setCountItems(0L);
                 }
 
                 client.setWeeks(client.getWeeks() + data.getEvidenceWeeks());
+                client.setCountItems(client.getCountItems() + 1);
             }
 
         }

@@ -3,6 +3,7 @@ package com.ccsw.gtemanager.evidencemanager;
 import static com.ccsw.gtemanager.evidence.EvidenceServiceImpl.ALLOWED_FORMATS;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import com.ccsw.gtemanager.evidence.EvidenceService;
 import com.ccsw.gtemanager.evidence.model.FormDataDto;
 import com.ccsw.gtemanager.evidencemanager.model.EvidenceManager;
 import com.ccsw.gtemanager.evidencemanager.model.EvidenceManagerDto;
+import com.ccsw.gtemanager.person.PersonService;
 import com.ccsw.gtemanager.person.model.Person;
 
 @Service
@@ -50,6 +52,9 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
     @Autowired
     private EvidenceService evidenceService;
 
+    @Autowired
+    private PersonService personService;
+
     @Override
     public Boolean uploadEvidenceManager(FormDataDto upload) throws ResponseStatusException {
 
@@ -64,6 +69,8 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
         Map<String, Person> personMap = evidenceService.createEmailPersonMap();
 
         Map<Person, Set<EvidenceManagerDto>> evidenceManagers = new LinkedHashMap<>();
+        Map<String, String> managerEmails = new HashMap<>();
+
         boolean evidenceManagerWithNoErrors = true;
 
         Row currentRow = sheet.getRow(ROW_EVIDENCE_MANAGER_START);
@@ -88,7 +95,7 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
                     if (person != null) {
                         evidenceManagers.computeIfAbsent(person, s -> new LinkedHashSet<>());
                         Set<EvidenceManagerDto> managers = evidenceManagers.get(person);
-                        managers.add(new EvidenceManagerDto(formatName(manager), project, client));
+                        managers.add(new EvidenceManagerDto(formatName(manager, managerEmails), project, client));
                     } else {
                         evidenceManagerWithNoErrors = false;
                     }
@@ -104,9 +111,34 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
         return evidenceManagerWithNoErrors;
     }
 
-    private String formatName(String name) {
+    private String formatName(String name, Map<String, String> managerEmails) {
 
-        return name.replace(",", "").replace("Mr. ", "").replace("Mrs. ", "");
+        try {
+
+            if (managerEmails.containsKey(name)) {
+                return managerEmails.get(name);
+            }
+
+            String nameLastName[] = name.replace("Mr. ", "").replace("Mrs. ", "").split(",");
+
+            String email = "";
+
+            Person person = personService.getByNameLastName(nameLastName[1].trim(), nameLastName[0].trim());
+            if (person != null) {
+                email = person.getEmail();
+
+                if (email.equals("christian.molinuevo@capgemini.com"))
+                    email = "";
+                if (email.equals("gabriel.enriquez-molina@capgemini.com"))
+                    email = "";
+            }
+
+            managerEmails.put(name, email);
+
+            return email;
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private Sheet obtainSheet(MultipartFile file) throws BadRequestException {
@@ -124,7 +156,7 @@ public class EvidenceManagerServiceImpl implements EvidenceManagerService {
         evidenceManagers.forEach((key, value) -> {
             EvidenceManager manager = new EvidenceManager();
             manager.setPerson(key);
-            manager.setManager(value.stream().map(EvidenceManagerDto::getManager).distinct().collect(Collectors.joining("; ")));
+            manager.setManager(value.stream().filter((item) -> item.getManager().equals("") == false).map(EvidenceManagerDto::getManager).distinct().collect(Collectors.joining("; ")));
             manager.setProject(value.stream().map(EvidenceManagerDto::getProject).distinct().collect(Collectors.joining("; ")));
             manager.setClient(value.stream().map(EvidenceManagerDto::getClient).distinct().collect(Collectors.joining("; ")));
             entities.add(manager);

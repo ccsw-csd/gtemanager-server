@@ -70,4 +70,9 @@ public class CommentServiceImpl implements CommentService {
     public void clear() {
         commentRepository.deleteAllInBatch();
     }
+
+    @Override
+    public void delete(Long id) {
+        commentRepository.deleteById(id);
+    }
 }

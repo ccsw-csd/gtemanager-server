@@ -46,4 +46,6 @@ public interface PersonService {
     String parseSaga(String saga) throws IllegalArgumentException;
 
     List<Person> findFirst15Filter(String filter);
+
+    Person getByNameLastName(String name, String lastName);
 }

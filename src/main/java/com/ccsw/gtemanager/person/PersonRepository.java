@@ -25,5 +25,9 @@ public interface PersonRepository extends CrudRepository<Person, Long>, JpaSpeci
     @EntityGraph(value = "person-entity-graph", type = EntityGraphType.LOAD)
     List<Person> findAll();
 
+    @EntityGraph(value = "person-entity-graph", type = EntityGraphType.LOAD)
     Person findByEmail(String email);
+
+    @EntityGraph(value = "person-entity-graph", type = EntityGraphType.LOAD)
+    List<Person> findByNameAndLastName(String name, String lastName);
 }

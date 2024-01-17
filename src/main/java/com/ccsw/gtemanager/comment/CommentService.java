@@ -7,7 +7,7 @@ import com.ccsw.gtemanager.comment.model.CommentDto;
 import com.ccsw.gtemanager.common.exception.EntityNotFoundException;
 
 public interface CommentService {
-	/**
+    /**
      * Obtener un listado de todos los comentarios de evidencias.
      * 
      * @return Listado de EvidenceComments
@@ -22,7 +22,7 @@ public interface CommentService {
      * @throws EntityNotFoundException
      */
     Comment get(Long id) throws EntityNotFoundException;
-    
+
     /**
      * Editar un comentario
      * 
@@ -30,9 +30,11 @@ public interface CommentService {
      * @throws EntityNotFoundException
      */
     void save(CommentDto dto) throws EntityNotFoundException;
-    
+
     /**
      * Eliminar todos los registros de Comment.
      */
     void clear();
+
+    void delete(Long id);
 }
