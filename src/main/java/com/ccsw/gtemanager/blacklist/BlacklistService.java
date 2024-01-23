@@ -14,4 +14,6 @@ public interface BlacklistService {
 
     void save(BlacklistSaveRequest dto);
 
+    void delete(Long id);
+
 }

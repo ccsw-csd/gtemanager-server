@@ -88,4 +88,11 @@ public class BlacklistServiceImpl implements BlacklistService {
         }
 
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Long id) {
+        repository.deleteById(id);
+
+    }
 }
