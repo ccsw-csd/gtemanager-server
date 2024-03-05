@@ -8,6 +8,8 @@ public class BlacklistSaveRequest {
 
     private int month;
 
+    private String comment;
+
     private Long[] persons;
 
     public int getYear() {
@@ -40,6 +42,14 @@ public class BlacklistSaveRequest {
 
     public void setDay(int day) {
         this.day = day;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
 }

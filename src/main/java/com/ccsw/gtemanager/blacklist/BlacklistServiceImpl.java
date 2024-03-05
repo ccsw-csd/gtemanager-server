@@ -71,15 +71,20 @@ public class BlacklistServiceImpl implements BlacklistService {
         for (EvidenceView evidence : evidences) {
 
             Blacklist blacklistFound = blacklistInDDBB.stream().filter((item) -> item.getPerson().getId().equals(evidence.getPerson().getId())).findFirst().orElse(null);
-            if (blacklistFound != null)
+            if (blacklistFound != null) {
+
+                blacklistFound.setComment((StringUtils.hasText(blacklistFound.getComment()) ? blacklistFound.getComment() : "") + "\n" + dto.getComment());
+                repository.save(blacklistFound);
+
                 continue;
+            }
 
             Blacklist entity = new Blacklist();
 
             entity.setDate(Date.from(date.atStartOfDay().toInstant(ZoneOffset.UTC)));
             entity.setPerson(evidence.getPerson());
 
-            entity.setComment(null);
+            entity.setComment(dto.getComment());
             entity.setManager(evidence.getManager());
             entity.setProject(evidence.getProject());
             entity.setClient(evidence.getClient());
